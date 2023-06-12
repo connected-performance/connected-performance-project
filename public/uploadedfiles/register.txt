@@ -1,0 +1,384 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Events\LogHistory;
+use App\Http\Controllers\Controller;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\EventUser;
+use App\Models\EventNonExistedUser;
+use App\Models\MicroStore;
+use App\Models\Subscription;
+use App\Providers\RouteServiceProvider;
+use App\Models\User;
+use App\Models\UserRole;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Models\SmsTemplates;
+use App\Rules\CompanyName;
+use App\Models\WhatsappTemplates;
+use App\helpers;
+use GuzzleHttp\Client;
+use AWS\CRT\HTTP\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+
+class RegisterController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Register Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
+    |
+    */
+
+    use RegistersUsers;
+
+    /**
+     * Where to redirect users after registration.
+     *
+     * @var string
+     */
+    protected $redirectTo = RouteServiceProvider::HOME;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        // dd($data['cname']);
+        // $company=User::whereRaw("LOWER(REPLACE(`cname`, ' ' ,''))  = ?", [strtolower (str_replace(' ', '', $data['cname']))])->first();
+        // if($company){
+
+        // }
+        return Validator::make($data, [
+            'name'          =>  ['required', 'string', 'max:255'],
+            'lastname'      =>  ['required', 'string', 'max:25'],
+           // 'full_number'   =>  ['required'] ,
+            'join'          =>  ['required'],
+            'email'         =>  ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password'      =>  ['required', 'string', 'min:4', 'confirmed'],
+            'cname'         =>  ['required', 'string', new CompanyName],
+            'phone'         =>  ['required','unique:users'],
+            // 'cyear'         =>  ['required', 'digits_between:4,4'],
+            // 'caddress'      =>  ['required', 'string', 'max:255'],
+            // 'city'          =>  ['required', 'string', 'max:15'],
+            // 'state'         =>  ['required', 'string', 'max:15'],
+            // 'country'       =>  ['required', 'string', 'max:15'],
+            'contact'       =>  ['required'],
+            'notification1'       =>  ['required'],
+            'notification2'       =>  ['required'],
+            'accept'        =>  ['required'],
+            // 'description'        =>  ['required'],
+            // 'c_logo'        => ['required','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+           // 'c_reg_no'      => ['required'],
+
+            ],
+            [
+                "cyear.required"        => "Enter Incorporation year",
+                "cyear.digits_between"  => "Enter full Incorporation year",
+                "cname.required"        => "Enter Company Name",
+                "caddress.required"     => "Enter Company Address",
+                "contact.required"      => "Select at-least any one method to contact",
+                "phone.required"      => "Phone Number Required*",
+                "join.required"         => "Select your user type",
+                "accept.required"       => "Please Accept Terms & Conditions",
+                "countrycode.required"  => "Please Select Country Code",
+                "cname.unique" =>         "Company already exist*",
+            ]
+        );
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\Models\User
+     */
+    protected function create(array $data)
+    {
+        // dd($data);
+        // $data['phone']=$data['countrycode'].$data['phone'];
+        if ($data['join'] == 2) {
+            $buyer = 1;
+            $supplier = 0;
+            $role_id = 3;
+
+        }
+        if ($data['join'] == 1) {
+            $buyer = 0;
+            $supplier = 1;
+            $role_id = 2;
+            // dd("Asdf");
+        }
+        if ($supplier == 1) {
+            $user['user_type'] = 'supplier';
+            $route = 'supplier_home';
+
+        }else if ($buyer == 1) {
+            $user['user_type'] = 'buyer';
+
+        } else {
+            $user['user_type'] = 'other';
+            $route = '/';
+        }
+        session($user);
+        foreach ($data['contact'] as $contact) {
+
+            if ($contact == 'phone') {
+
+                $msg = SmsTemplates::where('link', 'account-created')->first();
+                sendSmsNotification($data['phone'], $msg->value);
+            }
+            if($contact == 'wa' )
+            {
+                if($data['notification1']=="signup")
+                    {
+                        $msg=WhatsappTemplates::where('link','account-created')->first();
+                        sendWhatsappNotification($data['phone'],$msg->value);
+                    }
+                if($data['notification2']=="preset")
+                    {
+                        $msg=WhatsappTemplates::where('link','password-reset')->first();
+                        sendWhatsappNotification($data['phone'],$msg->value);
+                    }
+                // $msg=WhatsappTemplates::where('link','=','account-created')->first();
+                // sendWhatsappNotification($data['phone'],$msg->value);
+            }
+        }
+        $ipinfo = ip_info();
+        $lang = country_lang($ipinfo->country_code);
+
+        $row_c = Currency::where('code', $ipinfo->currency)->count();
+
+        if ($row_c == 0) {
+            if (Currency::where('is_default', 1)->count() > 0) {
+                $curr = Currency::where('is_default', 1)->first()->code;
+            } else {
+                $curr = 'USD';
+            }
+        } else {
+            $curr = $ipinfo->currency;
+        }
+
+        $row_lang = Language::where('code', $lang)->count();
+        if ($row_lang == 0) {
+            $lang = 'en';
+        }
+        // echo $curr;
+        // print_r($ipinfo);
+        // exit;
+
+
+        $file = @$data['c_logo'];
+        if ($file) :
+            $filename = $file->getClientOriginalName();
+            $filename = time() . '.' . $filename;
+            $file_path = 'public/' . $filename;
+            $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+            $img = Image::make($file->getPathName());
+            $path = Storage::disk('s3')->put($file_path, $img->resize(411, 274)->stream('jpg'));
+            $c_logo = $url . $file_path;
+        endif;
+        $description = @$data['description'];
+        if (isset($data['cname']))
+            $data['cname_slug'] = cname_slug($data['cname']);
+
+          $first_name = $data['name'];
+          $last_name = $data['lastname'];
+          $email = $data['email'];
+          $phone_number = $data['full_number'];
+          $password = $data['password'];
+          $cname = $data['cname'];
+          $cname_slug = $data['cname_slug'];
+          $contact = $data['contact'];
+          $ftype = $data['ftype'];
+
+        // $url = 'https://sandbox.external.routefusion.com/graphql';
+
+        // // Set the request headers and data
+        // $headers = [
+        //     'Authorization' => 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDg3ODk1MzgsImlkIjoiNzAyNzg3ODAtNDBiMS00MTI5LTg5MzAtNDFiOGFjY2UxNDhhIiwib3JnYW5pemF0aW9uSWQiOiJiNTEwZjg5Mi0wZDljLTQyMzAtODM0MS03NWM2YTYwM2ViMzUiLCJhZG1pbiI6dHJ1ZSwib3JnYW5pemF0aW9uQWRtaW4iOmZhbHNlLCJpYXQiOjE2NzcyNTM1Mzh9.UCsHU5zvIHE8t2WgoeneyhK7Qk-fPlC1vlYJCBAb4M_eDqU0JBWI9R4A2dfhOXujzR0Se0hLs3HQC3e8bKJ_2ttf3Wv04ZfFKGDWkPjbQXLCeyYjB6p_4_7St5_MsAjs-VX6LoR5ajsDaFdcqdUfPiNBqLEjsAU4oIj0n48tpQ74i62HojMJrg-xx_BIMHHLEaksYBfVqpDzU5pnbIeVUBsl0n9NdDDCcbcbJ-wlPlLzpRL1S_Cc3k7HS7c5cp8Seh8OH4OFeI6Zk5d15UH0R5hfKZM0ixEVWBYj4qxHWplLR5YMI6eYDxd9Kwl9wE4IsoOxOEMd8qo_bgbxqKB92usoGYf4Ul0qz8nrCOMCHtjJOuT_q12v3ZxakEFxsxFXLfuIu8X-a0-40K0NWRC7v1kAsoG19D8UrZdd-fejAZF1cKjGZZ0MBImqQFPlvD0EOFHb8AtDuzmG8NfvwuhhgHTbgMdfMjQVWsELRloN8ZGodunnDapf0z1E2ifvqcKwWz75GZuzicArzQh1KR0ricjeE1Uqi0K86KP7HdmP7z3yUIJJNjMZ2VrE3Yl1nl7gWdEHzZ8Zjn-NvKXu0O47y4zVRYr_dwzfBtwtJKVRUUNhgguF_Vo3DamNJV7S2vz2pEBtzp3z9MWLigEOyG6wECix5FhuNL2kw4peLtWGIko',
+        //     'Content-Type' => 'application/json',
+        // ];
+        // $data = [
+        //     'query' => 'mutation createUser($email: Email!, $first_name: String, $last_name: String) {
+        //                     createUser(email: $email, first_name: $first_name, last_name: $last_name)}',
+        //     'variables' => [
+        //         'first_name' => $first_name ,
+        //         'last_name' =>  $last_name,
+        //         'email' =>   $email ,
+        //     ]
+        // ];
+
+        // // Send the request
+        // $client = new Client();
+        // $response = $client->post($url, [
+        //     'headers' => $headers,
+        //     'json' => $data,
+        // ]);
+        // // // Handle the response
+        // if ($response->getStatusCode() != 200) {
+        //     return response()->json(['error' => 'Failed to create user.'], 500);
+        // }
+        // $result = json_decode($response->getBody(), true);
+
+        // $id = $result['data']['createUser'];
+
+        $user = User::create([
+            'name'          => $first_name ,
+            'lastname'      => $last_name,
+            'email'         => $email,
+            'phone'         => $phone_number,
+            'is_supplier'   => $supplier,
+            'is_buyer'      => $buyer,
+            // 'user_type'     => $data['join'],
+            'password'      => Hash::make($password),
+            // 'rf_user_id'    => $id,
+            'cname'         => $cname,
+            'cname_slug'    => $cname_slug,
+            'timezone'      => time_zone(),
+            'cyear'         => '',
+            'caddress'      => '',
+            'company_dis'   => $description,
+            'company_logo'  => $c_logo ?? null,
+            'city'          => '',
+            'state'         => '',
+            'country'       => '',
+            'contact'       => implode(",", $contact),
+            'currency'      => $curr,
+            'lang'          => $lang,
+            'c_reg_no'      => '',
+        ]);
+
+        if($user){
+            $user_id = $user->id;
+            $check = EventNonExistedUser::where('email',$email)->first();
+            $id = $check->id;
+            if($check){
+                $event_id = $check->event_id;
+                $event_user = new EventUser();
+                $event_user->user_id = $user_id;
+                $event_user->event_id = $event_id;
+                $event_user->save();
+
+                $delete = EventNonExistedUser::find($id);
+                $delete->delete();
+            }
+        }
+
+
+        // make dashboard notification
+        // $user_type = $data['join'];
+        // if ($user_type == 1){
+        //     $user_type_f = "buyer";
+        //     $user_route = url("/admin/buyers");
+        // } else if($user_type == 2) {
+        //     $user_type_f = "supplier";
+        //     $user_route = url("/admin/suppliers");
+        // }
+        // $user_name = $data['name'];
+        // $data = User::where('is_admin','1')->get('id');
+        // $admin_amount = count($data);
+        // for ($i=0; $i <= $admin_amount; $i++){
+        //     $admin_id = $data[$i]->id;
+        //     $admin_email = $data[$i]->email;
+        //     $noti_model = new Notification();
+        //     $heading = "New".$user_type_f."registration";
+        //     $description = $user_name."has sign up in AGNimble.  Please see Details...";
+        //     $route = $user_route;
+        //     $noti_model->makeNotification($admin_id, $heading, $description, $route);
+
+        // }
+        /**
+         * Saving Log
+         */
+
+        $name = $first_name;
+        $description = $name . ' Registered Successfully ';
+        $event_name = 'Register Account';
+        $user2['event_name']  = $event_name;
+        $user2['description']  = $description;
+        $user2['user_id']  = $user->id;
+        $user2['name']  = $user->name;
+        $user2['email']  = $user->email;
+
+        event(new LogHistory($user2));
+
+        /****/
+        $user_id = $user->id;
+        // shuftipro KYB varification
+        if (is_plugin_active('shuftipro_api')) {
+            if (plugin_val('shuftipro_api', 'shuftipro_kyb')) {
+                $shufti_kyb = shuftipro_kyb($user->id, $user->email, $user->cname);
+                $user->is_verified = $shufti_kyb['status'];
+                $user->kyb_ref = $shufti_kyb['ref'];
+                $user->save();
+            }
+        }
+        if ($supplier == 1) {
+            $store = new MicroStore();
+            $store->user_id = $user->id;
+            $store->save();
+        }
+        $user->cname_slug = $cname_slug;
+        $user->save();
+        if ($buyer == 1) {
+            $sub = new Subscription([
+                'user_id' => $user->id,
+                'plan_id' => 1,
+                'interval' => 'annual',
+                'stripe_subscription_id' => 'sub_1LhUAOKKnOxLcgEb5bw9j9SN',
+                'stripe_subscription_status' => 'active',
+                'stripe_intent_secret' => 'pi_3LhUAPKKnOxLcgEb0uHGT9AU_secret_sGghUPq6p4s284ZN0TkDEdrq3',
+                'status' => 'active'
+            ]);
+            $sub->save();
+        }
+        // end shuftipro KYB request
+        UserRole::create(['user_id' => $user_id, 'role_id' => $role_id]);
+        if ($ftype) {
+            return $user;
+        }
+
+        return $user;
+
+        //  $file = $request->file('file');
+        // if ($file) :
+        //     $filename = $file->getClientOriginalName();
+        //     $filename = time() . '.' . $filename;
+        //     $file_path = 'public/' . $filename;
+        //     $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+        //     // $path = Storage::disk('s3')->put($file_path, file_get_contents($file));
+        //     $img = Image::make($file->getPathName());
+        //     $path = Storage::disk('s3')->put($file_path . '-thumb.jpg', $img->resize(100, 67)->stream('jpg'));
+        //     $img = Image::make($file->getPathName());
+        //     $path = Storage::disk('s3')->put($file_path, $img->resize(411, 274)->stream('jpg'));
+        //     $img = Image::make($file->getPathName());
+        //     $path = Storage::disk('s3')->put($file_path . '-large.jpg', $img->resize(1280, 900)->stream('jpg'));
+        //     $product_images['product_id'] = $id;
+        //     $product_images['image'] = $url . $file_path;
+
+        // endif;
+    }
+}

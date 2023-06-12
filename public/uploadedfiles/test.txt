@@ -1,0 +1,9 @@
+Event pr email ja rhi
+Team member add kny pr ja rhi
+Department add krny pr ja rhi
+(Suggestion)->Job function add krny pr bi email send honi chahye
+My network sy invitation send ho rhi lakin kisi ko email send ni ho rhi
+Producer add krny pr email snd hoti producer ko
+(Suggestion)Kisi bi trah ki recepit notes pr email ni send ho rhi lekin mery khyal sy invoice ki email sedn honi chahye	
+
+(Bug) Add task me koi user show ni ho rha

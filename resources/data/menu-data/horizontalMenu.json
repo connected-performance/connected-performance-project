@@ -1,0 +1,14 @@
+// {
+//   "url": "templates/sms",
+//   "name": "Sms ",
+//   "icon": "circle",
+//   "slug": "sms",
+//   "access": "view_sms_templates"
+// },
+// {
+//   "url": "templates/whatsapp",
+//   "name": "WhatsApp ",
+//   "icon": "circle",
+//   "slug": "whatsapp",
+//   "access": "view_whatsap_templates"
+// }

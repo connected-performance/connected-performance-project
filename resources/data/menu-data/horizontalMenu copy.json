@@ -1,0 +1,156 @@
+{
+  "menu": [
+    {
+      "url": "home",
+      "name": "Home",
+      "icon": "home",
+      "slug": "home"
+    },
+    {
+      "name": "Page Layouts",
+      "icon": "layout",
+      "dropdown": "1",
+      "slug": "",
+      "submenu": [
+        {
+          "url": "layouts/full",
+          "name": "Layout Full",
+          "slug": "layout-full"
+        },
+        {
+          "url": "layouts/without-menu",
+          "name": "Without Menu",
+          "slug": "without-menu"
+        },
+        {
+          "url": "layouts/empty",
+          "name": "Layout Empty",
+          "slug": "layout-empty"
+        },
+        {
+          "url": "layouts/blank",
+          "name": "Layout Blank",
+          "slug": "layout-blank"
+        }
+      ]
+    }
+  ]
+}
+  
+  {
+    "name": "Users",
+    "icon": "users",
+    "slug": "",
+    "access": "view user",
+    "submenu": [
+      {
+        "url": "panel/users/admin",
+        "name": "Admin",
+        "icon": "user",
+        "slug": "user.admin",
+        "access": "view admin"
+      },
+      {
+        "url": "panel/users/employe",
+        "name": "Employe",
+        "icon": "user",
+        "slug": "employe.admin",
+        "access": "view employe"
+      },
+      {
+        "url": "panel/users/customer",
+        "name": "Customer",
+        "icon": "user",
+        "slug": "customer.admin",
+        "access": "view customer"
+      }
+    ]
+  },
+  {
+    "name": "Permissions",
+    "icon": "shield",
+    "slug": "",
+    "access": "access backend",
+    "submenu": [
+      {
+        "url": "panel/user/role",
+        "name": "User Role",
+        "icon": "user-check",
+        "slug": "user.role.index"
+      }
+    ]
+  },
+  {
+    "url": "panel/lead",
+    "name": "Lead",
+    "icon": "truck",
+    "slug": "lead.view",
+    "access": "access backend"
+  },
+  {
+    "url": "panel/contract",
+    "name": "Contract",
+    "icon": "file-minus",
+    "slug": "contract.index",
+    "access": "access backend"
+  },
+  {
+    "url": "panel/sale",
+    "name": "sales",
+    "icon": "bar-chart",
+    "slug": "sale",
+    "access": "access backend",
+    "submenu": [
+      {
+        "url": "panel/sale/invoice",
+        "name": "Invoice",
+        "icon": "circle",
+        "slug": "sale.invopice"
+      },
+      {
+        "url": "panel/sale/payment",
+        "name": "Payment",
+        "icon": "circle",
+        "slug": "sale.payment"
+      },
+      {
+        "url": "panel/sale/credit-notes",
+        "name": "Credit Notes",
+        "icon": "circle",
+        "slug": "sale.credit-note"
+      },
+      {
+        "url": "panel/sale/expense",
+        "name": "Expense",
+        "icon": "circle",
+        "slug": "sale.expense"
+      }
+    ]
+  },
+  {
+    "name": "Templates",
+    "url": "panel/templates",
+    "icon": "send",
+    "slug": "templates",
+    "access": "access backend",
+    "submenu": [
+      {
+        "url": "templates/email",
+        "name": "Email",
+        "icon": "circle",
+        "slug": "email"
+      },
+      {
+        "url": "templates/sms",
+        "name": "Sms ",
+        "icon": "circle",
+        "slug": "sms"
+      },
+      {
+        "url": "templates/whatsapp",
+        "name": "WhatsApp ",
+        "icon": "circle",
+        "slug": "whatsapp"
+      }
+    ]
+  }

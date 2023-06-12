@@ -1,0 +1,289 @@
+{
+  "admin": [
+    {
+      "url": "panel",
+      "name": "Home",
+      "icon": "home",
+      "slug": "panel.index",
+      "access": "access_backend"
+    },
+    {
+        "url": "panel/form/builder",
+        "name": "Form Builder",
+        "icon": "clipboard",
+        "slug": "form.builder",
+        "access": "view_form"
+    },
+    {
+    "url": "panel/file",
+    "name": "File Room",
+    "icon": "file-text",
+    "slug": "file.room",
+    "access": "view_file"
+    },
+    {
+      "url": "panel/services",
+      "name": "Services",
+      "icon": "server",
+      "slug": "service.index",
+      "access": "view_servicse"
+    },
+    {
+      "name": "Users",
+      "icon": "users",
+      "slug": "",
+      "access": "view_user",
+      "submenu": [
+        {
+          "url": "panel/admin",
+          "name": "Admin",
+          "icon": "user",
+          "slug": "user.admin",
+          "access": "view_admin"
+        },
+        {
+          "url": "panel/employee",
+          "name": "Employee",
+          "icon": "user",
+          "slug": "employe.admin",
+          "access": "view_employee"
+        },
+        {
+          "url": "panel/customer",
+          "name": "Customer",
+          "icon": "user",
+          "slug": "customer.admin",
+          "access": "view_customer"
+        }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "icon": "shield",
+      "slug": "",
+      "access": "view_role",
+      "submenu": [
+        {
+          "url": "panel/user/role",
+          "name": "User Role",
+          "icon": "user-check",
+          "slug": "user.role.index",
+          "access": "view_role"
+        }
+      ]
+    },
+    {
+      "url": "panel/lead",
+      "name": "Lead",
+      "icon": "truck",
+      "slug": "lead.view",
+      "access": "view_lead"
+    },
+    {
+      "url": "panel/invoice",
+      "name": "Invoices",
+      "icon": "bar-chart",
+      "slug": "invoice",
+      "access": "view_invoice"
+    },
+    {
+      "url": "panel/payment/employee",
+      "name": "Payments",
+      "icon": "credit-card",
+      "slug": "payments.employee",
+      "access": "view_contract"
+    },
+    {
+      "url": "panel/performance/employee",
+      "name": "Employee Performance",
+      "icon": "droplet",
+      "slug": "employe.performance'",
+      "access": "performance"
+    },
+    {
+      "url": "panel/reports/index",
+      "name": "Reports",
+      "icon": "trello",
+      "slug": "reports.index",
+      "access": "reports"
+    },
+    {
+      "url": "panel/expense",
+      "name": "Expense",
+      "icon": "credit-card",
+      "slug": "expense.index",
+      "access": "plugin"
+    },
+      {
+        "url": "panel/extra/amount",
+        "name": "Extra Amount",
+        "icon": "credit-card",
+        "slug": "extra.amount",
+        "access": "plugin"
+      },
+    {
+      "url": "panel/statement",
+      "name": "Statement",
+      "icon": "align-justify",
+      "slug": "statement.index",
+      "access": "plugin"
+    },
+    {
+      "url": "panel/plugin",
+      "name": "Plugins",
+      "icon": "plus-square",
+      "slug": "plugin.index",
+      "access": "plugin"
+    },
+      {
+        "name": "SmartWaiver",
+        "url": "panel/smart-waiver",
+        "icon": "cast",
+        "slug": "smart-waiver.index",
+        "access": "view_templates",
+        "submenu": [
+          {
+            "url": "panel/smart-waiver/template",
+            "name": "Templates",
+            "icon": "file-text",
+            "slug": "smart-waiver.index",
+            "access": "view_email_templates"
+          }
+        ]
+      },
+
+    {
+      "name": "Templates",
+      "url": "panel/templates",
+      "icon": "mail",
+      "slug": "templates",
+      "access": "view_templates",
+      "submenu": [
+        {
+          "url": "templates/email/welcome-mail",
+          "name": "Email",
+          "icon": "circle",
+          "slug": "email",
+          "access": "view_email_templates"
+        }
+
+      ]
+    },
+    {
+      "url": "panel/send/mail",
+      "name": "Send Mail",
+      "icon": "send",
+      "slug": "send.mail",
+      "access": "send-mail"
+    },
+    {
+      "name": "Setting",
+      "url": "panel/setting",
+      "icon": "settings",
+      "slug": "",
+      "access": "view_account_setting",
+      "submenu": [
+        {
+          "url": "panel/setting/account",
+          "name": "Account",
+          "icon": "user",
+          "slug": "user.profile",
+          "access": "view_account_setting"
+        },
+        {
+          "url": "panel/setting/country",
+          "name": "Country Setting",
+          "icon": "circle",
+          "slug": "country",
+          "access": "view_system_setting"
+        },
+        {
+          "url": "comming-soon",
+          "name": "Time Zone Setting ",
+          "icon": "circle",
+          "slug": "soon",
+          "access": "view_time_zone_setting"
+        },
+        {
+          "url": "comming-soon",
+          "name": "Site Setting ",
+          "icon": "circle",
+          "slug": "soon",
+          "access": "view_site_setting"
+        }
+      ]
+    }
+  ],
+  "manu": [
+    {
+      "url": "panel",
+      "name": "Home",
+      "icon": "home",
+      "slug": "panel.index",
+      "access": "access_backend"
+    },
+    {
+      "url": "panel/form/builder",
+      "name": "Form Builder",
+      "icon": "clipboard",
+      "slug": "form.builder",
+      "access": "view_form"
+    },
+    {
+        "url": "panel/file",
+        "name": "File Room",
+        "icon": "file-text",
+        "slug": "file.room",
+        "access": "view_file"
+    },
+    {
+      "url": "panel/lead",
+      "name": "Lead",
+      "icon": "truck",
+      "slug": "lead.view",
+      "access": "view_lead"
+    },
+    {
+      "url": "panel/my/customer",
+      "name": "Customer",
+      "icon": "users",
+      "slug": "my.customer",
+      "access": "view_customer"
+    },
+    {
+      "url": "panel/my/referrals",
+      "name": "Referrals",
+      "icon": "share-2",
+      "slug": "my.referral",
+      "access": "view_referrals"
+    },
+    {
+      "url": "panel/my/deal",
+      "name": "Deals",
+      "icon": "clipboard",
+      "slug": "my.employee.deal",
+      "access": "view_deals"
+    },
+    {
+      "url": "panel/invoice",
+      "name": "Invoices",
+      "icon": "bar-chart",
+      "slug": "invoice",
+      "access": "view_invoice"
+    },
+    {
+      "url": "panel/my/payment",
+      "name": "Payments",
+      "icon": "credit-card",
+      "slug": "my.payment",
+      "access": "view_payment"
+    },
+    {
+      "url": "panel/send/mail",
+      "name": "Send Mail",
+      "icon": "send",
+      "slug": "send.mail",
+      "access": "send-mail"
+    }
+  ]
+}
