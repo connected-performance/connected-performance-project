@@ -1066,19 +1066,19 @@ class UserController extends Controller
             $note = new UserNote();
             $note->content = $request->content;
             $note->customer_id = $request->customer;
-            $note->save();
+            if($note->save()){
+                $message = "Note created successfully";
 
-            $message = "Note created successfully";
-
-            $response = [
-                'status' => 'success',
-                'message' => $message,
-            ];
-            return response()->json($response);
+                $response = [
+                    'status' => 'success',
+                    'message' => $message,
+                ];
+                return response()->json($response);
+            }
         } catch (\Throwable $th) {
             $response = [
                 'status' => 'error',
-                'message' => $th->getMessage(),
+                'message' => 'Error creating record',
             ];
 
             return response()->json($response);
