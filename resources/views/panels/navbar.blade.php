@@ -67,28 +67,17 @@
         </ul>
     </div>
     <ul class="nav navbar-nav align-items-center ms-auto">
-        <li class="nav-item dropdown dropdown-language">
-            <a class="nav-link dropdown-toggle" id="dropdown-flag" href="#" data-bs-toggle="dropdown"
-                aria-haspopup="true">
-                <i class="flag-icon flag-icon-us"></i>
-                <span class="selected-language">English</span>
+        <li class="nav-item dropdown dropdown-notification me-25">
+            <a class="nav-link code-link" href="javascript:void(0);" title="Add Note" onclick="show_note_modal()">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <polygon points="0 0 24 0 24 24 0 24"/>
+                        <path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+                        <path d="M11,14 L9,14 C8.44771525,14 8,13.5522847 8,13 C8,12.4477153 8.44771525,12 9,12 L11,12 L11,10 C11,9.44771525 11.4477153,9 12,9 C12.5522847,9 13,9.44771525 13,10 L13,12 L15,12 C15.5522847,12 16,12.4477153 16,13 C16,13.5522847 15.5522847,14 15,14 L13,14 L13,16 C13,16.5522847 12.5522847,17 12,17 C11.4477153,17 11,16.5522847 11,16 L11,14 Z" fill="#000000"/>
+                    </g>
+                </svg>
             </a>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-flag">
-                <a class="dropdown-item" href="{{ url('lang/en') }}" data-language="en">
-                    <i class="flag-icon flag-icon-us"></i> English
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/fr') }}" data-language="fr">
-                    <i class="flag-icon flag-icon-fr"></i> French
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/de') }}" data-language="de">
-                    <i class="flag-icon flag-icon-de"></i> German
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/pt') }}" data-language="pt">
-                    <i class="flag-icon flag-icon-pt"></i> Portuguese
-                </a>
-            </div>
         </li>
-
         @php
             $count = \App\Models\UserNotifiction::where('user_id', auth()->id())
                 ->where('status', '0')
@@ -477,3 +466,43 @@
         </li>
       </ul>
     </li> --}}
+<div class="modal" id="create_note_customer" tabindex="-1" role="dialog">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @php
+                $customers = getCustomer();
+            @endphp
+            <form id="submit_note" enctype='multipart/form-data' method="POST">
+                <div class="modal-body">
+                    @csrf
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="customer">Select Customer</label>
+                            <select class="form-control type" id="customer" name="customer" required="">
+                                <option value="">Select Customer</option>
+                                @foreach($customers as $key => $value)
+                                    <option value="{{ $value->id }}">{{ $value->first_name }} {{ $value->last_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label for="content">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light " data-bs-dismiss="modal">Close</button>
+                    <button type="submit" type="button" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

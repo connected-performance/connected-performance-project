@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            //
+        Schema::create('user_notes', function (Blueprint $table) {
+            $table->id();
+            $table->longText('content');
+            $table->foreignId('customer_id')->constrained('customers')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('user_notes');
     }
 };

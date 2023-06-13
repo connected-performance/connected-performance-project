@@ -18,6 +18,7 @@ use App\Models\Role;
 use App\Models\State;
 use App\Models\Trainer;
 use App\Models\User;
+use App\Models\UserNote;
 use App\Repositories\FileUploadRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -1038,5 +1039,49 @@ class UserController extends Controller
         });
 
         return redirect()->back()->with('success', 'Request sent successfully');
+    }
+
+    public function noteSave(Request $request)
+    {
+        /*$this->validate($request,[
+            'method' => 'content',
+            'amount' => 'customer',
+        ]);
+
+        $note = new UserNote();
+        $note->content = $request->content;
+        $note->customer_id = $request->customer;
+        if($note->save()){
+            return redirect()->back()->with('success', 'Note created successfully');
+        }else{
+            return redirect()->back()->with('error', 'Error');
+        }*/
+
+        try {
+            $request->validate([
+                'method' => 'content',
+                'amount' => 'customer',
+            ]);
+
+            $note = new UserNote();
+            $note->content = $request->content;
+            $note->customer_id = $request->customer;
+            $note->save();
+
+            $message = "Note created successfully";
+
+            $response = [
+                'status' => 'success',
+                'message' => $message,
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
+            return response()->json($response);
+        }
     }
 }
