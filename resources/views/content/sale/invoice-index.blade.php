@@ -66,7 +66,6 @@
                                     <th>@lang('Total')</th>
                                     <th>@lang('Due')</th>
                                     <th>@lang('Balance')</th>
-                                    <th>@lang('Service')</th>
                                     <th>@lang('Status')</th>
                                     <th class="col-2">@lang('Action')</th>
                                 </tr>
@@ -182,7 +181,7 @@
                 }
             });
             $('#invoice_table').DataTable({
-                responsive: false,
+                responsive: true,
                 processing: true,
                 serverSide: true,
                 searching: true,
@@ -200,11 +199,7 @@
                     },
                     {
                         data: 'issue_date'
-                    },
-                    {
-                        data: 'due_date'
-                    },
-                    {
+                    }, {
                         data: 'total_amount'
                     },
                     {
@@ -212,9 +207,6 @@
                     },
                     {
                         data: 'balance_status'
-                    },
-                    {
-                        data: 'service'
                     },
                     {
                         data: 'status'

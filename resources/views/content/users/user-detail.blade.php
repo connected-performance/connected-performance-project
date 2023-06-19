@@ -17,7 +17,6 @@
     {{-- Page Css files --}}
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-sweet-alerts.css')) }}">
-    <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
 
 @endsection
 
@@ -57,6 +56,11 @@
             transition: all 0.3s ease-in-out, background 0s, color 0s, border-color 0s;
         }
     </style>
+    @if(count($notes) > 0)
+        <div class="alert alert-warning alert-note" role="alert" style="padding:20px">
+            This user has a series of notifications or reminders that you would like to see. <a href="javascript:void(0);" onclick="show_all_notes()">Watch Now</a>
+        </div>
+    @endif
     <section class="app-user-view-account">
         <div class="row">
             <!-- User Sidebar -->
@@ -182,6 +186,46 @@
             </div>
         </div>
     </section>
+    <div class="modal" id="all_notes" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">All Notes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="html_notes">
+                    <div class="accordion" id="accordionExample" attr-total-key="{{ count($notes) }}" style="padding: 20px;">
+                        @foreach($notes as $key => $value)
+                            <div class="body_note{{ $value->id }}">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{ $key }}" aria-expanded="false" aria-controls="collapseOne{{ $key }}">
+                                            Note #{{ $key + 1 }}
+                                        </button>
+                                    </h2>
+                                    @if($key == 0)
+                                        <div id="collapseOne{{ $key }}" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    @else
+                                        <div id="collapseOne{{ $key }}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    @endif
+                                        <div class="accordion-body">
+                                            {{ $value->content }}
+                                            <br>
+                                            <center>
+                                                <div style="margin-top: 15px;">
+                                                    <button type="button" class="btn btn-danger btn-sm id_note" attr-note="{{ $value->id }}" attr-key="{{ $key }}">Delete</button>
+                                                </div>
+                                            </center>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @include('account-setting/edit-profile')
     @include('content/_partials/_modals/modal-upgrade-plan')
@@ -305,5 +349,32 @@
                 ]
             });
         }
+
+        function show_all_notes() {
+            $("#all_notes").modal("show")
+        }
+
+        $('.id_note').click(function(){
+            var token = "{{ csrf_token() }}";
+            var note = $(this).attr('attr-note');
+            var key = $(this).attr('attr-key');
+            key = parseInt(key) + 1;
+            $('.body_note'+note).hide();
+            $('#collapseOne'+key).addClass('show');
+            
+            var url_note = "{{ route('panel.user.note.delete') }}";
+            $.ajax({
+                url: url_note,
+                type: 'POST',
+                data: { _token: token, note: note },
+                success: function (result) {
+                    if(result.notes == 0){
+                        $('#all_notes').modal('hide');
+                        $('.alert-note').hide();
+                    }
+                    //$('.html_notes').html(result.html_notes);
+                }
+            });
+        });
     </script>
 @endsection

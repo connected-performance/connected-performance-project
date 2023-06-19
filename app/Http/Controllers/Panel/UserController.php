@@ -659,7 +659,9 @@ class UserController extends Controller
      
         $users = User::find($id);
         $activities = ModelsActivityLog::where('user_id',$id)->get();
-        return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id'));
+        $notes = UserNote::where('customer_id', $users->customer->id)->get();
+
+        return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id', 'notes'));
     }
 
     public function user_detail_invoice_ajax(Request $request){
@@ -1043,29 +1045,16 @@ class UserController extends Controller
 
     public function noteSave(Request $request)
     {
-        /*$this->validate($request,[
-            'method' => 'content',
-            'amount' => 'customer',
-        ]);
-
-        $note = new UserNote();
-        $note->content = $request->content;
-        $note->customer_id = $request->customer;
-        if($note->save()){
-            return redirect()->back()->with('success', 'Note created successfully');
-        }else{
-            return redirect()->back()->with('error', 'Error');
-        }*/
-
         try {
             $request->validate([
                 'method' => 'content',
                 'amount' => 'customer',
             ]);
+            $customer = Customer::where('user_id', $request->customer)->first();
 
             $note = new UserNote();
             $note->content = $request->content;
-            $note->customer_id = $request->customer;
+            $note->customer_id = $customer->id;
             if($note->save()){
                 $message = "Note created successfully";
 
@@ -1078,10 +1067,56 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             $response = [
                 'status' => 'error',
-                'message' => 'Error creating record',
+                'message' => $th->getMessage(),
             ];
 
             return response()->json($response);
         }
+    }
+
+    public function noteDelete(Request $request)
+    {
+        $note = $request->note;
+        $note = UserNote::findOrFail($note);
+        $customer_id = $note->customer_id;
+        $note->delete();
+
+        $notes = UserNote::where('customer_id', $customer_id)->get();
+
+        /*$html_notes = '<div class="html_notes">';
+            $html_notes.='<div class="accordion" id="accordionExample" style="padding: 20px;">';
+                foreach($notes as $key => $value){
+                    $html_notes.='<div class="accordion-item">';
+                        $html_notes.='<h2 class="accordion-header" id="headingOne">';
+                            $html_notes.='<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne'.$key.'" aria-expanded="false" aria-controls="collapseOne'.$key.'">
+                                Note #'.$key + 1;
+                            $html_notes.='</button>';
+                        $html_notes.='</h2>';
+                        if($key == 0){
+                            $html_notes.='<div id="collapseOne'.$key.'" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">';
+                        }else{
+                            $html_notes.='<div id="collapseOne'.$key.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">';
+                        }
+                            $html_notes.='<div class="accordion-body">'.$value->content;
+                                $html_notes.='<br>';
+                                $html_notes.='<center>';
+                                    $html_notes.='<div style="margin-top: 15px;">';
+                                        $html_notes.='<button type="button" class="btn btn-danger btn-sm id_note" attr-note="'.$value->id.'">Delete</button>';
+                                    $html_notes.='</div>';
+                                $html_notes.='</center>';
+                            $html_notes.='</div>';
+                        $html_notes.='</div>';
+                    $html_notes.='</div>';
+                }
+            $html_notes.='</div>';
+        $html_notes.='</div>';*/
+        $html_notes = null;
+        $notes = count($notes);
+        $response = [
+            'html_notes' => $html_notes,
+            'notes' => $notes
+        ];
+
+        return response()->json($response);
     }
 }

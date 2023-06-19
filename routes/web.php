@@ -56,6 +56,7 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
     Route::get('',[DashboardContraoller::class,'index'])->name('panel.index');
         Route::get('/test',[TestController::class,'test'])->name('panel.test');
         Route::post('/note/customer/save',[UserController::class,'noteSave'])->name('panel.user.note.save');
+        Route::post('/note/customer/delete',[UserController::class,'noteDelete'])->name('panel.user.note.delete');
         Route::post('unpaid/invoice', [DashboardContraoller::class, 'unpaid_invoice'])->name('panel.unpaid.invoice');
         Route::post('paid/invoice', [DashboardContraoller::class, 'paid_invoice'])->name('panel.paid.invoice');
         Route::post('/month/earning/ajax', [DashboardContraoller::class, 'month_earning'])->name('month.earning.ajax');

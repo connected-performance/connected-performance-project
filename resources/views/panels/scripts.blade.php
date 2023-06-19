@@ -1,5 +1,6 @@
 <!-- BEGIN: Vendor JS-->
 <script src="{{ asset(mix('vendors/js/vendors.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
 <!-- BEGIN Vendor JS-->
 <!-- BEGIN: Page Vendor JS-->
 <script src="{{asset(mix('vendors/js/ui/jquery.sticky.js'))}}"></script>
@@ -37,6 +38,8 @@
             success: function(response) {
                 var isRtl = $('html').attr('data-textdirection') === 'rtl';
                 if (response.status == "success") {
+                    $('#customer').val('');
+                    $('#content').val('');
                     $("#create_note_customer").modal('hide');
                     toastr[response.status](
                         response.message, 'Success', {
@@ -46,6 +49,8 @@
                             rtl: isRtl
                         });
                 } else {
+                    $('#customer').val('');
+                    $('#content').val('');
                     toastr[response.status](
                         response.message, '!Oops', {
                             closeButton: true,

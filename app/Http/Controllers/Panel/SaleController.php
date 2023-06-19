@@ -41,6 +41,7 @@ class SaleController extends Controller
         $services = Service::where('status','1')->get(['id','name']);
         return view('content.sale.invoice-index',compact('customers', 'breadcrumbs', 'services'));
     }
+    
     public function invoice_ajax(Request $request){
         $user_id = auth()->user()->id;
         $records =  Invoice::with('users')->get();
