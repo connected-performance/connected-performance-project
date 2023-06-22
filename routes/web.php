@@ -25,6 +25,7 @@ use App\Http\Controllers\Panel\SettingController;
 use App\Http\Controllers\Panel\SmartWaiverController;
 use App\Http\Controllers\Panel\StatementController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Panel\TestController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Panel\FileController;
 use App\Models\Role;

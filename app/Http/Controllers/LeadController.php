@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class LeadController extends Controller
 {
@@ -44,6 +45,18 @@ class LeadController extends Controller
                 $name = '<a href="#" style="padding-left:10px;" class="link-dark"  data-bs-toggle="tooltip"
                 data-bs-placement="top" title="status" onclick="leadt_status(' . $row->id . ')">'.$row->name.'</a>';  
                 return $name;
+            })
+            ->editColumn('closed_date', function ($row) { 
+                $date = new Carbon($row->closed_date);
+                $date = $date->format('Y-m-d');
+                $date = date('l M, d, Y',strtotime($date));
+
+                if($row->closed_date) {
+                    return $date;
+                } else {
+                    return '---';
+                }
+                
             })
             ->addColumn('lead_status', function ($row) {
                if($row->status == '0'){
@@ -377,7 +390,7 @@ class LeadController extends Controller
 
     public function lead_loss(Request $request){
         try {
-
+            $date = Carbon::now();
             $lead = Lead::find($request->id);
             if($lead->status == '2'){
                 $response = [
@@ -387,6 +400,7 @@ class LeadController extends Controller
                 return response()->json($response); 
             }
             $lead->status = '3';
+            $lead->closed_date = $date->format('Y-m-d h:i:s');
             $lead->save();
             $actor = "";
             if (auth()->user()->is_admin == true) {

@@ -66,7 +66,7 @@ class InvoiceMail extends Mailable
         }else
         {
             $service = $customer->service;
-            $buttton  = '<button style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;"><a href="http://phpstack-811730-2916767.cloudwaysapps.com/invoice/'.$invoice->id.'" style="color: #fff;text-decoration: none;">Pay</a></button>';
+            $buttton  = '<button style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;"><a href="http://localhost:8000/invoice/'.$invoice->id.'" style="color: #fff;text-decoration: none;">Pay</a></button>';
             $template = EmailTemplate::where('slug', 'invoice')->first()->value;
             $template_data = [
                 '#1000089',

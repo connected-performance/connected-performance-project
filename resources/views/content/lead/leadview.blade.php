@@ -47,6 +47,7 @@
                                     <th>Services</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Closed Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -226,6 +227,9 @@
                         data: 'date'
                     },
                     {
+                        data: 'closed_date'
+                    },
+                    {
                         data: 'action'
                     },
                 ]
@@ -308,6 +312,7 @@
                                 progressBar: true,
                                 rtl: isRtl
                             });
+                        window.location.reload();
                     } else {
                         toastr[response.status](
                             response.message, '!Oops', {

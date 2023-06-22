@@ -41,12 +41,11 @@ class SaleController extends Controller
         $services = Service::where('status','1')->get(['id','name']);
         return view('content.sale.invoice-index',compact('customers', 'breadcrumbs', 'services'));
     }
-    
     public function invoice_ajax(Request $request){
         $user_id = auth()->user()->id;
         $records =  Invoice::with('users')->get();
         return DataTables::of($records)->addIndexColumn()
-        ->addColumn('action', function ($row) {
+            ->addColumn('action', function ($row) {
                 $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
                        data-bs-placement="top" title="Edit" onclick="edit_model(' . $row->id . ')"><i class="fas fa-edit"></i></a>' .
                     '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
@@ -65,12 +64,6 @@ class SaleController extends Controller
                }
                return $status;
             })
-            ->addColumn('service', function ($row) {
-                $customer = Customer::where('user_id',$row->user_id)->first();
-                // dd($row->customer->service);
-                $service = $row->customer->service;
-                return $service;
-            })
             ->addColumn('balance', function ($row) {
                 
                 return '$'.$row->balance;
@@ -87,7 +80,7 @@ class SaleController extends Controller
                 }
                 return $balance_status;
             })
-            ->rawColumns(['action', 'invoice_number','service', 'status', 'balance_status', 'balance', 'total_amount'])
+            ->rawColumns(['action', 'invoice_number','status', 'balance_status', 'balance', 'total_amount'])
             ->make(true);
     }
 
