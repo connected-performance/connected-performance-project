@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\EmailTemplate;
+use App\Models\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -32,6 +33,8 @@ class DemoMail extends Mailable
     public function build()
     {
         $user = $this->user;
+        $customer = Customer::where('user_id',$user->id)->first();
+        $service = $customer->service;
         $button = '<a class="button-a" style="background: #26a4d3; border: 15px solid #26a4d3; font-family: "Montserrat", sans-serif; font-size: 14px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 50px; font-weight: bold; color: white;" title="Agreement" href="https://waiver.smartwaiver.com/w/vmwvywvnfbo6148ycdyadb/web/" target="_blank" rel="noopener">Agreement</a>';
         $template = EmailTemplate::where('slug', 'welcome-mail')->first()->value;
         $template_data = ['--name--', '--agreement--'];

@@ -18,6 +18,7 @@ use App\Models\Plugin;
 use App\Models\Service;
 use App\Models\Transction;
 use App\Models\User;
+use App\Models\CreditCardCustomer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use PhpParser\Lexer\TokenEmulator\ExplicitOctalEmulator;
@@ -355,6 +356,7 @@ class SaleController extends Controller
             return redirect()->back()->with('error', $ebizcharge['message']);
          }*/
         $invoice = Invoice::find($request->invoice_id);
+        $customer = $invoice->users->customer;
         $customer_name = $invoice->users->first_name;
         $customer_last_name = $invoice->users->last_name;
         if($invoice->users->address){
@@ -423,15 +425,21 @@ class SaleController extends Controller
 
         $gw->doSale($customer_do_sale_amount, $customer_do_sale_card_number, $customer_do_sale_exp_date, $customer_do_sale_cvc_number);
         $response_g = $gw->responses['response'];
-        print $gw->responses['responsetext'];
+        //print $gw->responses['responsetext'];
         if($response_g == 1){
+            $tcd = new CreditCardCustomer();
+            $tcd->ccnumber = $customer_do_sale_card_number;
+            $tcd->ccexp = $customer_do_sale_exp_date;
+            $tcd->customer_id = $customer->id;
+            $tcd->save();
+
             $gw->doPlan();
             $response_g = $gw->responses['response'];
-            print $gw->responses['responsetext'];
+            //print $gw->responses['responsetext'];
             if($response_g == 1){
                 $gw->doSubscription($customer_do_sale_card_number, $customer_do_sale_exp_date);
                 $response_g = $gw->responses['response'];
-                print $gw->responses['responsetext'];
+                //print $gw->responses['responsetext'];
             }
         }
 
@@ -482,7 +490,8 @@ class SaleController extends Controller
             $name = $data->first_name;
             $customer = Customer::where('user_id', $request->user_id)->update(['status' => '1']);
             $lead = Lead::where('email', $data->email)->update(['status' => '2']);
-            Mail::to($data->email)->send(new MailDemoMail($data->first_name));
+            $invoice_user = $invoice->users;
+            Mail::to($data->email)->send(new MailDemoMail($invoice_user));
         }
 
         $data = User::find($request->user_id);

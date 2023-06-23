@@ -145,10 +145,11 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
             Route::post('singel/reciver', [UserController::class, 'single_reciver'])->name('user.reciver');
 
             Route::get('increase/duration', [UserController::class, 'increase_duration'])->name('customer.increase.duration');
-            Route::post('increase/duration/save', [UserController::class, 'increase_duration_save'])->name('customer.increase.duration.save');
+            Route::post('invoice/cancel', [UserController::class, 'invoiceCancel'])->name('customer.invoice.cancel');
 
 
             Route::post('singel/reciver/send', [UserController::class, 'single_sender'])->name('send.single.user');
+            Route::post('customer/to/lead', [UserController::class, 'customer_to_lead'])->name('customer.to.lead');
             Route::post('customer/to/lead', [UserController::class, 'customer_to_lead'])->name('customer.to.lead');
         });
         Route::prefix('performance')->group(function () {

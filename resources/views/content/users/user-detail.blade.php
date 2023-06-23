@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/buttons.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/rowGroup.bootstrap5.min.css')) }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
 
 @section('page-style')
@@ -128,7 +131,58 @@
                         <div class="alert-text">{{ Session::get('success') }}</div>
                     </div>
                 @endif
-                <div class="card scroll" style="height: 557px;">
+                <div class="row">
+                    <div class="col-md-12" style="margin-bottom: -60px;">
+                        <div class="card scroll">
+                            <h4 class="card-header">Manage Tokens</h4>
+                            <div class="card-body pt-1">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Company</th>
+                                            <th scope="col">Credicard</th>
+                                            <th scope="col">Exp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($tdc as $key => $value)
+                                            <tr>
+                                                <td>Visa</td>
+                                                <td>
+                                                    {{ substr($value->ccnumber, 0, 2) }}** **** **** **{{ substr($value->ccnumber, -2) }}
+                                                </td>
+                                                <td>
+                                                    {{ substr($value->ccexp, 0, 1) }}**{{ substr($value->ccexp, -1) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="margin-bottom: -60px;">
+                        <div class="card scroll">
+                            <h4 class="card-header">Last Recurring Payment</h4>
+                            <div class="card-body pt-1 text-center">
+                                <span style="font-size: 24px;"><b>{{ number_format($last_invoice->total_amount, 2) }} USD</b></span>
+                                <br>
+                                <span class="badge bg-light-success">Detail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="margin-bottom: -60px;">
+                        <div class="card scroll">
+                            <h4 class="card-header">Contract Link</h4>
+                            <div class="card-body pt-1">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card scroll">
                     <h4 class="card-header">User Activity Timeline</h4>
                     <div class="card-body pt-1">
 
@@ -169,14 +223,12 @@
                             <thead>
                                 <tr>
                                     <th>@lang('Invoice')</th>
-                                    <th>@lang('customer')</th>
                                     <th>@lang('Issue Date')</th>
                                     <th>@lang('Due Date')</th>
                                     <th>@lang('Total')</th>
-                                    <th>@lang('Due')</th>
                                     <th>@lang('Balance')</th>
                                     <th>@lang('Status')</th>
-
+                                    <th>@lang('Action')</th>
                                 </tr>
                             </thead>
                         </table>
@@ -226,7 +278,24 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade text-start" id="delete_form" tabindex="-1" aria-labelledby="myModalLabel160" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel160">Delete Invoice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you shure you want to delete this Invoice.
+                    <input type="hidden" id="del_id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_form()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('account-setting/edit-profile')
     @include('content/_partials/_modals/modal-upgrade-plan')
 @endsection
@@ -326,18 +395,13 @@
                         data: 'invoice_number'
                     },
                     {
-                        data: 'users.first_name'
-                    },
-                    {
                         data: 'issue_date'
-                    }, {
+                    }, 
+                    {
                         data: 'due_date'
                     },
                     {
                         data: 'total_amount'
-                    },
-                    {
-                        data: 'balance'
                     },
                     {
                         data: 'balance_status'
@@ -345,7 +409,9 @@
                     {
                         data: 'status'
                     },
-
+                    {
+                        data: 'action'
+                    }
                 ]
             });
         }
@@ -376,5 +442,51 @@
                 }
             });
         });
+
+        function delete_data(id) {
+            $("#del_id").val(id);
+            $("#delete_form").modal('show');
+        }
+
+        function delete_form() {
+            var id = $("#del_id").val();
+            $.ajax({
+                url: "{{ route('customer.invoice.cancel') }}",
+                method: "POST",
+                data: {
+                    id: id
+                },
+                dataType: "json",
+                success: function(response) {
+                    var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                    if (response.status == "success") {
+                        $("#delete_form").modal('hide');
+                        $('#invoice_table').DataTable().ajax.reload();
+                        toastr[response.status](
+                            response.message, 'Success', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+
+
+                    } else {
+                        $("#delete_form").modal('hide');
+                        toastr[response.status](
+                            response.message, '!Oops', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    }
+                },
+                error: function(response) {
+                    $("#sahir_exampleModal").modal('hide');
+
+                }
+            })
+        }
     </script>
 @endsection

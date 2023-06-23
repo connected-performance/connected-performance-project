@@ -178,15 +178,6 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doDeleteCustomer($customer_id)
-  {
-    $query  = "";
-    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
-    $query .= "customer_vault=" . urlencode('delete_customer') . "&";
-    $query .= "customer_vault_id=" . urlencode($customer_id) . "&";
-    return $this->_doPost($query);
-  }
-
   function doCustomer($customer_id, $customer_card_number, $customer_exp_date, $customer_name, $customer_last_name, $customer_address, $customer_city, $customer_state, $customer_country, $customer_phone, $customer_email)
   {
     $query  = "";
@@ -357,7 +348,7 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doRefund($transactionid, $amount = 0) {
+  function doRefund($transactionid, $amount) {
 
     $query  = "";
     // Login Information

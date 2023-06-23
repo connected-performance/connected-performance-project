@@ -19,6 +19,7 @@ use App\Models\State;
 use App\Models\Trainer;
 use App\Models\User;
 use App\Models\UserNote;
+use App\Models\CreditCardCustomer;
 use App\Repositories\FileUploadRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ use MessageBird\Client;
 use MessageBird\Objects\Message;
 use App\Models\EmailTemplate;
 use App\Mail\DemoMail as MailDemoMail;
+use App\Gateway\Gwapi;
 
 class UserController extends Controller
 {
@@ -658,10 +660,13 @@ class UserController extends Controller
         // return $records = Invoice::where('created_by', $id)->with('users')->get();
      
         $users = User::find($id);
-        $activities = ModelsActivityLog::where('user_id',$id)->get();
+        $customer = $users->customer;
+        $tdc = CreditCardCustomer::where('customer_id', $customer->id)->get();
+        $activities = ModelsActivityLog::where('user_id',$id)->take(5)->get();
         $notes = UserNote::where('customer_id', $users->customer->id)->get();
+        $last_invoice = Invoice::where('user_id', $users->id)->where('customer_id', $customer->id)->get()->last();
 
-        return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id', 'notes'));
+        return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id', 'notes', 'tdc', 'last_invoice'));
     }
 
     public function user_detail_invoice_ajax(Request $request){
@@ -674,6 +679,13 @@ class UserController extends Controller
         }
 
         return DataTables::of($records)->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
+                       data-bs-placement="top" title="Edit" onclick="edit_model(' . $row->id . ')"><i class="fas fa-edit"></i></a>' .
+                    '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
+                       data-bs-placement="top" title="Delet" onclick="delete_data(' . $row->id . ')"><i class="fa-solid fa-trash"></i></a>';
+                return $btn;
+            })
             ->addColumn('status', function ($row) {
                 if ($row->status == '0') {
                     $status =  '<span class="badge rounded-pill  badge-light-info">Draft</span>';
@@ -693,7 +705,7 @@ class UserController extends Controller
                 $number = $row->invoice_code . $row->invoice_number;
                 return $number;
             })
-            ->rawColumns(['invoice_number', 'status', 'balance_status'])
+            ->rawColumns(['action', 'invoice_number', 'status', 'balance_status'])
             ->make(true);
 
     }
@@ -1118,5 +1130,68 @@ class UserController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function invoiceCancel(Request $request)
+    {
+        try {
+            $invoice = Invoice::findOrFail($request->id);
+            $gw = new gwapi;
+            $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+            $gw->doRefund($invoice->transaction, $invoice->balance);
+            $response_g = $gw->responses['response'];
+            if($response_g == 1){
+
+                $ino_number = Invoice::latest()->first();
+                if($ino_number){
+                    $number = $ino_number->invoice_number + 1;
+                }else{
+                    $number = 1000 +1;
+                }
+
+                if($number){
+                    $number = $number+1;
+                }
+                 else {
+                    $number = 1000 + 1;
+                }
+                
+                $new_invoice = new Invoice();
+                $new_invoice->invoice_number = $number;
+                $new_invoice->invoice_code = "#N";
+                $new_invoice->transaction = $gw->responses['transactionid'];
+                $new_invoice->user_id = $invoice->user_id;
+                $new_invoice->level = $invoice->level;
+                $new_invoice->created_by = $invoice->created_by;
+                $new_invoice->customer_id = $invoice->customer_id;
+                $new_invoice->issue_date = $invoice->issue_date;
+                $new_invoice->due_date = $invoice->due_date;
+                $new_invoice->description = $invoice->description;
+                $new_invoice->total_amount =  $invoice->total_amount;
+                $new_invoice->balance = $invoice->balance;
+                $new_invoice->time_period = $invoice->time_period;
+                $new_invoice->duration = $invoice->duration;
+                $new_invoice->save();
+
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Invoice canceled successfully!',
+                ];
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => $gw->responses['responsetext'],
+                ];
+            }
+            
+            return response()->json($response);
+        } catch(\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
+            return response()->json($response);
+        }
     }
 }
