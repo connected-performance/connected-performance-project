@@ -38,7 +38,8 @@ class InvoiceMail extends Mailable
 
         $customer = Customer::where('user_id',$user->id)->first();
         if($customer == null){
-            $buttton  = '<button style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;"><a href="http://phpstack-811730-2916767.cloudwaysapps.com/invoice/'.$invoice->id.'" style="color: #fff;text-decoration: none;">Pay</a></button>';
+            //$buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            $buttton  = '<a href="http://127.0.0.1/connect_permormance_gitlab/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
             $template = EmailTemplate::where('slug', 'invoice')->first()->value;
             $template_data = [
                 '#1000089',
@@ -63,10 +64,10 @@ class InvoiceMail extends Mailable
             $data = str_replace($template_data, $user_data, $template);
             $us_data = str_replace('--payment_button--', $buttton, $data);
             return $this->view('content.sale.invoice-mailtemplate',compact('us_data'));
-        }else
-        {
+        }else{
             $service = $customer->service;
-            $buttton  = '<button style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;"><a href="http://phpstack-811730-2916767.cloudwaysapps.com/invoice/'.$invoice->id.'" style="color: #fff;text-decoration: none;">Pay</a></button>';
+            //$buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            $buttton  = '<a href="http://127.0.0.1/connect_permormance_gitlab/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
             $template = EmailTemplate::where('slug', 'invoice')->first()->value;
             $template_data = [
                 '#1000089',
@@ -79,10 +80,12 @@ class InvoiceMail extends Mailable
                 '--mnth_charges--',
                 '--due_date--'
             ];
+            $service = str_replace("_", " ", $service);
+            $service = ucwords($service);
             $user_data = [
                 $invoice->invoice_code . $invoice->invoice_number,
                 $user->first_name,
-                $service,
+                'This is an automatic email for the payment of the following service: ' . $service,
                 $invoice->total_amount,
                 0,
                 0,

@@ -36,17 +36,16 @@
             <div class="card">
                 <div class="card-body">
                     {{-- @php(dd($role != 'customer')) --}}
-                    @if ($role != 'customer')
-                        <div class="card-header border-bottom">
-                            <button type="button" class="btn btn-success" onclick="show_modal()">Add User</button>
-                        </div>
-                    @endif
+                    <div class="card-header border-bottom">
+                        <button type="button" class="btn btn-success" onclick="show_modal()">Add Customer</button>
+                    </div>
                     <div class="card-datatable">
                         <table id="user_table" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>First Name</th>
                                     <th>Last Name</th>
+                                    <th>Subs. NMI</th>
                                     <th>Trainer</th>
                                     <th>Email</th>
                                     <th>Phone Number</th>
@@ -54,7 +53,7 @@
                                     <th>State</th>
                                     <th>City</th>
                                     <th>Duration Of Time</th>
-                                    <th>Payment Made</th>
+                                    <th>Payment</th>
                                     <th>Billing Status</th>
                                     <th>Services</th>
                                     <th>Status</th>
@@ -99,8 +98,8 @@
                     <h5 class="modal-title" id="title-model">Send Message</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="send_form">
+                <form id="send_form">
+                    <div class="modal-body">
                         <input type="hidden" name="recever_id" id="recever_id">
                         <input type="hidden" name="type" id="type">
                         <div class="row">
@@ -115,11 +114,10 @@
                                 <textarea class="form-control notes" id="notes" name="description" required></textarea>
                             </div>
                         </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submite" class="btn btn-success" data-bs-dismiss="modal">Send</button>
-
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submite" class="btn btn-success" data-bs-dismiss="modal">Send</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -279,9 +277,11 @@
                         data: 'last_name'
                     },
                     {
+                        data: 'customer.subscription_id'
+                    },
+                    {
                         data: 'trainer'
                     },
-
                     {
                         data: 'email'
                     },
@@ -656,12 +656,15 @@
                 },
                 dataType: "json",
                 success: function(response) {
+                    if(response.new==true){
+                        $("#issue_date").prop('disabled', false);
+                    }
                     $("#issue_date").val(response.issue_date);
                     $("#issue_dates").val(response.issue_date);
                     $("#due_date").val(response.due_date);
-                    $("#dus_user_id").val(response.data.users.id);
-                    $("#du_user_id").val(response.data.users.first_name);
-                    $("#du_price").val(response.data.total_amount);
+                    $("#dus_user_id").val(response.user_id);
+                    $("#du_user_id").val(response.user_name);
+                    $("#du_price").val(response.amount);
                     $("#exampleModal").modal('show');
                 },
                 error: function(response) {

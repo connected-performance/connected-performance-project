@@ -46,7 +46,7 @@
                             <label for="recipient-name" class="col-form-label">@lang('Increase Time Duration')</label>
                             <select class="form-control type slector  " id="duration" name="duration" required>
                                 <option value="">Select Time Duration</option>
-                                <option value="1,month">One Month</option>
+                                <option value="1,month" selected>One Month</option>
                                 <option value="2,month">Two Month</option>
                                 <option value="3,month">Three Month</option>
                                 <option value="4,month">Four Month</option>

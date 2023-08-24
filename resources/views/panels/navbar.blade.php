@@ -67,28 +67,6 @@
         </ul>
     </div>
     <ul class="nav navbar-nav align-items-center ms-auto">
-        <li class="nav-item dropdown dropdown-language">
-            <a class="nav-link dropdown-toggle" id="dropdown-flag" href="#" data-bs-toggle="dropdown"
-                aria-haspopup="true">
-                <i class="flag-icon flag-icon-us"></i>
-                <span class="selected-language">English</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-flag">
-                <a class="dropdown-item" href="{{ url('lang/en') }}" data-language="en">
-                    <i class="flag-icon flag-icon-us"></i> English
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/fr') }}" data-language="fr">
-                    <i class="flag-icon flag-icon-fr"></i> French
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/de') }}" data-language="de">
-                    <i class="flag-icon flag-icon-de"></i> German
-                </a>
-                <a class="dropdown-item" href="{{ url('lang/pt') }}" data-language="pt">
-                    <i class="flag-icon flag-icon-pt"></i> Portuguese
-                </a>
-            </div>
-        </li>
-
         @php
             $count = \App\Models\UserNotifiction::where('user_id', auth()->id())
                 ->where('status', '0')
@@ -477,3 +455,43 @@
         </li>
       </ul>
     </li> --}}
+<div class="modal" id="create_note_customer" tabindex="-1" role="dialog">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @php
+                $customers = getCustomer();
+            @endphp
+            <form id="submit_note" enctype='multipart/form-data' method="POST">
+                <div class="modal-body">
+                    @csrf
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="customer">Select Customer</label>
+                            <select class="form-control type" id="customer" name="customer" required="">
+                                <option value="">Select Customer</option>
+                                @foreach($customers as $key => $value)
+                                    <option value="{{ $value->id }}">{{ $value->first_name }} {{ $value->last_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label for="content">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light " data-bs-dismiss="modal">Close</button>
+                    <button type="submit" type="button" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

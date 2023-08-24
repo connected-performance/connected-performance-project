@@ -18,6 +18,8 @@ use App\Models\Plugin;
 use App\Models\Service;
 use App\Models\Transction;
 use App\Models\User;
+use App\Models\Plan;
+use App\Models\CreditCardCustomer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use PhpParser\Lexer\TokenEmulator\ExplicitOctalEmulator;
@@ -37,15 +39,16 @@ class SaleController extends Controller
             ['link' => url("/panel/services"), 'name' => 'Invoices'],
             ['name' => __('invoices')],
         ];
-       $customers = User::Orwhere('is_lead',1)->with('invoices')->get(['id','first_name']);
+        $customers = User::Orwhere('is_lead',1)->with('invoices')->get(['id','first_name','last_name']);
         $services = Service::where('status','1')->get(['id','name']);
         return view('content.sale.invoice-index',compact('customers', 'breadcrumbs', 'services'));
     }
+    
     public function invoice_ajax(Request $request){
         $user_id = auth()->user()->id;
-        $records =  Invoice::with('users')->get();
+        $records =  Invoice::with('users')->orderBy('id', 'desc')->get();
         return DataTables::of($records)->addIndexColumn()
-        ->addColumn('action', function ($row) {
+            ->addColumn('action', function ($row) {
                 $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
                        data-bs-placement="top" title="Edit" onclick="edit_model(' . $row->id . ')"><i class="fas fa-edit"></i></a>' .
                     '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
@@ -57,18 +60,12 @@ class SaleController extends Controller
                 return $number;
             })
             ->addColumn('status', function ($row) {
-               if($row->status == '0'){
-               $status =  '<span class="badge rounded-pill  badge-light-info">Draft</span>';
-               }else{;
-                $status  = '<span class="badge rounded-pill  badge-light-success">Send</span>';
-               }
-               return $status;
-            })
-            ->addColumn('service', function ($row) {
-                $customer = Customer::where('user_id',$row->user_id)->first();
-                // dd($row->customer->service);
-                $service = $row->customer->service;
-                return $service;
+                if($row->status == '0'){
+                    $status =  '<span class="badge rounded-pill  badge-light-info">Draft</span>';
+                }else{;
+                    $status  = '<span class="badge rounded-pill  badge-light-success">Send</span>';
+                }
+                return $status;
             })
             ->addColumn('balance', function ($row) {
                 
@@ -80,13 +77,15 @@ class SaleController extends Controller
             })
             ->addColumn('balance_status', function ($row) {
                 if ($row->balance_status == '0') {
-                $balance_status =  '<span class="badge rounded-pill  badge-light-warning">UnPaid</span>';
-                } else {;
-                $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
+                    $balance_status =  '<span class="badge rounded-pill  badge-light-warning">UnPaid</span>';
+                } elseif ($row->balance_status == '2') {
+                    $balance_status =  '<span class="badge rounded-pill  badge-light-danger">Failed</span>';
+                }else{
+                    $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
                 }
                 return $balance_status;
             })
-            ->rawColumns(['action', 'invoice_number','service', 'status', 'balance_status', 'balance', 'total_amount'])
+            ->rawColumns(['action', 'invoice_number','status', 'balance_status', 'balance', 'total_amount'])
             ->make(true);
     }
 
@@ -120,42 +119,49 @@ class SaleController extends Controller
                 ];
                 return response()->json($response);
             }
-             $data = explode(',',$request->duration);
+            $data = explode(',',$request->duration);
             if($data[1] == 'month'){
                 $duration = $data[0];
             }else{
-                $duration = $data[0] *12;
+                $duration = $data[0]*12;
             }
             $customer_id = Customer::where('user_id',$request->user_id)->first();
             $customer_id->status = '1';
             $customer_id->save();
             $issue_date = $request->issue_date;
-            $due_date = $request->due_date;
-
-            $ino_number = Invoice::latest()->first();
-            if($ino_number){
-                $number = $ino_number->invoice_number +1;
+            $day_i=date("d", strtotime($issue_date));
+            $month_i=date("m", strtotime($issue_date));
+            $year_i=date("Y", strtotime($issue_date));
+            if($day_i<=14){
+                $pay_date=$year_i.'-'.$month_i.'-14';
             }else{
-                  $number = 1000 +1;
+                $pay_date=$year_i.'-'.$month_i.'-28';
             }
 
+            $due_date = $request->due_date;
+
+            $ino_number = Invoice::orderBy('id', 'desc')->first();
+            if($ino_number){
+                $number = $ino_number->invoice_number;
+            }else{
+                $number = 999;
+            }
+            $order_nmi=$number+1;
             //Loop
             for($i = 1; $i<= $duration; $i++ ){
                 $invoice = new Invoice();
            
-                if($number){
-                    $number = $number+1;
-                }
-                 else {
-                    $number = 1000 + 1;
-                }
+                $number = $number+1;
                 $invoice->user_id = $request->user_id;
                 $invoice->invoice_number = $number;
                 $invoice->invoice_code = "#N";
+                $invoice->order_nmi = $order_nmi;
+
                 if($i>1){
                     $issue_date = date('Y-m-d', strtotime($issue_date . ' + 1 months'));
                     $due_date = date('Y-m-d', strtotime($due_date . ' + 1 months'));
                     $invoice->level = 0;
+                    $pay_date = date('Y-m-d', strtotime($pay_date . ' + 1 months'));
                 }else{
                     $issue_date = $request->issue_date;
                     $due_date = $request->due_date;
@@ -166,13 +172,69 @@ class SaleController extends Controller
                 $invoice->customer_id = $customer_id->id;
                 $invoice->issue_date = $issue_date;//$request->issue_date;
                 $invoice->due_date = $due_date;//$request->due_date;
+                $invoice->pay_date = $pay_date;
                 $invoice->description = $request->description;
                 $invoice->total_amount =  $request->price;
                 $subtotal_amount = $request->price/$duration;
                 $invoice->balance = round($subtotal_amount, 2);
                 $invoice->time_period = $duration. ' , Month';
                 $invoice->duration = $duration;
+                if($i==1){
+                    $invoice->status = 1;
+                }else{
+                    $invoice->status = 0;
+                }
                 $invoice->save();
+
+                if($i==1){
+                    $customer_invoice_id = $invoice->invoice_number;
+                    $customer_invoice_description = $invoice->description;
+                    $customer_name = $invoice->users->first_name;
+                    $customer_last_name = $invoice->users->last_name;
+                    $customer_email = $invoice->users->email;
+
+                    if($invoice->users->address){
+                        $customer_address = $invoice->users->address;
+                    }else{
+                        $customer_address = '';
+                    }
+                    
+                    if($invoice->users->citie_id){
+                        $customer_city = $invoice->users->city->name;
+                    }else{
+                        $customer_city = '';
+                    }
+            
+                    if($invoice->users->state_id){
+                        $customer_state = $invoice->users->state->name;
+                    }else{
+                        $customer_state = '';
+                    }
+            
+                    if($invoice->users->countrie_id){
+                        $customer_country = $invoice->users->country->sortname;
+                    }else{
+                        $customer_country = '';
+                    }
+            
+                    if($invoice->users->phone_number){
+                        $customer_phone = $invoice->users->phone_number;
+                    }else{
+                        $customer_phone = '';
+                    }
+                    
+                    $customer_vault=rand(999,9999).$customer_id->id;
+
+                    $customer_upd = Customer::find($customer_id->id);
+                    $customer_upd->vault_id=$customer_vault;
+                    $customer_upd->save();
+
+                    $gw = new gwapi;
+                    $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+                    $gw->setBilling($customer_name, $customer_last_name ,"", $customer_address, "", $customer_city, $customer_state, "", $customer_country, $customer_phone, "", $customer_email, "");
+                    $gw->setOrder($customer_invoice_id, $customer_invoice_description, 0, 0, "", "");
+                    $gw->createInvoice($invoice->balance, $customer_vault);
+                }
             }
 
 
@@ -345,11 +407,41 @@ class SaleController extends Controller
         return view('content.sale.dumy-page',compact('user','invoice'));
     }
 
+    public function invoice_user_get($id)
+    {
+        $invoice = Invoice::find($id);
+        $user = User::find($invoice->user_id);
+        
+        return view('content.sale.dumy-page-user',compact('user','invoice'));
+    }
+
     public function token_request($id)
     {
         $user = User::findOrFail($id);
         
         return view('content.sale.dumy-page-rt',compact('user'));
+    }
+
+    public function update_information($id)
+    {
+        $user = User::where('uid', $id)->first();
+        if($user->customer->up_cus==0){
+            abort('429');
+        }else{
+            $customer = Customer::where('user_id', $user->id)->first();
+            return view('content.sale.update-information-page',compact('user','customer'));
+        }
+    }
+
+    public function customer_update_information($id)
+    {
+        $user = User::where('uid', $id)->first();
+        if($user->customer->up_tok==0){
+            abort('429');
+        }else{
+            $customer = Customer::where('user_id', $user->id)->first();
+            return view('content.sale.customer-update-information-page',compact('user','customer'));
+        }
     }
 
     public function invoice_transaction(Request $request){
@@ -361,36 +453,37 @@ class SaleController extends Controller
             return redirect()->back()->with('error', $ebizcharge['message']);
          }*/
         $invoice = Invoice::find($request->invoice_id);
+        $customer = $invoice->users->customer;
         $customer_name = $invoice->users->first_name;
         $customer_last_name = $invoice->users->last_name;
         if($invoice->users->address){
             $customer_address = $invoice->users->address;
         }else{
-            $customer_address = 'Unknown';
+            $customer_address = '';
         }
         
         if($invoice->users->citie_id){
             $customer_city = $invoice->users->city->name;
         }else{
-            $customer_city = 'Unknown';
+            $customer_city = '';
         }
 
         if($invoice->users->state_id){
             $customer_state = $invoice->users->state->name;
         }else{
-            $customer_state = 'Unknown';
+            $customer_state = '';
         }
 
         if($invoice->users->countrie_id){
-            $customer_country = $invoice->users->country->name;
+            $customer_country = $invoice->users->country->sortname;
         }else{
-            $customer_country = 'Unknown';
+            $customer_country = '';
         }
 
         if($invoice->users->phone_number){
             $customer_phone_number = $invoice->users->phone_number;
         }else{
-            $customer_phone_number = 'Unknown';
+            $customer_phone_number = '';
         }
 
         $customer_city = $customer_city;
@@ -412,8 +505,22 @@ class SaleController extends Controller
 
         $plan_payments = $invoice->duration - 1;
         $plan_amount = $customer_do_sale_amount;
-        $plan_name = 'Plan '.$invoice->id;
-        $plan_id = $invoice->id;
+        $plan = Plan::all()->last();
+        if($plan) {
+            $plan = $plan->number + 1;
+            $plan_id = $plan;
+
+            $new_plan = new Plan();
+            $new_plan->number = $plan_id;
+            $new_plan->save();
+        }else{
+            $plan_id = 1;
+
+            $new_plan = new Plan();
+            $new_plan->number = $plan_id;
+            $new_plan->save();
+        }
+        $plan_name = 'Plan '.$plan_id;
         $month_frequency = 1;
         $day = strtotime($invoice->due_date);
         $day = date( "j", $day);
@@ -429,15 +536,22 @@ class SaleController extends Controller
 
         $gw->doSale($customer_do_sale_amount, $customer_do_sale_card_number, $customer_do_sale_exp_date, $customer_do_sale_cvc_number);
         $response_g = $gw->responses['response'];
-        print $gw->responses['responsetext'];
+        $transactionid = $gw->responses['transactionid'];
         if($response_g == 1){
+            $find_cc = CreditCardCustomer::where('ccnumber', $customer_do_sale_card_number)->first();
+            if(!$find_cc){
+                $tcd = new CreditCardCustomer();
+                $tcd->ccnumber = $customer_do_sale_card_number;
+                $tcd->ccexp = $customer_do_sale_exp_date;
+                $tcd->customer_id = $customer->id;
+                $tcd->save();
+            }
+            
             $gw->doPlan();
             $response_g = $gw->responses['response'];
-            print $gw->responses['responsetext'];
             if($response_g == 1){
                 $gw->doSubscription($customer_do_sale_card_number, $customer_do_sale_exp_date);
                 $response_g = $gw->responses['response'];
-                print $gw->responses['responsetext'];
             }
         }
 
@@ -467,7 +581,7 @@ class SaleController extends Controller
           
         }else{
             $invoice = Invoice::find($request->invoice_id);
-
+            $invoice->transaction = $transactionid;
             $invoice->balance_status = '1';
             $invoice->save();
             $total_amount =  $invoice->total_amount - $request->balance;
@@ -488,7 +602,200 @@ class SaleController extends Controller
             $name = $data->first_name;
             $customer = Customer::where('user_id', $request->user_id)->update(['status' => '1']);
             $lead = Lead::where('email', $data->email)->update(['status' => '2']);
-            Mail::to($data->email)->send(new MailDemoMail($data->first_name));
+            $invoice_user = $invoice->users;
+            Mail::to($data->email)->send(new MailDemoMail($invoice_user));
+        }
+
+        $data = User::find($request->user_id);
+        $name = $data->first_name; 
+        $notification = [
+            'user_id' => User::where('id',1)->first()->id,//auth()->id(),
+            'title' =>  'Transaction',
+            'description' => $data->first_name . " Pay " . $request->balance . " Amount",
+        ];
+        if ($data->is_admin == false) {
+            event(new Notificaion($notification));
+        }
+
+        $actor = 0;
+        if ($data->is_customer == true) {
+            $actor = 3;
+        } 
+        $data = [
+                'user_id' => $data->id,
+                'name' => $data->first_name . " Pay ". $request->balance. " Amount",
+                'event_name' => "Transaction",
+                'email' => $data->email,
+                'description' => "Transaction Successfully Done",
+                'actor' => $actor,
+                'url' => url()->current(),
+            ];
+        event(new ActivityLog($data));
+      
+         return view('content.form.message', compact('name'));
+         
+    }
+
+    public function invoice_transaction_user(Request $request){
+        /***************************EbizCharger****************************** */
+          //$ebizcharge = $this->ebizcharge_customer_create($request->except('_token')); 
+          //dd($ebizcharge);
+      
+         /*if($ebizcharge['status'] == 'error'){
+            return redirect()->back()->with('error', $ebizcharge['message']);
+         }*/
+        $invoice = Invoice::find($request->invoice_id);
+        $customer = $invoice->users->customer;
+        $customer_name = $invoice->users->first_name;
+        $customer_last_name = $invoice->users->last_name;
+        if($invoice->users->address){
+            $customer_address = $invoice->users->address;
+        }else{
+            $customer_address = '';
+        }
+        
+        if($invoice->users->citie_id){
+            $customer_city = $invoice->users->city->name;
+        }else{
+            $customer_city = '';
+        }
+
+        if($invoice->users->state_id){
+            $customer_state = $invoice->users->state->name;
+        }else{
+            $customer_state = '';
+        }
+
+        if($invoice->users->countrie_id){
+            $customer_country = $invoice->users->country->sortname;
+        }else{
+            $customer_country = '';
+        }
+
+        if($invoice->users->phone_number){
+            $customer_phone_number = $invoice->users->phone_number;
+        }else{
+            $customer_phone_number = '';
+        }
+
+        $customer_city = $customer_city;
+        $customer_state = $customer_state;
+        $customer_country = $customer_country;
+        $customer_address = $customer_address;
+        $customer_phone = $customer_phone_number;
+        $customer_email = $invoice->users->email;
+
+        $customer_invoice_id = $invoice->invoice_number;
+        $customer_invoice_description = $invoice->invoice_description;
+
+        $customer_do_sale_amount = $request->balance;
+        $customer_do_sale_card_number = $request->card_number;
+        $customer_do_sale_exp_date = $request->exp_date;
+        $customer_do_sale_cvc_number = $request->cvc_number;
+        $customer_do_sale_card_honer = $request->card_honer;
+
+
+        $plan_payments = $invoice->duration - 1;
+        $plan_amount = $customer_do_sale_amount;
+        $plan = Plan::all()->last();
+        if($plan) {
+            $plan = $plan->number + 1;
+            $plan_id = $plan;
+
+            $new_plan = new Plan();
+            $new_plan->number = $plan_id;
+            $new_plan->save();
+        }else{
+            $plan_id = 1;
+
+            $new_plan = new Plan();
+            $new_plan->number = $plan_id;
+            $new_plan->save();
+        }
+        $plan_name = 'Plan '.$plan_id;
+        $month_frequency = 1;
+        $day = strtotime($invoice->due_date);
+        $day = date( "j", $day);
+        $day_of_month = $day;
+
+        $gw = new gwapi;
+        $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+        $gw->setBilling($customer_name, $customer_last_name ,"", $customer_address, "", $customer_city, $customer_state, "", $customer_country, $customer_phone, "", $customer_email, "");
+        $gw->setShipping("Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown");
+        $gw->setOrder($customer_invoice_id, $customer_invoice_description, 0, 0, "", "");
+        $gw->getPlan($plan_payments, $plan_amount, $plan_name, $plan_id, $month_frequency, $day_of_month);
+        $gw->getSubscription($customer_name, $customer_last_name);
+
+        $gw->doSale($customer_do_sale_amount, $customer_do_sale_card_number, $customer_do_sale_exp_date, $customer_do_sale_cvc_number);
+        $response_g = $gw->responses['response'];
+        $transactionid = $gw->responses['transactionid'];
+        if($response_g == 1){
+            $find_cc = CreditCardCustomer::where('ccnumber', $customer_do_sale_card_number)->first();
+            if(!$find_cc){
+                $tcd = new CreditCardCustomer();
+                $tcd->ccnumber = $customer_do_sale_card_number;
+                $tcd->ccexp = $customer_do_sale_exp_date;
+                $tcd->customer_id = $customer->id;
+                $tcd->save();
+            }
+            
+            $gw->doPlan();
+            $response_g = $gw->responses['response'];
+            if($response_g == 1){
+                $gw->doSubscription($customer_do_sale_card_number, $customer_do_sale_exp_date);
+                $response_g = $gw->responses['response'];
+            }
+        }
+
+        if($response_g != 1){
+            return redirect()->back()->with('error', $gw->responses['responsetext']);
+            die();
+        }
+         
+    
+        /************************END Add Customer With Full  Profile***************************************/
+        if(@$request->extra_charges == 1){
+
+            $customer_id = Customer::where('user_id',$request->user_id)->first()->id;
+            $transaction = new Transction();
+            $transaction->user_id = $request->user_id;
+            $transaction->customer_id = $customer_id;
+            $transaction->transaction_type = '2';
+            $transaction->extra_charge = $request->charge_id;
+            $transaction->ammount = $request->balance;
+            $transaction->status = '1';
+            $transaction->save();
+
+            $extra = ExtraCharge::find($request->invoice_id);
+            $extra->balance_status = '1';
+            $extra->save();
+
+          
+        }else{
+            $invoice = Invoice::find($request->invoice_id);
+            $invoice->transaction = $transactionid;
+            $invoice->balance_status = '1';
+            $invoice->save();
+            $total_amount =  $invoice->total_amount - $request->balance;
+            Invoice::where('user_id', $request->user_id)->where('status', '0')->update(['total_amount' => $total_amount]);
+            $transaction = new Transction();
+            $transaction->user_id = $invoice->user_id;
+            $transaction->customer_id = $invoice->customer_id;
+            $transaction->transaction_type = '1';
+            $transaction->invoice_id = $invoice->id;
+            $transaction->ammount = $request->balance;
+            $transaction->status = '1';
+            $transaction->save();
+            $data = User::find($invoice->user_id);
+            $data->status = '1';
+            $data->is_lead = 0;
+            $data->is_customer = 1;
+            $data->save();
+            $name = $data->first_name;
+            $customer = Customer::where('user_id', $request->user_id)->update(['status' => '1']);
+            $lead = Lead::where('email', $data->email)->update(['status' => '2']);
+            $invoice_user = $invoice->users;
+            //Mail::to($data->email)->send(new MailDemoMail($invoice_user));
         }
 
         $data = User::find($request->user_id);
@@ -1336,5 +1643,10 @@ class SaleController extends Controller
             ];
             return response()->json($response);
         }
+    }
+
+    public function terms()
+    {
+        return view('content.sale.terms');
     }
 }

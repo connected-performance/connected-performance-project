@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('vault_id')->nullable();
             $table->foreignId('referral_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('employee_id')->nullable()->constrained('employees')->onUpdate('cascade')->onDelete('cascade');
             $table->string('status')->comment('0 = lead , 1 = customer')->nullable();

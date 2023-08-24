@@ -24,11 +24,11 @@
                             <select class="form-control type slector" id="user_id" name="user_id" required>
                                 <option value="">Select Customer</option>
                                 @foreach (@$customers as $value)
-                                    <option value="{{ $value->id }}">{{ $value->first_name }}</option>
+                                    <option value="{{ @$value->id }}">{{ @$value->first_name }} {{ @$value->last_name }}</option>
                                 @endforeach
                             </select>
                         </div>
-
+                
                     </div>
                     <div class="row">
                         <div class="col-6">

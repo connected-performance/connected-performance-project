@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class LeadController extends Controller
 {
@@ -45,6 +46,23 @@ class LeadController extends Controller
                 data-bs-placement="top" title="status" onclick="leadt_status(' . $row->id . ')">'.$row->name.'</a>';  
                 return $name;
             })
+            ->addColumn('last_name', function ($row) {
+                $last_name = '<a href="#" style="padding-left:10px;" class="link-dark"  data-bs-toggle="tooltip"
+                data-bs-placement="top" title="status" onclick="leadt_status(' . $row->id . ')">'.$row->last_name.'</a>';  
+                return $last_name;
+            })
+            ->editColumn('closed_date', function ($row) { 
+                $date = new Carbon($row->closed_date);
+                $date = $date->format('Y-m-d');
+                $date = date('l M, d, Y',strtotime($date));
+
+                if($row->closed_date) {
+                    return $date;
+                } else {
+                    return '---';
+                }
+                
+            })
             ->addColumn('lead_status', function ($row) {
                if($row->status == '0'){
                 $status = '<span class="badge rounded-pill  badge-light-info">Lead</span>';
@@ -70,7 +88,7 @@ class LeadController extends Controller
 
                 return $date = date('l M, d, Y',strtotime($row->lead_date));
             })
-            ->rawColumns(['action', 'lead_status','date' ,'name', 'form_name'])
+            ->rawColumns(['action', 'lead_status','date' ,'name', 'last_name', 'form_name'])
             ->make(true);
     }
 
@@ -101,7 +119,14 @@ class LeadController extends Controller
                     // ]);
                     }
                     if($request->name){
-                        $lead->name = $request->name;
+                        $lead->name = trim($request->name," ");
+                    }else{
+                    // $request->validate([
+                    //     'name' => 'required',
+                    // ]);
+                    }
+                    if($request->last_name){
+                        $lead->last_name = trim($request->last_name," ");
                     }else{
                     // $request->validate([
                     //     'name' => 'required',
@@ -137,13 +162,15 @@ class LeadController extends Controller
                 $lead->status = '0';
                 $lead->lead_date = $date;
                 $name = $lead->name;
+                $last_name = $lead->last_name;
                 $lead->save();
                 if($lead->email){
 
          
                     $user = new User();
                     $user->first_name = $request->name;
-                    $user->username = $request->name;
+                    $user->last_name = $request->last_name;
+                    $user->username = $request->email;
                     $user->email = $request->email;
                     $user->password = Hash::make('123456');
                     $user->phone_number = $request->phone_plugin;
@@ -190,6 +217,7 @@ class LeadController extends Controller
         try {
             $request->validate([
                 'name' => 'required',
+                'last_name' => 'required',
                 'email' => 'required|email|unique:users',
                 'phone_number' => 'required',
                 'description' => 'required',
@@ -208,18 +236,21 @@ class LeadController extends Controller
             
             
             $lead->form_name = @$form_nmae;
-            $lead->name = $request->name;
+            $lead->name = trim($request->name," ");
+            $lead->last_name = trim($request->last_name," ");
             $lead->email = $request->email;
             $lead->phone = $request->phone_number;
             $lead->lead_date = date('Y-m-d');
             $lead->description = $request->description;
             $lead->services = $request->drop_down;
             $lead->status = '0';
+            $lead->closed_date = $request->estimated_closed_date;
             $lead->save();
 
             $user = new User();
             $user->first_name = $request->name;
-            $user->username = $request->name;
+            $user->last_name = $request->last_name;
+            $user->username = $request->email;
             $user->email = $request->email;
             $user->password = Hash::make('123456');
             $user->phone_number = $request->phone_number;
@@ -377,7 +408,7 @@ class LeadController extends Controller
 
     public function lead_loss(Request $request){
         try {
-
+            $date = Carbon::now();
             $lead = Lead::find($request->id);
             if($lead->status == '2'){
                 $response = [
@@ -387,6 +418,7 @@ class LeadController extends Controller
                 return response()->json($response); 
             }
             $lead->status = '3';
+            $lead->closed_date = $date->format('Y-m-d h:i:s');
             $lead->save();
             $actor = "";
             if (auth()->user()->is_admin == true) {

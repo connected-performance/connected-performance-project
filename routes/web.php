@@ -25,6 +25,7 @@ use App\Http\Controllers\Panel\SettingController;
 use App\Http\Controllers\Panel\SmartWaiverController;
 use App\Http\Controllers\Panel\StatementController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Panel\TestController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Panel\FileController;
 use App\Models\Role;
@@ -55,6 +56,8 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
     Route::prefix('/panel')->group(function () {
     Route::get('',[DashboardContraoller::class,'index'])->name('panel.index');
         Route::get('/test',[TestController::class,'test'])->name('panel.test');
+        Route::post('/note/customer/save',[UserController::class,'noteSave'])->name('panel.user.note.save');
+        Route::post('/note/customer/delete',[UserController::class,'noteDelete'])->name('panel.user.note.delete');
         Route::post('unpaid/invoice', [DashboardContraoller::class, 'unpaid_invoice'])->name('panel.unpaid.invoice');
         Route::post('paid/invoice', [DashboardContraoller::class, 'paid_invoice'])->name('panel.paid.invoice');
         Route::post('/month/earning/ajax', [DashboardContraoller::class, 'month_earning'])->name('month.earning.ajax');
@@ -143,9 +146,16 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
 
             Route::get('increase/duration', [UserController::class, 'increase_duration'])->name('customer.increase.duration');
             Route::post('increase/duration/save', [UserController::class, 'increase_duration_save'])->name('customer.increase.duration.save');
+            Route::post('invoice/refund', [UserController::class, 'invoiceRefund'])->name('customer.invoice.refund');
+            Route::post('invoice/cancel', [UserController::class, 'invoiceCancel'])->name('customer.invoice.cancel');
+            Route::post('/notes/ajax', [UserController::class, 'user_detail_note_ajax'])->name('user.notes.ajax');
+            Route::post('/notes/detail', [UserController::class, 'user_detail_note_detail'])->name('panel.user.notes.detail');
+            Route::post('/invoice/user/create', [UserController::class, 'invoiceUserCreate'])->name('invoice.user.create');
+            Route::post('/user/waiver', [UserController::class, 'userWaiver'])->name('user.waiver');
 
 
             Route::post('singel/reciver/send', [UserController::class, 'single_sender'])->name('send.single.user');
+            Route::post('customer/to/lead', [UserController::class, 'customer_to_lead'])->name('customer.to.lead');
             Route::post('customer/to/lead', [UserController::class, 'customer_to_lead'])->name('customer.to.lead');
         });
         Route::prefix('performance')->group(function () {
@@ -305,12 +315,17 @@ Route::view('comming-soon', 'page-coming-soon')->name('soon');
 
 Route::post('leadGeneration/{id}', [LeadController::class, 'LeadGenerate'])->name('leadGeneration');
 Route::get('invoice/{id}', [SaleController::class,'invoice_get'])->name('invoice.get');
+Route::get('invoice/mail/user/{id}', [SaleController::class,'invoice_user_get'])->name('invoice.mail.user.get');
+Route::get('terms', [SaleController::class,'terms'])->name('invoice.terms');
 Route::get('charges/{id}', [ExpenseController::class, 'charges_get'])->name('charges.get');
 Route::get('/token/request/update/{id}', [SaleController::class,'token_request'])->name('token.request.get');
+Route::get('/update-information/{id}', [SaleController::class,'update_information'])->name('token.update_information');
+Route::get('/customer-update-information/{id}', [SaleController::class,'customer_update_information'])->name('token.customer_update_information');
 
 
 Route::post('/transaction', [SaleController::class, 'invoice_transaction'])->name('invoice.transaction');
 Route::post('/token/request/update/save', [SaleController::class,'token_request_save'])->name('token.request.save');
+Route::post('/transaction/user', [SaleController::class, 'invoice_transaction_user'])->name('invoice.transaction.user');
 
 Route::get('command', function () {
     Artisan::call("storage:link");

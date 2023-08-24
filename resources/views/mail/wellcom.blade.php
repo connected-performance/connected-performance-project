@@ -34,7 +34,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td style="background-color:#ffffff">Connect performance</td>
+						<td style="background-color:#ffffff">Connected Performance</td>
 					</tr>
 				</tbody>
 			</table>

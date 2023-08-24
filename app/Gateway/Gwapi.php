@@ -178,15 +178,6 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doDeleteCustomer($customer_id)
-  {
-    $query  = "";
-    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
-    $query .= "customer_vault=" . urlencode('delete_customer') . "&";
-    $query .= "customer_vault_id=" . urlencode($customer_id) . "&";
-    return $this->_doPost($query);
-  }
-
   function doCustomer($customer_id, $customer_card_number, $customer_exp_date, $customer_name, $customer_last_name, $customer_address, $customer_city, $customer_state, $customer_country, $customer_phone, $customer_email)
   {
     $query  = "";
@@ -332,7 +323,7 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doCapture($transactionid, $amount =0) {
+  function doCapture($transactionid, $amount) {
 
     $query  = "";
     // Login Information
@@ -357,7 +348,7 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doRefund($transactionid, $amount = 0) {
+  function doRefund($transactionid, $amount) {
 
     $query  = "";
     // Login Information
@@ -369,6 +360,133 @@ class Gwapi {
     }
     $query .= "type=refund";
     return $this->_doPost($query);
+  }
+
+  /****consulta****/
+  function testXmlQuery($security_key,$constraints)
+  {
+
+      $transactionFields = array(
+          'transaction_id',
+          'partial_payment_balance',
+          'platform_id',
+          'transaction_type',
+          'condition',
+          'order_id',
+          'authorization_code',
+          'ponumber',
+          'order_description',
+
+          'first_name',
+          'last_name',
+          'address_1',
+          'address_2',
+          'company',
+          'city',
+          'state',
+          'postal_code',
+          'country',
+          'email',
+          'phone',
+          'fax',
+          'cell_phone',
+          'customertaxid',
+          'customerid',
+          'website',
+
+          'shipping_first_name',
+          'shipping_last_name',
+          'shipping_address_1',
+          'shipping_address_2',
+          'shipping_company',
+          'shipping_city',
+          'shipping_state',
+          'shipping_postal_code',
+          'shipping_country',
+          'shipping_email',
+          'shipping_carrier',
+          'tracking_number',
+          'shipping_date',
+          'shipping',
+          'shipping_phone',
+
+          'cc_number',
+          'cc_hash',
+          'cc_exp',
+          'cavv',
+          'cavv_result',
+          'xid',
+          'eci',
+          'avs_response',
+          'csc_response',
+          'cardholder_auth',
+          'cc_start_date',
+          'cc_issue_number',
+          'check_account',
+          'check_hash',
+          'check_aba',
+          'check_name',
+          'account_holder_type',
+          'account_type',
+          'sec_code',
+          'drivers_license_number',
+          'drivers_license_state',
+          'drivers_license_dob',
+          'social_security_number',
+
+          'processor_id',
+          'tax',
+          'currency',
+          'surcharge',
+          'tip',
+
+          'card_balance',
+          'card_available_balance',
+          'entry_mode',
+          'cc_bin',
+          'cc_type'
+      );
+      $actionFields = array(
+       'amount',
+       'action_type',
+       'date',
+       'success',
+       'ip_address',
+       'source',
+       'api_method',
+       'username',
+       'response_text',
+       'batch_id',
+       'processor_batch_id',
+       'response_code',
+       'processor_response_text',
+       'processor_response_code',
+       'device_license_number',
+       'device_nickname'
+      );
+      $mycurl=curl_init();
+      $postStr='security_key='.$security_key.$constraints;
+      $url="https://secure.networkmerchants.com/api/query.php?". $postStr;
+      curl_setopt($mycurl, CURLOPT_URL, $url);
+      curl_setopt($mycurl, CURLOPT_RETURNTRANSFER, 1);
+      $responseXML=curl_exec($mycurl);
+      curl_close($mycurl);
+      $xml = simplexml_load_string($responseXML, "SimpleXMLElement", LIBXML_NOCDATA);
+      $json = json_encode($xml);
+      $array_json = json_decode($json,TRUE);
+
+      if (isset($array_json['transaction'])) {
+        $transaction = $array_json['transaction'];
+        return $transaction;
+      }elseif (isset($array_json['customer_vault'])) {
+        $transaction = $array_json['customer_vault'];
+        return $transaction;
+      }elseif (isset($array_json['plan'])) {
+        $transaction = $array_json['plan'];
+        return $transaction;
+      }else{
+        return'No transactions returned';
+      }
   }
 
   function _doPost($query) {
@@ -395,5 +513,147 @@ class Gwapi {
         $this->responses[$rdata[0]] = $rdata[1];
     }
     return $this->responses['response'];
+  }
+
+  // Functions Create Invoice
+  function createInvoice($amount,$customer_id) {
+    $query  = "";
+    $query .= "invoicing=add_invoice&";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "amount=" . urlencode(number_format($amount,2,".","")) . "&";
+    $query .= "email=" . urlencode($this->billing['email']) . "&";
+    $query .= "orderid=" . urlencode($this->order['orderid']) . "&";
+    $query .= "customer_id=" . urlencode($customer_id) . "&";
+    $query .= "tax=" . urlencode(number_format($this->order['tax'],2,".","")) . "&";
+    $query .= "first_name=" . urlencode($this->billing['firstname']) . "&";
+    $query .= "last_name=" . urlencode($this->billing['lastname']) . "&";
+    $query .= "ponumber	=" . urlencode($this->order['ponumber']) . "&";
+    $query .= "company=" . urlencode($this->billing['company']) . "&";
+    $query .= "address1=" . urlencode($this->billing['address1']) . "&";
+    $query .= "address2=" . urlencode($this->billing['address2']) . "&";
+    $query .= "city=" . urlencode($this->billing['city']) . "&";
+    $query .= "state=" . urlencode($this->billing['state']) . "&";
+    $query .= "zip=" . urlencode($this->billing['zip']) . "&";
+    $query .= "country=" . urlencode($this->billing['country']) . "&";
+    $query .= "phone=" . urlencode($this->billing['phone']) . "&";
+    $query .= "fax=" . urlencode($this->billing['fax']) . "&";
+    $query .= "website=" . urlencode($this->billing['website']);
+    return $this->_doPost($query);
+  }
+
+  // Functions Send Invoice
+  function sendInvoice($invoice_id) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "invoicing=send_invoice";
+    $query .= "invoice_id=" . urlencode($invoice_id);
+    return $this->_doPost($query);
+  }
+
+  // Functions Add Customer
+  function addCustomer($type, $customer_id, $ccnumber, $ccexp, $customer_name, $customer_lastname, $customer_email) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "customer_vault=" . urlencode($type) . "&";
+    $query .= "customer_vault_id=" . urlencode($customer_id) . "&";
+    $query .= "ccnumber=" . urlencode($ccnumber) . "&";
+    $query .= "ccexp=" . urlencode($ccexp) . "&";
+    $query .= "firstname=" . urlencode($customer_name) . "&";
+    $query .= "lastname=" . urlencode($customer_lastname) . "&";
+    $query .= "email=" . urlencode($customer_email);
+    return $this->_doPost($query);
+  }
+
+  // Functions Add Plan
+  function addPlan($plan_payments, $plan_amount, $plan_name, $plan_id, $month_frequency, $day_of_month) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=add_plan&";
+    $query .= "plan_payments=" . urlencode($plan_payments) . "&";
+    $query .= "plan_amount=" . urlencode($plan_amount) . "&";
+    $query .= "plan_name=" . urlencode($plan_name) . "&";
+    $query .= "plan_id=" . urlencode($plan_id) . "&";
+    $query .= "month_frequency=" . urlencode($month_frequency) . "&";
+    $query .= "day_of_month=" . urlencode($day_of_month);
+    return $this->_doPost($query);
+  }
+
+  // Functions Edit Plan
+  function editPlan($current_plan_id, $plan_payments, $plan_amount, $month_frequency, $day_of_month, $plan_name) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=edit_plan&";
+    $query .= "current_plan_id=" . urlencode($current_plan_id) . "&";
+    $query .= "plan_payments=" . urlencode($plan_payments) . "&";
+    $query .= "plan_amount=" . urlencode($plan_amount) . "&";
+    if($plan_name!=null){
+      $query .= "plan_name=" . urlencode($plan_name) . "&";
+    }
+    $query .= "month_frequency=" . urlencode($month_frequency) . "&";
+    $query .= "day_of_month=" . urlencode($day_of_month);
+    return $this->_doPost($query);
+  }
+
+  // Functions Add a Subscription to an Existing Plan
+  function addSubscriptionToPlan($plan_id, $transaction_id, $start_date) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=add_subscription&";
+    $query .= "plan_id=" . urlencode($plan_id) . "&";
+    $query .= "start_date=" . urlencode($start_date) . "&";
+    $query .= "source_transaction_id=" . urlencode($transaction_id);
+
+    return $this->_doPost($query);
+  }
+
+  // Functions Add a Subscription to an Existing Plan
+  function addSubscriptionCVToPlan($plan_id, $customer_vault_id, $order_id, $start_date) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=add_subscription&";
+    $query .= "plan_id=" . urlencode($plan_id) . "&";
+    $query .= "orderid=" . urlencode($order_id) . "&";
+    $query .= "start_date=" . urlencode($start_date) . "&";
+    $query .= "customer_vault_id=" . urlencode($customer_vault_id);
+
+    return $this->_doPost($query);
+  }
+
+  // Functions Update a Custom Subscription's Plan Details
+  function editSubscriptionToPlan($subscription_id, $customer_vault_id) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=update_subscription&";
+    $query .= "subscription_id=" . urlencode($subscription_id) . "&";
+    $query .= "customer_vault_id=" . urlencode($customer_vault_id);
+    return $this->_doPost($query);
+  }
+
+  // Functions Delete a Subscription
+  function deleteSubscription($subscription_id) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=delete_subscription&";
+    $query .= "subscription_id=" . urlencode($subscription_id);
+    return $this->_doPost($query);
+  }
+
+  // Functions Add a Customer Vault
+  function addCustomerVault($transaction_id, $customer_vault_id) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "customer_vault=add_customer&";
+    $query .= "source_transaction_id=" . urlencode($transaction_id) . "&";
+    $query .= "customer_vault_id=" . urlencode($customer_vault_id);
+    return $this->_doPost($query);
+  }
+
+  // Functions Delete Customer
+  function deleteCustomerVault($customer_id) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "customer_vault=delete_customer&";
+    $query .= "customer_vault_id=" . urlencode($customer_id);
+    return $this->_doPost($query);
   }
 }

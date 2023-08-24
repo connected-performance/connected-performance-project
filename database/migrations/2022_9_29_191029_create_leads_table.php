@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('form_builder_id')->nullable()->constrained('form_builders')->onUpdate('cascade')->onDelete('cascade');
             $table->string('form_name')->nullable();
             $table->string('name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('services')->nullable();
             $table->longText('description')->nullable();

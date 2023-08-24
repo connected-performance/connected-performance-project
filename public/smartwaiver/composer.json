@@ -1,0 +1,22 @@
+{
+    "name": "alberto/ceballos",
+    "description": "tester",
+    "type": "project",
+    "require": {
+        "doctrine/data-fixtures": "1.7.x-dev",
+        "smartwaiver/smartwaiver-sdk": "dev-master"
+    },
+    "license": "mit",
+    "autoload": {
+        "psr-4": {
+            "Alberto\\Ceballos\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "connected-performance",
+            "email": "training@connected-performance.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

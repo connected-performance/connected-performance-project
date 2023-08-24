@@ -18,6 +18,12 @@
                         </div>
                     </div>
                     <div class="col-12">
+                        <label class="form-label" for="name">Last Name</label>
+                        <div class="input-group input-group-merge">
+                            <input id="customer-last-name" name="customer-last-name" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <label class="form-label" for="email">Email</label>
                         <div class="input-group input-group-merge">
                             <input type="text" id="email" name="customer-email" class="form-control" disabled />

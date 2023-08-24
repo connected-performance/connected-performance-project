@@ -14,16 +14,26 @@
 
                     <div class="row mb-2">
                         <div class="col">
-                            <label for="email">Name</label>
+                            <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                         </div>
                         <div class="col">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email"
                                 placeholder="Email">
                         </div>
                     </div>
                     <div class="row mb-2">
+                        <div class="col">
+                            <label for="estimated_closed_date">Estimated Closed Date</label>
+                            <input type="date" class="form-control" id="estimated_closed_date" name="estimated_closed_date">
+                        </div>
                         <div class="col">
                             <label for="phone">Phone Number</label>
                             <input type="text" class="form-control" id="phone_number" name="phone_number"
@@ -45,7 +55,7 @@
 
                     <div class="row mb-2">
                         <div class="col-12">
-                            <label for="confirm-password">Description</label>
+                            <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description"></textarea>
                         </div>
                     </div>

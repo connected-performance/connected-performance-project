@@ -18,7 +18,6 @@ class DashboardContraoller extends Controller
     //
     public function index(){
 
-
         $first_day_of_month = Carbon::now()->startOfMonth()->toDateString();
         $last_day_of_month = Carbon::now()->endOfMonth()->toDateString();
         $c_date = date('Y-m-d');

@@ -92,9 +92,9 @@
 
                                 <div class="col-md-6 text-right" style="margin-top: -5px;">
 
-                                    <img src="https://img.icons8.com/color/36/000000/visa.png">
+                                    {{-- <img src="https://img.icons8.com/color/36/000000/visa.png">
                                     <img src="https://img.icons8.com/color/36/000000/mastercard.png">
-                                    <img src="https://img.icons8.com/color/36/000000/amex.png">
+                                    <img src="https://img.icons8.com/color/36/000000/amex.png"> --}}
 
                                 </div>
 
@@ -137,18 +137,16 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="cc-exp" class="control-label">CARD EXPIRY</label>
+                                            <label for="cc-exp" class="control-label">Expiration Date</label>
                                             <input id="cc-exp" type="tel" class="input-lg form-control cc-exp"
                                                 name="exp_date" autocomplete="cc-exp"
                                                 placeholder="10/25" required>
                                         </div>
-
-
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="cc-cvc" class="control-label">CARD CVC</label>
+                                            <label for="cc-cvc" class="control-label">CARD CVV</label>
                                             <input id="cc-cvc" type="tel" class="input-lg form-control cc-cvc"
                                                 autocomplete="off" placeholder="&bull;&bull;&bull;&bull;"
                                                 name="cvc_number" required>
@@ -162,9 +160,12 @@
                                     <label for="numeric" class="control-label">CARD HOLDER NAME</label>
                                     <input type="text" class="input-lg form-control" name="card_honer" required>
                                 </div>
-
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="margin-top: 10px;" required>
+                                <label class="form-check-label" for="flexCheckDefault" style="margin-top: 5px;">
+                                    I agree to have read the <a href="{{ route('invoice.terms') }}" target="_blank">terms and conditions</a> to make my payments
+                                </label>
                                 <br>
-                                <div class="form-group">
+                                <div class="form-group" style="margin-top: 10px;">
                                     <input value="MAKE PAYMENT" type="submit"
                                         class="btn btn-success btn-lg form-control" style="font-size: .8rem;" required>
                                 </div>

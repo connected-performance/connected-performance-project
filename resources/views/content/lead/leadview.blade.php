@@ -41,12 +41,14 @@
                             <thead>
                                 <tr>
                                     <th>Resource</th>
-                                    <th>User Name</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
                                     <th>Email</th>
                                     <th>Phone Number</th>
                                     <th>Services</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Closed Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -113,6 +115,7 @@
         function show_lead_modal() {
             $("#lead_id").val(0);
             $("#name").val(null);
+            $("#last_name").val(null);
             $("#email").val(null);
             $("#phone_number").val(null);
             $("#drop_down").val(null);
@@ -171,6 +174,7 @@
                 success: function(response) {
                     $("#lead_id").val(response.data.id);
                     $("#customer-name").val(response.data.name);
+                    $("#customer-last-name").val(response.data.last_name);
                     $("#email").val(response.data.email);
 
                     $("#inlineForm").modal("show");
@@ -209,7 +213,9 @@
                     {
                         data: 'name'
                     },
-
+                    {
+                        data: 'last_name'
+                    },
                     {
                         data: 'email'
                     },
@@ -224,6 +230,9 @@
                     },
                     {
                         data: 'date'
+                    },
+                    {
+                        data: 'closed_date'
                     },
                     {
                         data: 'action'
@@ -249,17 +258,18 @@
                     $("#mech_name").text(response.data.name);
                     $("#top-mail").text(response.data.email);
                     $("#lower-mail").text(response.data.email);
-                    $("#lower-name").text(response.data.name);
+                    $("#lower-name").text(response.data.name+' '+response.data.last_name);
                     $("#lower-phone").text(response.data.phone);
                     $("#lower-service").text(response.data.services);
                     $(".show_description").text(response.data.description);
                     $("#mail").html(response.data.email);
                     $("#name").html(response.data.name);
+                    $("#last_name").html(response.data.last_name);
                     $(".phone").html(response.data.phone);
                     $(".service").html(response.data.services);
                     $(".notes").val(response.data.note);
                     $(".email-for-table").text(response.data.email);
-                    $(".name-for-table").text(response.data.name);
+                    $(".name-for-table").text(response.data.name+' '+response.data.last_name);
 
                     var modernWizard = document.querySelector('.modern-wizard-example');
                     if (typeof modernWizard !== undefined && modernWizard !== null) {
@@ -308,6 +318,7 @@
                                 progressBar: true,
                                 rtl: isRtl
                             });
+                        window.location.reload();
                     } else {
                         toastr[response.status](
                             response.message, '!Oops', {

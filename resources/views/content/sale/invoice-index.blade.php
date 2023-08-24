@@ -61,12 +61,12 @@
                             <thead>
                                 <tr>
                                     <th>@lang('Invoice')</th>
-                                    <th>@lang('customer')</th>
+                                    <th>@lang('Name')</th>
+                                    <th>@lang('Lastname')</th>
                                     <th>@lang('Issue Date')</th>
-                                    <th>@lang('Total')</th>
+                                    <th>@lang('Pay Date')</th>
                                     <th>@lang('Due')</th>
                                     <th>@lang('Balance')</th>
-                                    <th>@lang('Service')</th>
                                     <th>@lang('Status')</th>
                                     <th class="col-2">@lang('Action')</th>
                                 </tr>
@@ -182,11 +182,11 @@
                 }
             });
             $('#invoice_table').DataTable({
-                responsive: false,
+                responsive: true,
                 processing: true,
                 serverSide: true,
                 searching: true,
-                ordering: true,
+                order: [[0, 'desc']],
                 ajax: {
                     url: "{{ url('panel/invoice/ajax') }}",
                     type: "POST",
@@ -199,22 +199,19 @@
                         data: 'users.first_name'
                     },
                     {
+                        data: 'users.last_name'
+                    },
+                    {
                         data: 'issue_date'
                     },
                     {
-                        data: 'due_date'
-                    },
-                    {
-                        data: 'total_amount'
+                        data: 'pay_date'
                     },
                     {
                         data: 'balance'
                     },
                     {
                         data: 'balance_status'
-                    },
-                    {
-                        data: 'service'
                     },
                     {
                         data: 'status'
