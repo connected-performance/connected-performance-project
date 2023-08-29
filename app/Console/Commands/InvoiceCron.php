@@ -46,7 +46,7 @@ class InvoiceCron extends Command
                     Invoice::where('id', $invoice->id)->first();
                     $user =  User::find($invoice->user_id);
                     $invoice = Invoice::find($invoice->id);
-                    Mail::to($user->email)->send(new InvoiceMail($user, $invoice));
+                    //Mail::to($user->email)->send(new InvoiceMail($user, $invoice));
                     $invoice->status = '1';
                     $invoice->save();
                 }
@@ -60,7 +60,7 @@ class InvoiceCron extends Command
             if ($value->users->is_customer == true) {
                 $user =  User::find($value->user_id);
                 $charge = ExtraCharge::find($value->id);
-                Mail::to($user->email)->send(new ExtraCharges($user, $charge));
+                //Mail::to($user->email)->send(new ExtraCharges($user, $charge));
                 $charge->status = '1';
                 $charge->save();
             }

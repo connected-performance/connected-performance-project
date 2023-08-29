@@ -46,10 +46,9 @@ class NmiWebhookController extends Controller
             }
             
             // webhook is now verified to have been sent by us, continue processing
-
-            $webhook = json_decode($request, true);
+            $webhook = json_decode($webhookBody, true);
             Log::info($webhook);
-            var_export($webhook);
+            //var_export($webhook);
 
             if($webhook['event_type']){ $type=$webhook['event_type']; }else{ $type=null; }
             if($webhook['event_body']["order_id"]){ $order_id=$webhook['event_body']["order_id"]; }else{ $order_id=null; }

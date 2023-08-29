@@ -23,113 +23,139 @@ use App\Mail\InvoiceCustomerMail;
 class TestController extends Controller
 {
     public function test(){
-        die();
+
+        // $customer=193;
+        // $customer_vault='1304864480';
+        // $gw = new gwapi;
+        // $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+        // $gw->addPlan(12, 250, 'Plan 2 Hunter Hoopes', 1, 1, 28);
+        // $response_g = $gw->responses['response'];
+        // if($response_g == 1){
+        //     $gw->addSubscriptionCVToPlan(2, $customer_vault, 1024, '20230828');
+        //     $response_g = $gw->responses['subscription_id'];
+        //     Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
+        // }
+
+        // $constraints = "&report_type=customer_vault&customer_vault_id=".$customer_vault;
+        // $result = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints);
+        // $ccnumber=str_replace("x","*",$result['customer']['cc_number']);
+        // $find_cc = CreditCardCustomer::where('customer_id', $customer)->where('ccnumber', $ccnumber)->first();
+        // if(!$find_cc){
+        //     $tcd = new CreditCardCustomer();
+        //     $tcd->ccnumber = $ccnumber;
+        //     $tcd->ccexp = $result['customer']['cc_exp'];
+        //     $tcd->customer_id = $customer;
+        //     $tcd->save();
+        // }
+
         $webhookBody='{
-            "event_id": "9b312dfd-3174-4748-9447-d63c8744305a",
+            "event_id": "285715b1-0291-47c0-b74c-7bbbeb93821a",
             "event_type": "transaction.sale.success",
             "event_body": {
                 "merchant": {
-                    "id": "1234",
-                    "name": "Test Account"
+                    "id": "938071",
+                    "name": "CONNECTED PERFORMANCE"
                 },
                 "features": {
-                    "is_test_mode": true
+                    "is_test_mode": false
                 },
-                "transaction_id": "8647672542",
+                "transaction_id": "8669516349",
                 "transaction_type": "cc",
                 "condition": "pendingsettlement",
-                "processor_id": "ccprocessora",
-                "ponumber": "123456789",
-                "order_description": "this is a description",
-                "order_id": "1005",
-                "customerid": "5576152",
+                "processor_id": "firstdataomaha",
+                "ponumber": "",
+                "order_description": "",
+                "order_id": "1000",
+                "customerid": "619738985",
                 "customertaxid": "",
-                "website": "https://example.com",
+                "website": "",
                 "shipping": "",
                 "currency": "USD",
-                "tax": "0.00",
+                "tax": "",
                 "surcharge": "",
                 "cash_discount": "",
                 "tip": "",
-                "requested_amount": "100.00",
+                "requested_amount": "250.00",
                 "shipping_carrier": "",
                 "tracking_number": "",
                 "shipping_date": "",
                 "partial_payment_id": "",
                 "partial_payment_balance": "",
                 "platform_id": "",
-                "authorization_code": "123456",
+                "authorization_code": "194066",
                 "social_security_number": "",
                 "drivers_license_number": "",
                 "drivers_license_state": "",
                 "drivers_license_dob": "",
                 "billing_address": {
-                    "first_name": "Jessica",
-                    "last_name": "Jones",
-                    "address_1": "123 Fake St.",
-                    "address_2": "123123",
-                    "company": "Alias Investigations",
-                    "city": "New York City",
-                    "state": "NY",
-                    "postal_code": "12345",
+                    "first_name": "Bruce",
+                    "last_name": "Earle Stolsworth",
+                    "address_1": "1017 Kestrel Ct",
+                    "address_2": "",
+                    "company": "",
+                    "city": "Salisbury",
+                    "state": "NC",
+                    "postal_code": "28147",
                     "country": "US",
-                    "email": "someone@example.com",
-                    "phone": "555-555-5555",
+                    "email": "Bstolsworth@carolina.fr.com",
+                    "phone": "",
                     "cell_phone": "",
-                    "fax": "444-555-6666"
+                    "fax": ""
                 },
                 "shipping_address": {
-                    "first_name": "Jessica",
-                    "last_name": "Jones",
-                    "address_1": "123 Fake St.",
-                    "address_2": "123123",
-                    "company": "Alias Investigations",
-                    "city": "New York City",
-                    "state": "NY",
-                    "postal_code": "12345",
+                    "first_name": "",
+                    "last_name": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "company": "",
+                    "city": "",
+                    "state": "",
+                    "postal_code": "",
                     "country": "US",
-                    "email": "someone@example.com",
+                    "email": "",
                     "phone": "",
                     "fax": ""
                 },
                 "card": {
-                    "cc_number": "411111******1111",
-                    "cc_exp": "1022",
+                    "cc_number": "474473******9181",
+                    "cc_exp": "0124",
                     "cavv": "",
                     "cavv_result": "",
                     "xid": "",
                     "eci": "",
-                    "avs_response": "N",
+                    "avs_response": "Y",
                     "csc_response": "",
                     "cardholder_auth": "",
                     "cc_start_date": "",
                     "cc_issue_number": "",
                     "card_balance": "",
                     "card_available_balance": "",
-                    "entry_mode": "",
+                    "entry_mode": "4",
                     "cc_bin": "",
-                    "cc_type": ""
+                    "cc_type": "Visa",
+                    "feature_token": ""
                 },
                 "action": {
-                    "amount": "100.00",
+                    "amount": "250.00",
                     "action_type": "sale",
-                    "date": "20230830175755",
+                    "date": "20230829004630",
                     "success": "1",
-                    "ip_address": "1.2.3.4",
+                    "ip_address": "166.216.159.186",
                     "source": "virtual_terminal",
                     "api_method": "virtual_terminal",
-                    "username": "exampleuser",
-                    "response_text": "SUCCESS",
+                    "username": "ConPer1",
+                    "response_text": "APPROVED",
                     "response_code": "100",
-                    "processor_response_text": "",
-                    "processor_response_code": "",
+                    "processor_response_text": "AUTH/TKT  194066",
+                    "tap_to_mobile": false,
+                    "processor_response_code": "0",
                     "device_license_number": "",
                     "device_nickname": ""
                 }
             }
         }';
         $webhook = json_decode($webhookBody, true);
-
+die();
         if($webhook['event_type']){ $type=$webhook['event_type']; }else{ $type=null; }
         if($webhook['event_body']["order_id"]){ $order_id=$webhook['event_body']["order_id"]; }else{ $order_id=null; }
         if($webhook['event_body']["transaction_id"]){ $transaction_id=$webhook['event_body']["transaction_id"]; }else{ $transaction_id=null; }
@@ -137,7 +163,7 @@ class TestController extends Controller
         if($webhook['event_body']["card"]["cc_exp"]){ $cc_exp=$webhook['event_body']["card"]["cc_exp"]; }else{ $cc_exp=null; }
         if($webhook['event_body']["requested_amount"]){ $balance=$webhook['event_body']["requested_amount"]; }else{ $balance=date("Y-m-d"); }
         if($webhook['event_body']["action"]["date"]){ $date=date("Y", strtotime($webhook['event_body']["action"]["date"])).'-'.date("m", strtotime($webhook['event_body']["action"]["date"])).'-'.date("d", strtotime($webhook['event_body']["action"]["date"])); }else{ $date=null; }
-        
+
         if($type=='transaction.sale.success'){
             $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
             $customer = $invoice->users->customer;
