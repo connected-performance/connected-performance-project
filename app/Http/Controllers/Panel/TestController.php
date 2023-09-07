@@ -24,16 +24,17 @@ class TestController extends Controller
 {
     public function test(){
 
-        // $customer=193;
-        // $customer_vault='1304864480';
+        // $customer=196;
+        // $customer_vault='1141217711';
+        // $order='1054';
         // $gw = new gwapi;
         // $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
         // $gw->addPlan(12, 250, 'Plan 2 Hunter Hoopes', 1, 1, 28);
         // $response_g = $gw->responses['response'];
         // if($response_g == 1){
-        //     $gw->addSubscriptionCVToPlan(2, $customer_vault, 1024, '20230828');
-        //     $response_g = $gw->responses['subscription_id'];
-        //     Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
+            // $gw->addSubscriptionCVToPlan(3, $customer_vault, $order, '20230831');
+            // $response_g = $gw->responses['subscription_id'];
+            // Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
         // }
 
         // $constraints = "&report_type=customer_vault&customer_vault_id=".$customer_vault;
@@ -47,9 +48,9 @@ class TestController extends Controller
         //     $tcd->customer_id = $customer;
         //     $tcd->save();
         // }
-
+die();
         $webhookBody='{
-            "event_id": "285715b1-0291-47c0-b74c-7bbbeb93821a",
+            "event_id": "9f847e5f-06a0-448e-a0df-286d943f8cac",
             "event_type": "transaction.sale.success",
             "event_body": {
                 "merchant": {
@@ -59,46 +60,46 @@ class TestController extends Controller
                 "features": {
                     "is_test_mode": false
                 },
-                "transaction_id": "8669516349",
+                "transaction_id": "8674276592",
                 "transaction_type": "cc",
                 "condition": "pendingsettlement",
                 "processor_id": "firstdataomaha",
                 "ponumber": "",
                 "order_description": "",
-                "order_id": "1000",
-                "customerid": "619738985",
+                "order_id": "1030",
+                "customerid": "1014194",
                 "customertaxid": "",
                 "website": "",
-                "shipping": "",
+                "shipping": "0.00",
                 "currency": "USD",
-                "tax": "",
+                "tax": "0.00",
                 "surcharge": "",
                 "cash_discount": "",
                 "tip": "",
-                "requested_amount": "250.00",
+                "requested_amount": "200.00",
                 "shipping_carrier": "",
                 "tracking_number": "",
                 "shipping_date": "",
                 "partial_payment_id": "",
                 "partial_payment_balance": "",
                 "platform_id": "",
-                "authorization_code": "194066",
+                "authorization_code": "064728",
                 "social_security_number": "",
                 "drivers_license_number": "",
                 "drivers_license_state": "",
                 "drivers_license_dob": "",
                 "billing_address": {
-                    "first_name": "Bruce",
-                    "last_name": "Earle Stolsworth",
-                    "address_1": "1017 Kestrel Ct",
+                    "first_name": "Tommy",
+                    "last_name": "Sullivan",
+                    "address_1": "6 Admiral Rickover Rd",
                     "address_2": "",
                     "company": "",
-                    "city": "Salisbury",
-                    "state": "NC",
-                    "postal_code": "28147",
+                    "city": "Plymouth",
+                    "state": "MA",
+                    "postal_code": "02360",
                     "country": "US",
-                    "email": "Bstolsworth@carolina.fr.com",
-                    "phone": "",
+                    "email": "thomassull915@gmail.com",
+                    "phone": "7816898530",
                     "cell_phone": "",
                     "fax": ""
                 },
@@ -117,14 +118,14 @@ class TestController extends Controller
                     "fax": ""
                 },
                 "card": {
-                    "cc_number": "474473******9181",
-                    "cc_exp": "0124",
+                    "cc_number": "442788******7892",
+                    "cc_exp": "0626",
                     "cavv": "",
                     "cavv_result": "",
                     "xid": "",
                     "eci": "",
-                    "avs_response": "Y",
-                    "csc_response": "",
+                    "avs_response": "N",
+                    "csc_response": "M",
                     "cardholder_auth": "",
                     "cc_start_date": "",
                     "cc_issue_number": "",
@@ -136,17 +137,17 @@ class TestController extends Controller
                     "feature_token": ""
                 },
                 "action": {
-                    "amount": "250.00",
+                    "amount": "200.00",
                     "action_type": "sale",
-                    "date": "20230829004630",
+                    "date": "20230830174424",
                     "success": "1",
                     "ip_address": "166.216.159.186",
-                    "source": "virtual_terminal",
-                    "api_method": "virtual_terminal",
-                    "username": "ConPer1",
+                    "source": "quickclick",
+                    "api_method": "cart",
+                    "username": "Bumatechnology",
                     "response_text": "APPROVED",
                     "response_code": "100",
-                    "processor_response_text": "AUTH/TKT  194066",
+                    "processor_response_text": "AUTH/TKT  064728",
                     "tap_to_mobile": false,
                     "processor_response_code": "0",
                     "device_license_number": "",
@@ -155,7 +156,7 @@ class TestController extends Controller
             }
         }';
         $webhook = json_decode($webhookBody, true);
-die();
+
         if($webhook['event_type']){ $type=$webhook['event_type']; }else{ $type=null; }
         if($webhook['event_body']["order_id"]){ $order_id=$webhook['event_body']["order_id"]; }else{ $order_id=null; }
         if($webhook['event_body']["transaction_id"]){ $transaction_id=$webhook['event_body']["transaction_id"]; }else{ $transaction_id=null; }
@@ -164,111 +165,113 @@ die();
         if($webhook['event_body']["requested_amount"]){ $balance=$webhook['event_body']["requested_amount"]; }else{ $balance=date("Y-m-d"); }
         if($webhook['event_body']["action"]["date"]){ $date=date("Y", strtotime($webhook['event_body']["action"]["date"])).'-'.date("m", strtotime($webhook['event_body']["action"]["date"])).'-'.date("d", strtotime($webhook['event_body']["action"]["date"])); }else{ $date=null; }
 
-        if($type=='transaction.sale.success'){
-            $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
-            $customer = $invoice->users->customer;
-            $customer_name = $invoice->users->first_name;
-            $customer_last_name = $invoice->users->last_name;
-    
-            $customer_do_sale_amount = $balance;
-            $customer_do_sale_card_number = $cc_number;
-            $customer_do_sale_exp_date = $cc_exp;
-
-            $day_i=date("d", strtotime($date));
-            $month_i=date("m", strtotime($date));
-            $year_i=date("Y", strtotime($date));
-            if($day_i<=14){
-                $pay_date=$year_i.'-'.$month_i.'-14';
-            }else{
-                $pay_date=$year_i.'-'.$month_i.'-28';
-            }
-            $invoice->pay_date=$pay_date;
-            
-            if(is_null($invoice->plan_id)){
-                $plan_payments = $invoice->duration - 1;
-                $plan_amount = $customer_do_sale_amount;
-                $plan = Plan::all()->last();
-                if($plan) {
-                    $plan = $plan->number + 1;
-                    $plan_id = $plan;
+        if(!is_null($order_id)){
+            if($type=='transaction.sale.success'){
+                $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                $customer = $invoice->users->customer;
+                $customer_name = $invoice->users->first_name;
+                $customer_last_name = $invoice->users->last_name;
         
-                    $new_plan = new Plan();
-                    $new_plan->number = $plan_id;
-                    $new_plan->save();
+                $customer_do_sale_amount = $balance;
+                $customer_do_sale_card_number = $cc_number;
+                $customer_do_sale_exp_date = $cc_exp;
+
+                $day_i=date("d", strtotime($date));
+                $month_i=date("m", strtotime($date));
+                $year_i=date("Y", strtotime($date));
+                if($day_i<=14){
+                    $pay_date=$year_i.'-'.$month_i.'-14';
                 }else{
-                    $plan_id = 1;
-        
-                    $new_plan = new Plan();
-                    $new_plan->number = $plan_id;
-                    $new_plan->save();
+                    $pay_date=$year_i.'-'.$month_i.'-28';
                 }
-                $invoice->plan_id = $plan_id;
-                $plan_name = 'Plan '.$plan_id.' '.trim($customer_name, " ").' '.trim($customer_last_name, " ");
-                $month_frequency = 1;
-                $day = strtotime($pay_date);
-                $day = date( "d", $day);
-                $day_of_month = $day;
-                $gw = new gwapi;
-                $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
-                $gw->addCustomerVault($transaction_id, $customer->vault_id);
-                $gw->addPlan($plan_payments, $plan_amount, $plan_name, $plan_id, $month_frequency, $day_of_month);
-                $response_g = $gw->responses['response'];
-                if($response_g == 1){
-                    $pay_date_is = date('Y-m-d', strtotime($pay_date . ' + 1 months'));
-                    $gw->addSubscriptionToPlan($plan_id, $transaction_id, str_replace("-","",$pay_date_is));
-                    $response_g = $gw->responses['subscription_id'];
-                    Customer::where('id', $customer->id)->update(['subscription_id' => $response_g]);
+                $invoice->pay_date=$pay_date;
+                
+                if(is_null($invoice->plan_id)){
+                    $plan_payments = $invoice->duration - 1;
+                    $plan_amount = $customer_do_sale_amount;
+                    $plan = Plan::all()->last();
+                    if($plan) {
+                        $plan = $plan->number + 1;
+                        $plan_id = $plan;
+            
+                        $new_plan = new Plan();
+                        $new_plan->number = $plan_id;
+                        $new_plan->save();
+                    }else{
+                        $plan_id = 1;
+            
+                        $new_plan = new Plan();
+                        $new_plan->number = $plan_id;
+                        $new_plan->save();
+                    }
+                    $invoice->plan_id = $plan_id;
+                    $plan_name = 'Plan '.$plan_id.' '.trim($customer_name, " ").' '.trim($customer_last_name, " ");
+                    $month_frequency = 1;
+                    $day = strtotime($pay_date);
+                    $day = date( "d", $day);
+                    $day_of_month = $day;
+                    $gw = new gwapi;
+                    $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+                    $gw->addCustomerVault($transaction_id, $customer->vault_id);
+                    $gw->addPlan($plan_payments, $plan_amount, $plan_name, $plan_id, $month_frequency, $day_of_month);
+                    $response_g = $gw->responses['response'];
+                    if($response_g == 1){
+                        $pay_date_is = date('Y-m-d', strtotime($pay_date . ' + 1 months'));
+                        $gw->addSubscriptionToPlan($plan_id, $transaction_id, str_replace("-","",$pay_date_is));
+                        $response_g = $gw->responses['subscription_id'];
+                        Customer::where('id', $customer->id)->update(['subscription_id' => $response_g]);
+                    }
+                    Invoice::where('order_nmi', $order_id)->update(['plan_id' => $plan_id]);
+
+                    $invoices=Invoice::where('id','<>',$invoice->id)->where('order_nmi', $order_id)->get();
+                    $pay_date_n=$pay_date;
+                    foreach ($invoices as $key => $value) {
+                        $pay_date_n = date('Y-m-d', strtotime($pay_date_n . ' + 1 months'));
+                        Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n]);
+                    }
                 }
-                Invoice::where('order_nmi', $order_id)->update(['plan_id' => $plan_id]);
 
-                $invoices=Invoice::where('id','<>',$invoice->id)->where('order_nmi', $order_id)->get();
-                $pay_date_n=$pay_date;
-                foreach ($invoices as $key => $value) {
-                    $pay_date_n = date('Y-m-d', strtotime($pay_date_n . ' + 1 months'));
-                    Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n]);
+                $find_cc = CreditCardCustomer::where('customer_id', $customer->id)->where('ccnumber', $customer_do_sale_card_number)->first();
+                if(!$find_cc){
+                    $tcd = new CreditCardCustomer();
+                    $tcd->ccnumber = $customer_do_sale_card_number;
+                    $tcd->ccexp = $customer_do_sale_exp_date;
+                    $tcd->customer_id = $customer->id;
+                    $tcd->save();
                 }
-            }
-
-            $find_cc = CreditCardCustomer::where('customer_id', $customer->id)->where('ccnumber', $customer_do_sale_card_number)->first();
-            if(!$find_cc){
-                $tcd = new CreditCardCustomer();
-                $tcd->ccnumber = $customer_do_sale_card_number;
-                $tcd->ccexp = $customer_do_sale_exp_date;
-                $tcd->customer_id = $customer->id;
-                $tcd->save();
-            }
-        
-            $invoice->transaction = $transaction_id;
-            $invoice->balance_status = '1';
-            $invoice->status = '1';
-            $invoice->save();
-            $total_amount =  $invoice->total_amount - $balance;
-            Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', '<>', 1)->update(['total_amount' => $total_amount]);
-            $transaction = new Transction();
-            $transaction->user_id = $invoice->user_id;
-            $transaction->customer_id = $invoice->customer_id;
-            $transaction->transaction_type = '1';
-            $transaction->invoice_id = $invoice->id;
-            $transaction->ammount = $balance;
-            $transaction->status = '1';
-            $transaction->save();
-            $data = User::find($invoice->user_id);
-            $data->status = '1';
-            $data->is_lead = 0;
-            $data->is_customer = 1;
-            $data->save();
-            $customer = Customer::where('user_id', $invoice->user_id)->update(['status' => '1']);
-            $lead = Lead::where('email', $data->email)->update(['status' => '2']);
-            $invoice_user = $invoice->users;
-            //Mail::to($data->email)->send(new MailDemoMail($invoice_user));
-
-        }elseif($type=='transaction.sale.failed'){
-            $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
-            if($invoice){
-                $invoice->balance_status=2;
+            
                 $invoice->transaction = $transaction_id;
+                $invoice->balance_status = '1';
                 $invoice->status = '1';
                 $invoice->save();
+                $total_amount =  $invoice->total_amount - $balance;
+                Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', '<>', 1)->update(['total_amount' => $total_amount]);
+                $transaction = new Transction();
+                $transaction->user_id = $invoice->user_id;
+                $transaction->customer_id = $invoice->customer_id;
+                $transaction->transaction_type = '1';
+                $transaction->invoice_id = $invoice->id;
+                $transaction->ammount = $balance;
+                $transaction->status = '1';
+                $transaction->save();
+                $data = User::find($invoice->user_id);
+                $data->status = '1';
+                $data->is_lead = 0;
+                $data->is_customer = 1;
+                $data->save();
+                $customer = Customer::where('user_id', $invoice->user_id)->update(['status' => '1']);
+                $lead = Lead::where('email', $data->email)->update(['status' => '2']);
+                $invoice_user = $invoice->users;
+                //Mail::to($data->email)->send(new MailDemoMail($invoice_user));
+
+            }elseif($type=='transaction.sale.failed'){
+                $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                if($invoice){
+                    $invoice->balance_status=2;
+                    $invoice->transaction = $transaction_id;
+                    $invoice->status = '1';
+                    $invoice->save();
+                }
             }
         }
     }
