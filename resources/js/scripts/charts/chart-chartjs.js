@@ -53,14 +53,22 @@ $(window).on('load', function () {
 
   // Init flatpicker
   if (flatPicker.length) {
-    var date = new Date();
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear();
+    var currentMonth = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    
+    // Calculate the start and end dates for the current month
+    var currentMonthStartDate = currentYear + '-' + (currentMonth < 10 ? '0' : '') + currentMonth + '-01';
+    var nextMonthDate = new Date(currentYear, currentMonth, 0); // Get the last day of the current month
+    var currentMonthEndDate = currentYear + '-' + (currentMonth < 10 ? '0' : '') + currentMonth + '-' + nextMonthDate.getDate();
+    
     flatPicker.each(function () {
-      $(this).flatpickr({
-        mode: 'range',
-        defaultDate: ['2019-05-01', '2019-05-10']
-      });
+        $(this).flatpickr({
+            mode: 'range',
+            defaultDate: [currentMonthStartDate, currentMonthEndDate]
+        });
     });
-  }
+}
 
   // Bar Chart
   // --------------------------------------------------------------------

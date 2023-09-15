@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StaterkitController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\Panel\AnalyticsController;
 use App\Http\Controllers\Panel\ContractController;
 use App\Http\Controllers\Panel\DashboardContraoller;
 use App\Http\Controllers\Panel\EmailTemplateController;
@@ -55,6 +56,11 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
 
     Route::prefix('/panel')->group(function () {
     Route::get('',[DashboardContraoller::class,'index'])->name('panel.index');
+    Route::get('/analytics/{year?}/{month?}',[AnalyticsController::class,'dashboard'])->name('panel.analytics.index');
+    Route::post('/analytics/get-leads-data',[AnalyticsController::class, 'getLeadsReports'])->name('panel.analytics.leads-data');
+    Route::post('/analytics/getEmployeesCloseRate',[AnalyticsController::class, 'getEmployeesCloseRate'])->name('panel.analytics.get-employee-close-rate');
+    Route::post('/analytics/employee-monthly-recurring-revenue',[AnalyticsController::class,'getMonthlyRecurringRevenuForEmployees'])
+    ->name('panel.analytics.employee-monthly-recurring-revenue');
         Route::get('/test',[TestController::class,'test'])->name('panel.test');
         Route::post('/note/customer/save',[UserController::class,'noteSave'])->name('panel.user.note.save');
         Route::post('/note/customer/delete',[UserController::class,'noteDelete'])->name('panel.user.note.delete');

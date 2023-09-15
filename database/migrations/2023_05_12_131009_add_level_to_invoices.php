@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->integer('level', 11)->nullable();
+            $table->integer('level',false,true)->nullable();
         });
     }
 
