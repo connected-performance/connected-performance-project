@@ -115,6 +115,14 @@
                                     <span>{{ @$users->phone_number }}</span>
                                 </li>
                                 <li class="mb-75">
+                                    <span class="fw-bolder me-25">Vault NMI:</span>
+                                    <span>{{ @$users->customer->vault_id }}</span>
+                                </li>
+                                <li class="mb-75">
+                                    <span class="fw-bolder me-25">Subscription NMI:</span>
+                                    <span>{{ @$users->customer->subscription_id }}</span>
+                                </li>
+                                <li class="mb-75">
                                     <a href="{{ route('user.token.request', @$users->id) }}" class="btn btn-success">Token Request</a>
                                 </li>
                             </ul>
@@ -240,6 +248,7 @@
                                     <th>@lang('Invoice')</th>
                                     <th>@lang('Issue Date')</th>
                                     <th>@lang('Due Date')</th>
+                                    <th>@lang('Pay Date')</th>
                                     <th>@lang('Amount')</th>
                                     <th>@lang('Balance')</th>
                                     <th>@lang('Status')</th>
@@ -505,6 +514,9 @@
                     }, 
                     {
                         data: 'due_date'
+                    },
+                    {
+                        data: 'pay_date'
                     },
                     {
                         data: 'balance'
