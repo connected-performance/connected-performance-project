@@ -9,6 +9,14 @@ class Customer extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'status',
+        'is_converted',
+        'convert_date',
+        'convert_reason'
+    ];
+
+
     public function user(){
         return $this->belongsTo(User::class,"user_id");
     }
