@@ -8,6 +8,13 @@
       "access": "access_backend"
     },
     {
+      "url": "panel/analytics",
+      "name": "Analytics",
+      "icon": "bar-chart",
+      "slug": "panel.analytics.index",
+      "access": "access_backend"
+    },
+    {
         "url": "panel/form/builder",
         "name": "Form Builder",
         "icon": "clipboard",

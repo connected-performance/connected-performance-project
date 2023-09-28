@@ -64,6 +64,16 @@
                 <div id="gained-chart"></div>
             </div>
         </div>
+
+        <div class="col-lg-4 col-sm-6 col-12">
+            <div class="card">
+                <div class="card-header flex-column align-items-start pb-0">
+                    <a href="{{ route('instagram.connect') }}">connect insta</button>
+                        <a href="{{ route('youtube.connect') }}">connect youtube</button>
+                </div>
+                <div id="gained-chart"></div>
+            </div>
+        </div>
     </div>
 
     <!-- apex charts section start -->
@@ -179,6 +189,21 @@
                     <div class="card-body">
                         <div id="chart-container">
                             <div id="analytics-leadsperemployee-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-12 col-md-12">
+                <div class="card">
+                    <div
+                        class=" card-header d-flex flex-md-row flex-column justify-content-md-between justify-content-start align-items-md-center align-items-start">
+                        <h4 class="card-title">Lead Loss Stats</h4>
+                        <div class="d-flex align-items-center flex-wrap mt-sm-0 mt-1"></div>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart-container">
+                            <div id="analytics-lead-loss-chart"></div>
                         </div>
                     </div>
                 </div>
@@ -319,7 +344,35 @@
                         if (response.status == "success") {
                             $('#projected_revenue').text("$" + response.total_revenue);
                             $('#new_subs').text(response.new_subs);
-                            displayProjectedRecurringRevenueChart(response.monthly_projected_revenue,"#analytics-prr-chart");
+                            displayProjectedRecurringRevenueChart(response.monthly_projected_revenue,
+                                "#analytics-prr-chart");
+                        } else {
+                            toastr[response.status](
+                                response.message, '!Oops', {
+                                    closeButton: true,
+                                    tapToDismiss: false,
+                                    progressBar: true,
+                                    rtl: isRtl
+                                });
+                        }
+                    },
+                    error: function(response) {
+                        swal("Error", "Something is wrong", "error");
+                    }
+                });
+
+            }
+
+            function getLeadLoddDetails() {
+                var formData = null;
+                $.ajax({
+                    url: "{{ route('panel.analytics.lead_loss_details') }}",
+                    method: "POST",
+                    data: formData,
+                    success: function(response) {
+                        console.log(response);
+                        if (response.status == "success") {
+                            displayLeadLossStatsChart(response.data);
                         } else {
                             toastr[response.status](
                                 response.message, '!Oops', {
@@ -338,6 +391,7 @@
             }
 
             getProjectedRevenue();
+            getLeadLoddDetails();
         });
     </script>
 

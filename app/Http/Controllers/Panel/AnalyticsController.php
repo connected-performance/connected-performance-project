@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Enums\LeadLossReasonEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Employee;
@@ -327,6 +328,29 @@ class AnalyticsController extends Controller
                 'status' => 'error',
                 'message' => $th->getMessage(),
             ];
+            return response()->json($response);
+        }
+    }
+
+    public function lead_loss_details()
+    {
+        try {
+            $leadCounts = Lead::select('loss_reason', DB::raw('COUNT(*) as count'))
+                ->where('loss_reason', '!=', '')
+                ->groupBy('loss_reason')
+                ->get();
+            $response = [
+                'status' => 'success',
+                'data' => $leadCounts
+            ];
+
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
             return response()->json($response);
         }
     }

@@ -3,6 +3,7 @@ var chartLeads = null;
 var chartCloseRate = null;
 var empLeadChart = null;
 var prrChart = null;
+var leadLossChart = null;
 function displaySalesAndCustomerChart(salesData, customersData) {
     var salesSeries = {
         name: 'Sales',
@@ -224,7 +225,7 @@ function getEmployeesCloseRate(url) {
         data: formData,
         success: function (response) {
             displayEmployeeCloseRateChart(response.leadsByEmployee, "#analytics-employee-close-rate-chart");
-            displayEmployeeLeadCountChart(response.leadsByEmployee,"#analytics-leadsperemployee-chart")
+            displayEmployeeLeadCountChart(response.leadsByEmployee, "#analytics-leadsperemployee-chart")
         },
         error: function (response) {
             swal("Error", "Something is wrong", "error");
@@ -232,7 +233,7 @@ function getEmployeesCloseRate(url) {
     });
 }
 
-function displayEmployeeLeadCountChart(data,chartId) {
+function displayEmployeeLeadCountChart(data, chartId) {
 
     var leadsData = data.map(data => data.customer_leads);
     var chart = $(chartId);
@@ -353,7 +354,7 @@ function addRecurringRevenueToChart(existingChart, newDataSeries, seriesName) {
     }
 }
 
-function displayProjectedRecurringRevenueChart(data,chartId) {
+function displayProjectedRecurringRevenueChart(data, chartId) {
 
     var leadsData = data;
 
@@ -386,6 +387,42 @@ function displayProjectedRecurringRevenueChart(data,chartId) {
         prrChart.updateOptions({
             xaxis: {
                 categories: labels,
+            },
+        });
+    }
+
+}
+
+function displayLeadLossStatsChart(leadsData) {
+    var leadsSeries = {
+        name: 'Loss Reason',
+        type: 'bar',
+        data: leadsData.map(data => data.count),
+    };
+    var leadsLabels = [];
+
+    leadsLabels = leadsData.map(data => data.loss_reason);
+
+    var optionsLeads = {
+        chart: {
+            type: 'bar',
+            height: 350,
+        },
+        xaxis: {
+            categories: leadsLabels
+        },
+        series: [leadsSeries]
+    };
+
+    if (leadLossChart === null) {
+        leadLossChart = new ApexCharts(document.querySelector("#analytics-lead-loss-chart"), optionsLeads);
+        leadLossChart.render();
+    } else {
+        // Update the existing chart with new data
+        leadLossChart.updateSeries([leadsSeries]);
+        leadLossChart.updateOptions({
+            xaxis: {
+                categories: leadsLabels,
             },
         });
     }

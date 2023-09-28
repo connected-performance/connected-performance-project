@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Enums\LeadLossReasonEnum;
 use App\Events\ActivityLog;
 use App\Events\Notificaion;
 use App\Mail\MeetingScheduleMail;
@@ -410,6 +411,16 @@ class LeadController extends Controller
         try {
             $date = Carbon::now();
             $lead = Lead::find($request->id);
+
+            // return LeadLossReasonEnum::from($request->loss_reason);
+            if(!LeadLossReasonEnum::from($request->loss_reason)) {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Sorry Its Not A valid Lead loss reason',
+                    'value' => $request->loss_reason
+                ];
+                return response()->json($response); 
+            }
             if($lead->status == '2'){
                 $response = [
                     'status' => 'error',
@@ -419,6 +430,7 @@ class LeadController extends Controller
             }
             $lead->status = '3';
             $lead->closed_date = $date->format('Y-m-d h:i:s');
+            $lead->loss_reason = $request->loss_reason;
             $lead->save();
             $actor = "";
             if (auth()->user()->is_admin == true) {

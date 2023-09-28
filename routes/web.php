@@ -29,6 +29,8 @@ use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\TestController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\Panel\FileController;
+use App\Http\Controllers\Panel\InstagramController;
+use App\Http\Controllers\Panel\YouTubeController;
 use App\Models\Role;
 use Illuminate\Support\Facades\Artisan;
 
@@ -68,10 +70,30 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
             ->name('panel.analytics.employee-monthly-recurring-revenue');
         Route::post('/analytics/projected-monthly-revenue', [AnalyticsController::class, 'projectedRecurringRevenue'])
             ->name('panel.analytics.projected-monthly-revenue');
+            Route::post('/analytics/leads-loss-details',[AnalyticsController::class ,'lead_loss_details'])->name('panel.analytics.lead_loss_details');
 
         /**
          * Analytics Dashboard end
          */
+
+        /**
+         * Instagram
+         */
+        Route::get('/instagram', [InstagramController::class, 'connectAccount'])->name('instagram.connect');
+        Route::get('/instagram/callback', [InstagramController::class, 'connectCallback'])->name('instagram.callback');
+
+
+        Route::post('/instagram/exchange-token', [InstagramController::class, 'exchangeAccessToken'])->name('instagram.exchange-token');
+        Route::post('/instagram/refresh-token', [InstagramController::class, 'refreshToken'])->name('instagram.refresh-token');
+        Route::get('/instagram/account-details', [InstagramController::class, 'getAccountDetails'])->name('instagram.get-account-details');
+
+        /**
+         * Youtube
+         */
+
+        Route::get('auth/youtube', [YouTubeController::class, 'redirectToYouTube'])->name('youtube.connect');
+        Route::get('auth/youtube/callback', [YouTubeController::class, 'handleYouTubeCallback'])->name('youtube.callback');
+
 
 
         Route::get('/test', [TestController::class, 'test'])->name('panel.test');
