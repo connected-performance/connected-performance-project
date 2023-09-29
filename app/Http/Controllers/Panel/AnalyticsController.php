@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Enums\LeadLossReasonEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Employee;
@@ -225,7 +226,197 @@ class AnalyticsController extends Controller
             ];
             return response()->json($response);
         }
-
-        
     }
+
+    public function totalChurnedCustomers(Request $request)
+    {
+        try {
+            $factor = 'year';
+
+            if ($request->has('factor')) {
+                $factor = $request->factor;
+            }
+
+            if ($factor === 'year') {
+                // Get data monthly for the current year
+                $churnedCustomers = Customer::select(
+                    DB::raw('count(id) as churned_customers'),
+                    DB::raw('YEAR(convert_date) as selected_year')
+                )
+                    ->where('is_converted', 1)
+                    ->where('convert_reason', 'contract-broken')
+                    ->whereYear('convert_date', now()->year) // Filter by the current year
+                    ->groupBy('selected_year')
+                    ->get();
+            }
+
+            $response = [
+                'status' => 'success',
+                'churnedCutomers' => $churnedCustomers
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function projectedRecurringRevenue()
+    {
+        try {
+            // Get the current year
+            $currentYear = Carbon::now()->year;
+
+            // Initialize arrays to store data for each month
+            $monthlyProjectedRevenue = [];
+            $monthlyChurnedCustomers = [];
+            $monthlySubscribedUserCount = [];
+            $yearRevenue = 0;
+            $newSubs = 0;
+
+            // Loop through all 12 months
+            for ($month = 1; $month <= 12; $month++) {
+                // Calculate churned customers for the current month
+                $churnedCustomers = Customer::where('is_converted', 1)
+                    ->where('convert_reason', 'contract-broken')
+                    ->whereYear('convert_date', $currentYear)
+                    ->whereMonth('convert_date', $month)
+                    ->count();
+
+                // Calculate subscribed user count for the current month
+                $subscribedUserCount = User::join('customers', 'users.id', '=', 'customers.user_id')
+                    ->where('users.is_customer', 1)
+                    ->whereNotNull('customers.subscription_id')
+                    ->whereYear('customers.created_at', $currentYear)
+                    ->whereMonth('customers.created_at', $month)
+                    ->count();
+
+                // Get ARPU (Average Revenue Per User) for the current month
+                $totalRevenue = Invoice::where('status', '1')
+                    ->where('balance_status', '1')
+                    ->whereYear('issue_date', $currentYear)
+                    ->whereMonth('issue_date', $month)
+                    ->sum('balance');
+                $currentSubscribers = $subscribedUserCount - $churnedCustomers;
+                $arpu = $currentSubscribers > 0 ? $totalRevenue / $currentSubscribers : 0;
+
+                // Calculate projected recurring revenue for the current month
+                $monthlyProjectedRevenue[] = $currentSubscribers * $arpu;
+                $yearRevenue +=  ($currentSubscribers * $arpu);
+
+                // Store churned customers and subscribed user count for the current month
+                $monthlyChurnedCustomers[] = $churnedCustomers;
+                $monthlySubscribedUserCount[] = $subscribedUserCount;
+                $newSubs += $subscribedUserCount;
+            }
+
+            $response = [
+                'status' => 'success',
+                'monthly_projected_revenue' => $monthlyProjectedRevenue,
+                'monthly_churned_customers' => $monthlyChurnedCustomers,
+                'monthly_subscribed_user_count' => $monthlySubscribedUserCount,
+                'total_revenue' => $yearRevenue,
+                'new_subs' => $newSubs
+            ];
+
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function lead_loss_details()
+    {
+        try {
+            $leadCounts = Lead::select('loss_reason', DB::raw('COUNT(*) as count'))
+                ->where('loss_reason', '!=', '')
+                ->groupBy('loss_reason')
+                ->get();
+            $response = [
+                'status' => 'success',
+                'data' => $leadCounts
+            ];
+
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
+            return response()->json($response);
+        }
+    }
+
+
+
+    // public function projectedRecurringRevenue()
+    // {
+    //     $currentYear = Carbon::now()->year;
+
+    //     $churnedCustomers = Customer::where('is_converted', 1)
+    //         ->where('convert_reason', 'contract-broken')
+    //         ->whereYear('convert_date', now()->year)
+    //         ->count();
+
+    //     $subscribedUserCount = User::join('customers', 'users.id', '=', 'customers.user_id')
+    //         ->where('users.is_customer', 1)
+    //         ->whereNotNull('customers.subscription_id')
+    //         ->count();
+
+    //     $months = DB::table(DB::raw('(SELECT 1 as month UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12) AS months'))
+    //         ->select('months.month');
+
+    //     $invoiceTotals = $months
+    //         ->leftJoin('invoices', function ($join) use ($currentYear) {
+    //             $join->on(DB::raw('MONTH(invoices.created_at)'), '=', 'months.month')
+    //                 ->whereYear('invoices.created_at', $currentYear)
+    //                 ->where('status', '1')->where('balance_status', '1');
+    //         })
+    //         ->select(DB::raw('months.month as month'), DB::raw('COALESCE(SUM(invoices.total_amount), 0) as total'))
+    //         ->groupBy('months.month')
+    //         ->get();
+
+    //     return [
+    //         $invoiceTotals,
+    //         $churnedCustomers,
+    //         $subscribedUserCount
+    //     ];
+    //     try {
+    //         $factor = 'monthly';
+    //         $revenue_value = [];
+    //         $mounth_number = [];
+    //         $currentDate = Carbon::now()->startOfMonth();
+    //         while ($currentDate->year == Carbon::now()->year) {
+    //             $mounth_number[] = $currentDate->format('m');
+    //             $mounth_name[] = $currentDate->format('F');
+    //             $currentDate->subMonth();
+    //         }
+    //         $data = array_reverse($mounth_number);
+    //         foreach ($data as $value) {
+    //             $revenue_value[] = Invoice::where('status', '1')->where('balance_status', '1')->whereMonth('issue_date', $value)->sum('balance');
+    //         }
+
+    //         $total_revenue = array_sum($revenue_value);
+    //         $response = [
+    //             'status' => 'success',
+    //             'total_revenue' => $total_revenue,
+    //             'monthly_revenue' => $revenue_value
+    //         ];
+    //         return response()->json($response);
+    //     } catch (\Throwable $th) {
+    //         $response = [
+    //             'status' => 'error',
+    //             'message' => $th->getMessage(),
+    //         ];
+    //         return response()->json($response);
+    //     }
+    // }
 }

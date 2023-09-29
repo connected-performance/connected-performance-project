@@ -48,6 +48,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'insta_access_token',
+        'insta_user_id',
+        'token_expires_at',
     ];
 
     /**

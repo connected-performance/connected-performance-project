@@ -43,6 +43,8 @@ use App\Repositories\Eloquent\EloquentSpamWordRepository;
 use App\Repositories\Eloquent\EloquentSubscriptionRepository;
 use App\Repositories\Eloquent\EloquentTemplateTagsRepository;
 use App\Repositories\Eloquent\EloquentUserRepository;
+use Illuminate\Support\Facades\URL;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -153,6 +155,10 @@ class AppServiceProvider extends ServiceProvider
             CountriesRepository::class,
             EloquentCountriesRepository::class
         );
+
+        // if (env(key: 'APP_ENV') !=='local') {
+            // URL::forceScheme(scheme:'https');
+        //   }
 
     }
 

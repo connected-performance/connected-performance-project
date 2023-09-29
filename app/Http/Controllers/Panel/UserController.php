@@ -36,6 +36,7 @@ use App\Gateway\Gwapi;
 use App\Mail\InvoiceCustomerMail;
 use App\Mail\InvoiceCustomerUpdateMail;
 use App\Mail\InvoiceMailUser;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -1003,8 +1004,14 @@ class UserController extends Controller
 
     public function customer_to_lead(Request $request){
         try {
+            $request->validate([
+                'id' => 'required',
+                'convert_reason' => 'required|in:no-renew,contract-broken'
+            ]);
            
-             $customer = Customer::where('user_id', $request->id)->update(['status' => 0]);
+             $customer = Customer::where('user_id', $request->id)->first();
+             $customer->update(['status' => 0, 'convert_reason'=> $request->convert_reason,
+            'is_converted' => 1, 'convert_date' => Carbon::now()]);
              $user = User::where('id', $request->id)->update(['is_lead' => '1','is_customer'=>0]);
              $user = User::where('id', $request->id)->first();
              $user->update(['is_lead' => '1','is_customer'=>0]);

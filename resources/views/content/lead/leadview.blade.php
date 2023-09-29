@@ -69,8 +69,33 @@
                             id="del_id"></div>
                     <div class="modal-footer"><button type="button" class="btn btn-light"
                             data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-info" onclick="change_status()">Loss</button>
+                        <button type="button" class="btn btn-info" onclick="loss_reason()">Loss</button>
                         <button type="button" class="btn btn-danger" onclick="delete_form()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade text-start" id="loss_form" tabindex="-1" aria-labelledby="myModalLabel161"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel161">Lead Loss Reason</h5><button type="button"
+                            class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" id="loss_reason_form">
+                            <label for="loss_reason" class="form-label">Loss Reason</label>
+                            <select name="loss_reason" class="form-control" id="loss_reason">
+                                <option value="not-a-fit">Not a fit</option>
+                                <option value="price">Price</option>
+                                <option value="went-with-competitor">Went with competitor</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-light"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-info" onclick="change_status()">Confirm Loss</button>
                     </div>
                 </div>
             </div>
@@ -297,14 +322,22 @@
             })
         }
 
+        function loss_reason() {
+            $('#delete_form').modal('hide');
+            $('#loss_form').modal('show');
+        }
+
         function change_status() {
 
             var id = $("#del_id").val();
+            var reason = $('#loss_reason').val();
+            console.log(reason);
             $.ajax({
                 url: "{{ route('lead.loss') }}",
                 method: "POST",
                 data: {
-                    id: id
+                    id: id,
+                    loss_reason: reason
                 },
                 dataType: "json",
                 success: function(response) {

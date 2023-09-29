@@ -139,6 +139,14 @@
                 <div class="modal-body">
                     Are you shure you want to change this customer into lead.
                     <input type="hidden" id="customer_id">
+                    <div class="form-group">
+                        <label for="close_type" class="form-label">Convert Reason</label>
+                        <select class="form-control" name="close_type" id="close_type">
+                            <option value="">Select one</option>
+                            <option value="no-renew">Did not renew subscription</option>
+                            <option value="contract-broken">Contract Broken</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -177,6 +185,7 @@
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
+        var isRtl = $('html').attr('data-textdirection') === 'rtl';
 
         function delete_data(id) {
             $("#del_id").val(id);
@@ -405,11 +414,12 @@
 
                     if (typeof(response.data.customer.employee) != "undefined" && response.data.customer
                         .employee !== null) {
-                            console.log(response.data.customer.employee.id);
+                        console.log(response.data.customer.employee.id);
 
-                            // $('#user_trainer').add('<option value="' + response.data.customer.employee.id +
-                            // '" selected>' + response.data.customer.employee.id + '</option>');
-                            $('#user_trainer option[value="'+response.data.customer.employee.id+'"]').attr("selected", "selected");
+                        // $('#user_trainer').add('<option value="' + response.data.customer.employee.id +
+                        // '" selected>' + response.data.customer.employee.id + '</option>');
+                        $('#user_trainer option[value="' + response.data.customer.employee.id + '"]').attr(
+                            "selected", "selected");
                         // $("#user_trainer option:eq(" + response.data.customer.employee.id + ")").prop(
                         //     'selected',
                         //     true);
@@ -606,11 +616,14 @@
 
         function convert_to_lead_form() {
             var id = $("#customer_id").val();
+            var convert_type = $('#close_type').val();
+            if (convert_type)
             $.ajax({
                 url: "{{ route('customer.to.lead') }}",
                 type: "POST",
                 data: {
                     id: id,
+                    convert_reason: convert_type
                 },
                 dataType: "json",
                 success: function(response) {
@@ -643,6 +656,15 @@
                     alert("Failed")
                 }
             });
+            else {
+                toastr['error'](
+                    'Please select convert reason', '!Oops', {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: isRtl
+                    });
+            }
         }
 
 
@@ -656,7 +678,7 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    if(response.new==true){
+                    if (response.new == true) {
                         $("#issue_date").prop('disabled', false);
                     }
                     $("#issue_date").val(response.issue_date);
