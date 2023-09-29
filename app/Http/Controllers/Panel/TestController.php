@@ -24,34 +24,37 @@ class TestController extends Controller
 {
     public function test(){
 
-        $customer=78;
-        $customer_vault='1720229524';
-        $order='1543';
-        $plan=60;
-        $plan_n='Plan '.$plan.' Kurt Thomas';
-        $gw = new gwapi;
-        $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
-        // (numero_pagos, monto, nombre plan, plan id, frecuencia mes, dia cobro) {
-        $gw->addPlan(6, 249, $plan_n, $plan, 1, 15);
-        $response_g = $gw->responses['response'];
-        if($response_g == 1){
-            // (plan id, vault id, order id, dia inicio) 
-            $gw->addSubscriptionCVToPlan($plan, $customer_vault, $order, '20230915');
-            $response_g = $gw->responses['subscription_id'];
-            Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
-        }
+        // $customer=266;
+        // $customer_vault='847963944';
+        // $order='1585';
+        // $plan=75;
+        // $plan_n='Plan '.$plan.' Ben Hallene';
+        // $new_plan = new Plan();
+        // $new_plan->number = $plan;
+        // $new_plan->save();
+        // $gw = new gwapi;
+        // $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+        // // (numero_pagos, monto, nombre plan, plan id, frecuencia mes, dia cobro) {
+        // $gw->addPlan(12, 250, $plan_n, $plan, 1, 28);
+        // $response_g = $gw->responses['response'];
+        // if($response_g == 1){
+        //     // (plan id, vault id, order id, dia inicio) 
+        //     $gw->addSubscriptionCVToPlan($plan, $customer_vault, $order, '20230928');
+        //     $response_g = $gw->responses['subscription_id'];
+        //     Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
+        // }
 
-        $constraints = "&report_type=customer_vault&customer_vault_id=".$customer_vault;
-        $result = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints);
-        $ccnumber=str_replace("x","*",$result['customer']['cc_number']);
-        $find_cc = CreditCardCustomer::where('customer_id', $customer)->where('ccnumber', $ccnumber)->first();
-        if(!$find_cc){
-            $tcd = new CreditCardCustomer();
-            $tcd->ccnumber = $ccnumber;
-            $tcd->ccexp = $result['customer']['cc_exp'];
-            $tcd->customer_id = $customer;
-            $tcd->save();
-        }
+        // $constraints = "&report_type=customer_vault&customer_vault_id=".$customer_vault;
+        // $result = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints);
+        // $ccnumber=str_replace("x","*",$result['customer']['cc_number']);
+        // $find_cc = CreditCardCustomer::where('customer_id', $customer)->where('ccnumber', $ccnumber)->first();
+        // if(!$find_cc){
+        //     $tcd = new CreditCardCustomer();
+        //     $tcd->ccnumber = $ccnumber;
+        //     $tcd->ccexp = $result['customer']['cc_exp'];
+        //     $tcd->customer_id = $customer;
+        //     $tcd->save();
+        // }
 die();
         $webhookBody='{
             "event_id": "9f847e5f-06a0-448e-a0df-286d943f8cac",
