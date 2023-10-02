@@ -281,7 +281,7 @@ class AnalyticsController extends Controller
             for ($month = 1; $month <= 12; $month++) {
                 // Calculate churned customers for the current month
                 $churnedCustomers = Customer::where('is_converted', 1)
-                    ->where('convert_reason', 'contract-broken')
+                    // ->where('convert_reason', 'contract-broken')
                     ->whereYear('convert_date', $currentYear)
                     ->whereMonth('convert_date', $month)
                     ->count();
