@@ -445,6 +445,7 @@ class SaleController extends Controller
     }
 
     public function invoice_transaction(Request $request){
+        die();
         /***************************EbizCharger****************************** */
           //$ebizcharge = $this->ebizcharge_customer_create($request->except('_token')); 
           //dd($ebizcharge);
@@ -637,6 +638,7 @@ class SaleController extends Controller
     }
 
     public function invoice_transaction_user(Request $request){
+        die();
         /***************************EbizCharger****************************** */
           //$ebizcharge = $this->ebizcharge_customer_create($request->except('_token')); 
           //dd($ebizcharge);

@@ -36,8 +36,8 @@ class InvoiceCustomerMail extends Mailable
         $customer = Customer::where('user_id',$user->id)->first();
 
         $service = $customer->service;
-        //$buttton  = '<a href="https://crm.connected-performance.com/update-information/'.$user->uid.'" style="background-color: rgb(0, 108, 152); padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Update Information</a>';
-        $buttton  = '<a href="http://127.0.0.1/connect_permormance_gitlab/public/update-information/'.$user->uid.'" style="background-color: rgb(0, 108, 152); padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Update Information</a>';
+        $buttton  = '<a href="https://crm.connected-performance.com/update-information/'.$user->uid.'" style="background-color: rgb(0, 108, 152); padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Update Information</a>';
+        //$buttton  = '<a href="http://127.0.0.1/connected-performance-project/public/update-information/'.$user->uid.'" style="background-color: rgb(0, 108, 152); padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Update Information</a>';
         $template = EmailTemplate::where('slug', 'token-request')->first()->value;
         $template_data = ['--name--'];
         $service = str_replace("_", " ", $service);

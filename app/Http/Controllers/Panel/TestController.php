@@ -24,17 +24,24 @@ class TestController extends Controller
 {
     public function test(){
 
-        // $customer=196;
-        // $customer_vault='1141217711';
-        // $order='1054';
+        // $customer=266;
+        // $customer_vault='847963944';
+        // $order='1585';
+        // $plan=75;
+        // $plan_n='Plan '.$plan.' Ben Hallene';
+        // $new_plan = new Plan();
+        // $new_plan->number = $plan;
+        // $new_plan->save();
         // $gw = new gwapi;
         // $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
-        // $gw->addPlan(12, 250, 'Plan 2 Hunter Hoopes', 1, 1, 28);
+        // // (numero_pagos, monto, nombre plan, plan id, frecuencia mes, dia cobro) {
+        // $gw->addPlan(12, 250, $plan_n, $plan, 1, 28);
         // $response_g = $gw->responses['response'];
         // if($response_g == 1){
-            // $gw->addSubscriptionCVToPlan(3, $customer_vault, $order, '20230831');
-            // $response_g = $gw->responses['subscription_id'];
-            // Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
+        //     // (plan id, vault id, order id, dia inicio) 
+        //     $gw->addSubscriptionCVToPlan($plan, $customer_vault, $order, '20230928');
+        //     $response_g = $gw->responses['subscription_id'];
+        //     Customer::where('id', $customer)->update(['subscription_id' => $response_g]);
         // }
 
         // $constraints = "&report_type=customer_vault&customer_vault_id=".$customer_vault;

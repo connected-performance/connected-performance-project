@@ -38,8 +38,8 @@ class InvoiceMail extends Mailable
 
         $customer = Customer::where('user_id',$user->id)->first();
         if($customer == null){
-            //$buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
-            $buttton  = '<a href="http://127.0.0.1/connect_permormance_gitlab/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            $buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            //$buttton  = '<a href="http://127.0.0.1/connected-performance-project/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%; padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
             $template = EmailTemplate::where('slug', 'invoice')->first()->value;
             $template_data = [
                 '#1000089',
@@ -66,8 +66,8 @@ class InvoiceMail extends Mailable
             return $this->view('content.sale.invoice-mailtemplate',compact('us_data'));
         }else{
             $service = $customer->service;
-            //$buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
-            $buttton  = '<a href="http://127.0.0.1/connect_permormance_gitlab/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            $buttton  = '<a href="https://crm.connected-performance.com/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
+            //$buttton  = '<a href="http://127.0.0.1/connected-performance-project/public/invoice/'.$invoice->id.'" style="background-color: #28c76f; padding: 2%; padding-left: 10%;  padding-right: 10%;border-radius: 10px;border: none; color:#fff;">Pay</a>';
             $template = EmailTemplate::where('slug', 'invoice')->first()->value;
             $template_data = [
                 '#1000089',
