@@ -190,6 +190,7 @@ class NmiWebhookController extends Controller
             $year_i=date("Y", strtotime($invoice->issue_date));
             if($day_i<14){
                 $pay_date=$year_i.'-'.$month_i.'-14';
+                $pay_date_n=$year_i.'-'.$month_i.'-14';
                 $day_of_month = 14;
             }else{
                 if(date("m")<$month_i){
