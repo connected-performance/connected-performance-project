@@ -157,7 +157,7 @@ class Helpers
                     // "icon"   => "home",
                     // ""
                     // "access" => "access backend",
-                      "url" => "panel",
+                    "url" => "panel",
                     "name" => "Home",
                     "icon" => "home",
                     "slug" => "panel.index",

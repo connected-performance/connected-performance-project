@@ -29,7 +29,6 @@
 @endsection
 
 @section('content')
-
     <!-- Complex Headers -->
     <div class="row">
         <div class="col-12">
@@ -63,13 +62,11 @@
                             </thead>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-    </div>
+</div>
     <div class="modal fade text-start" id="delete_form" tabindex="-1" aria-labelledby="myModalLabel160" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -124,8 +121,6 @@
     </div>
     @include('content.users.user-modal')
     @include('content.users.edit-admin')
-
-
     </div>
 
     <div class="modal fade text-start" id="lead_converted_form" tabindex="-1" aria-labelledby="myModalLabel160"
@@ -144,6 +139,60 @@
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" onclick="convert_to_lead_form()">Save Change</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-start" id="change_subscription" tabindex="-1" aria-labelledby="myModalLabel160"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel160">Change Payment Subscription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="invoic_submit_forma" class="form_field" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="user_id_cs" name="user_id_cs">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="recipient-name" class="col-form-label">@lang('Customer')</label>
+                                <input type="text" class="form-control" name="" id="du_user_id_cs" placeholder="" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="cv-id" class="col-form-label">@lang('Customer Vault ID')</label>
+                                <input type="text" class="form-control" name="" id="cv_id" placeholder="" disabled>
+                            </div>
+                            <div class="col-6">
+                                <label for="subs-id" class="col-form-label">@lang('Subscription ID')</label>
+                                <input type="text" class="form-control" name="" id="subs_id" placeholder="" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="recipient-name-vault" class="col-form-label">@lang('Customer Vault')</label>
+                                <input type="text" class="form-control" name="" id="cv_name" placeholder="" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="pay-date" class="col-form-label">@lang('Next Payment Date')</label>
+                                <input type="date" class="form-control" name="pay_date" id="pay_date" placeholder="Issue Date" required>
+                            </div>
+                            <div class="col-6">
+                                <label for="recipient-name" class="col-form-label">@lang('Amount')</label>
+                                <input type="number" class="form-control" name="price_cs" id="du_price_cs" placeholder="Amount"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -244,7 +293,6 @@
             $("#addUser").modal("show")
         }
 
-
         load_data();
 
         function load_data() {
@@ -321,8 +369,6 @@
                 ]
             });
         }
-
-
 
         $("#submit_form").submit(function(event) {
             event.preventDefault();
@@ -645,7 +691,6 @@
             });
         }
 
-
         function increase_duration(id) {
             var id = id;
             $.ajax({
@@ -671,8 +716,6 @@
                     $("#exampleModal").modal('hide');
                 }
             });
-
-
         }
 
         $('#invoic_submit_form').on('submit', function(event) {
@@ -692,6 +735,92 @@
                     var isRtl = $('html').attr('data-textdirection') === 'rtl';
                     if (response.status == "success") {
                         $("#exampleModal").modal('hide');
+                        $('#user_table').DataTable().ajax.reload();
+                        toastr[response.status](
+                            response.message, 'Success', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                        $(".element-blur").addClass("blur-body");
+                        $(".menu-fixed menu-light").addClass("blur-body");
+                        $(".main-menu").addClass("blur-body");
+                        $("footer").addClass("blur-body");
+                        $("nav").addClass("blur-body");
+                        $(".breadcrumbs-top").addClass("blur-body");
+                        $(".main-menu").addClass("blur-body");
+                        $("#preloader-img").removeClass("d-none");
+                        setTimeout(function() {
+                            {{-- window.location.href = "/panel/invoice/detail/" + response.id; --}}
+                            $(".element-blur").removeClass("blur-body");
+                            $(".menu-fixed menu-light").removeClass("blur-body");
+                            $(".main-menu").removeClass("blur-body");
+                            $("footer").removeClass("blur-body");
+                            $("nav").removeClass("blur-body");
+                            $(".breadcrumbs-top").removeClass("blur-body");
+                            $(".main-menu").removeClass("blur-body");
+                            $("#preloader-img").addClass("d-none");
+                            $('#invoice_table').DataTable().ajax.reload();
+                        }, 5000)
+                    } else {
+                        toastr[response.status](
+                            response.message, '!Oops', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    }
+
+                },
+                error: function(response) {
+                    $("#exampleModal").modal('hide');
+                }
+            })
+        });
+
+        function change_subscription(id) {
+            $("#user_id_cs").val(id);
+            var id = id;
+            $.ajax({
+                url: "{{ route('customer.change.subscription') }}",
+                type: "GET",
+                data: {
+                    id: id,
+                },
+                dataType: "json",
+                success: function(response) {
+                    $("#du_user_id_cs").val(response.user_name);
+                    $("#cv_id").val(response.vault_id);
+                    $("#subs_id").val(response.subs_id);
+                    $("#cv_name").val(response.vault_name);
+                    $("#du_price_cs").val(response.amount);
+                    $("#change_subscription").modal('show');
+                },
+                error: function(response) {
+                    $("#change_subscription").modal('hide');
+                }
+            });
+        }
+
+        $('#invoic_submit_forma').on('submit', function(event) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            event.preventDefault();
+            var form_data = $(this).serialize();
+            $.ajax({
+                url: "{{ route('customer.change.subscription.save') }}",
+                method: "POST",
+                data: form_data,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == "success") {
+                        var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                        $("#change_subscription").modal('hide');
                         $('#user_table').DataTable().ajax.reload();
                         toastr[response.status](
                             response.message, 'Success', {

@@ -100,19 +100,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-2 col-sm-6 col-12">
-                                <div class="d-flex flex-row">
-                                    <div class="avatar bg-light-success me-2">
-                                        <div class="avatar-content">
-                                            <i data-feather="dollar-sign" class="avatar-icon"></i>
+                            @if (auth()->user()->is_admin == true)
+                                <div class="col-xl-2 col-sm-6 col-12">
+                                    <div class="d-flex flex-row">
+                                        <div class="avatar bg-light-success me-2">
+                                            <div class="avatar-content">
+                                                <i data-feather="dollar-sign" class="avatar-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="my-auto">
+                                            <h4 class="fw-bolder mb-0">${{ @$revenue_value }}</h4>
+                                            <p class="card-text font-small-3 mb-0">Revenue</p>
                                         </div>
                                     </div>
-                                    <div class="my-auto">
-                                        <h4 class="fw-bolder mb-0">${{ @$revenue_value }}</h4>
-                                        <p class="card-text font-small-3 mb-0">Revenue</p>
-                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -148,74 +150,78 @@
                     <!--/ Line Chart - Profit -->
 
                     <!-- Earnings Card -->
-                    <div class="col-lg-12 col-md-6 col-12">
-                        <div class="card earnings-card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <h4 class="card-title mb-1">Earnings</h4>
-                                        <div class="font-small-2">This Month Revenue</div>
-                                        <h5 class="mb-1 t_revenue">${{$mounthly_revenue_value}}</h5>
-                                        <p class="card-text text-muted font-small-2">
+                    @if (auth()->user()->is_admin == true)
+                        <div class="col-lg-12 col-md-6 col-12">
+                            <div class="card earnings-card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h4 class="card-title mb-1">Earnings</h4>
+                                            <div class="font-small-2">This Month Revenue</div>
+                                            <h5 class="mb-1 t_revenue">${{$mounthly_revenue_value}}</h5>
+                                            <p class="card-text text-muted font-small-2">
 
-                                        </p>
-                                    </div>
-                                    <div class="col-6">
-                                       <input id="customer-data" type="month" class="form-control" name="bday-month" />
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                        <input id="customer-data" type="month" class="form-control" name="bday-month" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                     <!--/ Earnings Card -->
                 </div>
             </div>
 
             <!-- Revenue Report Card -->
-            <div class="col-lg-8 col-12">
-                <div class="card card-revenue-budget">
-                    <div class="row mx-0">
-                        <div class="col-md-8 col-12 revenue-report-wrapper">
-                            <div class="d-sm-flex justify-content-between align-items-center mb-3">
-                                <h4 class="card-title mb-50 mb-sm-0">Revenue Report</h4>
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center me-2">
-                                        <span class="bullet bullet-success font-small-3 me-50 cursor-pointer"></span>
-                                        <span>Earning</span>
-                                    </div>
-                                    <div class="d-flex align-items-center ms-75">
-                                        <span class="bullet bullet-warning font-small-3 me-50 cursor-pointer"></span>
-                                        <span>Expense</span>
+            @if (auth()->user()->is_admin == true)
+                <div class="col-lg-8 col-12">
+                    <div class="card card-revenue-budget">
+                        <div class="row mx-0">
+                            <div class="col-md-8 col-12 revenue-report-wrapper">
+                                <div class="d-sm-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title mb-50 mb-sm-0">Revenue Report</h4>
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center me-2">
+                                            <span class="bullet bullet-success font-small-3 me-50 cursor-pointer"></span>
+                                            <span>Earning</span>
+                                        </div>
+                                        <div class="d-flex align-items-center ms-75">
+                                            <span class="bullet bullet-warning font-small-3 me-50 cursor-pointer"></span>
+                                            <span>Expense</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div id="revenue-report-chart"></div>
                             </div>
-                            <div id="revenue-report-chart"></div>
-                        </div>
-                        <div class="col-md-4 col-12 budget-wrapper">
-                            <div class="btn-group">
-                                <button type="button"
-                                    class="btn btn-outline-success btn-sm dropdown-toggle budget-dropdown"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    2023
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#" data-value="2020">2023</a>
-                                    <a class="dropdown-item" href="#" data-value="2019">2022</a>
-                                    <a class="dropdown-item" href="#" data-value="2018">2021</a>
-                                    <a class="dropdown-item" href="#" data-value="2018">2020</a>
+                            <div class="col-md-4 col-12 budget-wrapper">
+                                <div class="btn-group">
+                                    <button type="button"
+                                        class="btn btn-outline-success btn-sm dropdown-toggle budget-dropdown"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        2023
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-value="2020">2023</a>
+                                        <a class="dropdown-item" href="#" data-value="2019">2022</a>
+                                        <a class="dropdown-item" href="#" data-value="2018">2021</a>
+                                        <a class="dropdown-item" href="#" data-value="2018">2020</a>
+                                    </div>
                                 </div>
+                                <h2 class="mb-25" id="year_data">$</h2>
+                                {{-- <div class="d-flex justify-content-center">
+                                    <span class="fw-bolder me-25">Budget:</span>
+                                    <span>56,800</span>
+                                </div>
+                                <div id="budget-chart"></div>
+                                <button type="button" class="btn btn-success">Increase Budget</button> --}}
                             </div>
-                            <h2 class="mb-25" id="year_data">$</h2>
-                            {{-- <div class="d-flex justify-content-center">
-                                <span class="fw-bolder me-25">Budget:</span>
-                                <span>56,800</span>
-                            </div>
-                            <div id="budget-chart"></div>
-                            <button type="button" class="btn btn-success">Increase Budget</button> --}}
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
             <!--/ Revenue Report Card -->
         </div>
         <div class="row match-height">

@@ -29,10 +29,9 @@ class SmartWaiverController extends Controller
         if (curl_errno($ch)) {
             echo 'Error:' . curl_error($ch);
         }
-         $data =   json_decode($result);
-         $data =  @$data->templates;
+        $data =   json_decode($result);
+        $data =  @$data->templates;
         
-
         return view('smartwaiver.templates',compact('data', 'breadcrumbs'));
     }
 }

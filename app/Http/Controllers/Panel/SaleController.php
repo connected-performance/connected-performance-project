@@ -27,7 +27,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Mail\DemoMail;
 use SoapClient;
 use App\Gateway\Gwapi;
-
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -40,13 +40,16 @@ class SaleController extends Controller
             ['name' => __('invoices')],
         ];
         $customers = User::Orwhere('is_lead',1)->with('invoices')->get(['id','first_name','last_name']);
+        $customers_list = User::where('is_customer', 1)->orderby('first_name')->get(['id','first_name','last_name']);
         $services = Service::where('status','1')->get(['id','name']);
-        return view('content.sale.invoice-index',compact('customers', 'breadcrumbs', 'services'));
+        return view('content.sale.invoice-index',compact('customers', 'breadcrumbs', 'services', 'customers_list'));
     }
     
     public function invoice_ajax(Request $request){
+
         $user_id = auth()->user()->id;
-        $records =  Invoice::with('users')->orderBy('id', 'desc')->get();
+        $records = DB::table('invoices as invoices')->selectRaw('invoices.*, users.first_name, users.last_name')->join('users as users', 'users.id', '=', 'invoices.user_id')->orderBy('invoices.id', 'desc')->latest('invoices.created_at');
+        //$records =  Invoice::selectRaw('invoices.*, users.first_name, users.last_name')->with('users')->orderBy('invoices.id', 'desc')->latest('invoices.created_at');
         return DataTables::of($records)->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
@@ -84,6 +87,41 @@ class SaleController extends Controller
                     $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
                 }
                 return $balance_status;
+            })
+            ->filter(function ($query) use ($request) {
+                if ($request->get('costumer_fl')) {
+                    $query->where('user_id',  request('costumer_fl'));
+                }
+                if ($request->get('pay_month')) {
+                    $query->whereMonth('issue_date',  request('pay_month'));
+                }
+                if ($request->get('pay_year')) {
+                    $query->whereYear('issue_date',  request('pay_year'));
+                }
+                if ($request->get('pay_type')) {
+                    $query->where('type',  request('pay_type'));
+                }
+                if (!is_null($request->get('pay_status'))) {
+                    $query->where('balance_status',  request('pay_status'));
+                }
+                if (!is_null($request->get('invoice_no'))) {
+                    $query->where('invoice_number', request('invoice_no'));
+                }
+                if (!is_null($request->get('order_nmi'))) {
+                    $query->where('order_nmi', request('order_nmi'));
+                }
+                if (!is_null($request->get('transaction_nmi'))) {
+                    $query->where('transaction', request('transaction_nmi'));
+                }
+                if (!is_null($request->get('vault_id')) || !is_null($request->get('subs_id'))) {
+                    $query->join('customers as customers', 'invoices.customer_id', '=', 'customers.id');
+                    if ($request->get('vault_id')) {
+                        $query->where('customers.vault_id', request('vault_id'));
+                    }
+                    if ($request->get('subs_id')) {
+                        $query->where('customers.subscription_id', request('subs_id'));
+                    }
+                }
             })
             ->rawColumns(['action', 'invoice_number','status', 'balance_status', 'balance', 'total_amount'])
             ->make(true);

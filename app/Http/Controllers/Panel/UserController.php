@@ -54,58 +54,6 @@ class UserController extends Controller
         // $name = $request->segment(3);
         $this->userRepository = $userRepository;
         $this->data_s = $data_s;
-        $this->data_s = [];
- 
-         
-
-            // $ch = curl_init();
-
-            // curl_setopt($ch, CURLOPT_URL, 'https://api.smartwaiver.com/v4/search?templateId=vmwvywvnfbo6148ycdyadb');
-
-            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
-
-            // $headers = array();
-            // $headers[] = 'Sw-Api-Key: 2ca0284b435662666515868b0b45874f';
-
-
-            // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-            // $result = curl_exec($ch);
-            // if (curl_errno($ch)) {
-            //     return "Error";
-            // }
-            // $data =   json_decode($result);
-
-            if (isset($data->search->guid)) {
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.smartwaiver.com/v4/search/' . $data->search->guid . '/results?page=0');
-
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
-
-                $headers = array();
-                $headers[] = 'Sw-Api-Key: 2ca0284b435662666515868b0b45874f';
-                // $headers[] = 'templateId: picyqbwmbu4y4wrcahrgme';
-                // $headers[] = 'Sw-Api-Key: 2f5ad55bdbfe30da1cef293a89dbf1f9';
-
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-                $result = curl_exec($ch);
-                if (curl_errno($ch)) {
-                    return "Errror";
-                }
-                $data =   json_decode($result);
-                $data = $data->search_results;
-                foreach ($data as $value) {
-                    $this->data_s[] = $value->email;
-                }
-            }
-        
-     
     }
 
     public function user_admin()
@@ -146,53 +94,6 @@ class UserController extends Controller
         }
         if ($name == 'customer') {
             $role = $name;
-            /*$ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, 'https://api.smartwaiver.com/v4/search?templateId=vmwvywvnfbo6148ycdyadb');
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
-
-            $headers = array();
-            $headers[] = 'Sw-Api-Key: 2ca0284b435662666515868b0b45874f';
-
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-            $result = curl_exec($ch);
-            if (curl_errno($ch)) {
-                return "Error";
-            }
-            $data =   json_decode($result);
-
-            if (isset($data->search->guid)) {
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://api.smartwaiver.com/v4/search/' . $data->search->guid . '/results?page=0');
-
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-
-
-                $headers = array();
-                $headers[] = 'Sw-Api-Key: 2ca0284b435662666515868b0b45874f';
-                // $headers[] = 'templateId: picyqbwmbu4y4wrcahrgme';
-                // $headers[] = 'Sw-Api-Key: 2f5ad55bdbfe30da1cef293a89dbf1f9';
-
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-                $result = curl_exec($ch);
-                if (curl_errno($ch)) {
-                    return "Errror";
-                }
-                $data =   json_decode($result);
-                $data = $data->search_results;
-                foreach ($data as $value) {
-                    $this->data_s[] = $value->email;
-                }
-            }*/
-            /**********************End**************************** */
             $role =$name;//Role::where('name', 'customer')->first(['id', 'name']);
             $modal = "Add Employe";
             $page = "Customers";
@@ -209,20 +110,74 @@ class UserController extends Controller
     public function user_ajax(Request $request)
     {
         if($request->role_id == 'admin'){
-            $records =  User::where('is_admin', true)->where('id', '!=', 1)->Where('id', '!=', auth()->id())->with('country')->with('state')->with('city')->get();
+            $records =  User::where('is_admin', true)->where('id', '!=', 1)->Where('id', '!=', auth()->id())->with('customer')->with('country')->with('state')->with('city')->get();
         }
         else{
-            $records =  User::where('is_employe', true)->where('id', '!=', 1)->Where('id', '!=', auth()->id())->with('country')->with('state')->with('city')->get();
+            $records =  User::where('is_employe', true)->where('id', '!=', 1)->Where('id', '!=', auth()->id())->with('customer')->with('country')->with('state')->with('city')->get();
         }
         if($request->role_id == 'customer'){
-
+            $this->data_s = [];
+ 
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.smartwaiver.com/v4/search?templateId=vmwvywvnfbo6148ycdyadb',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_POSTFIELDS => '=',
+                CURLOPT_HTTPHEADER => array(
+                    'sw-api-key: dc8f2524153428c8eda48abe0f8c1628',
+                    'Content-Type: application/x-www-form-urlencoded'
+                ),
+            ));
+    
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $response = json_decode($response,TRUE);
+            if(isset($response['search']['guid'])) {
+                $curl = curl_init();
+                $url = 'https://api.smartwaiver.com/v4/search/'.$response['search']['guid'].'/results?page=0';
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => $url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_POSTFIELDS => '=',
+                    CURLOPT_HTTPHEADER => array(
+                        'sw-api-key: dc8f2524153428c8eda48abe0f8c1628',
+                        'Content-Type: application/x-www-form-urlencoded'
+                    ),
+                ));
+    
+                $response = curl_exec($curl);
+                curl_close($curl);
+                $response = json_decode($response,TRUE);
+                $response = $response['search_results'];
+                foreach($response as $key => $value){
+                    $this->data_s[] = $value['email'];
+    
+                }
+            }
             $records =  User::where('is_customer', true)->with(['customer' => function ($query) {
                 return $query->where('status','1')->with('employee')->with('referral')->with('invoices');
             }])->with('country')->with('state')->get();
             return DataTables::of($records)->addIndexColumn()
             ->addColumn('action', function ($row) {
+                $btn_subs='';
+                if($row->customer->subscription_id){
+                    $btn_subs='<a href="#" style="padding-left:10px;" class="link-warning"  data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Change Subscription" onclick="change_subscription(' . $row->id . ')"><i class="fa-solid fa-refresh" aria-hidden="true"></i></a>';
+                }
                 $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
-                data-bs-placement="top" title="Increase Duration" onclick="increase_duration(' . $row->id . ')"><i class="fa-solid fa-calendar" aria-hidden="true"></i></a>'.'<a href="' . route('user.detail', ['id' => $row->id]) . '" style="padding-left:10px;" class="link-primary"  data-bs-toggle="tooltip"
+                data-bs-placement="top" title="Increase Duration" onclick="increase_duration(' . $row->id . ')"><i class="fa-solid fa-calendar" aria-hidden="true"></i></a>'.$btn_subs.'<a href="' . route('user.detail', ['id' => $row->id]) . '" style="padding-left:10px;" class="link-primary"  data-bs-toggle="tooltip"
                 data-bs-placement="top" title="View"><i class="fas fa-eye"></i></a>'.'<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
                 data-bs-placement="top" title="Edit" onclick="edit_data(' . $row->id . ')"><i class="fas fa-edit"></i></a>' .
                 '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
@@ -274,7 +229,7 @@ class UserController extends Controller
             ->addColumn('time_duration', function ($row) {
                 $user = $row;
                 $date = date('Y-m-d');
-                $invoice = Invoice::where('user_id', $user->id)->get();
+                $invoice = Invoice::where('user_id', $user->id)->where('type', 'NORMAL PAYMENT')->get();
                 $time = count($invoice).' Month';
                 /*if (isset($row->customer->invoices[0])) {
                      $time = $row->customer->invoices[0]->time_period;
@@ -302,8 +257,8 @@ class UserController extends Controller
                 if (isset($row->customer)) {
                     $length = '';
                     $user_id = $row->customer->user_id;
-                    $user = Invoice::where('user_id',$user_id)->count();
-                    $balance_count =Invoice::where('balance_status',1)->where('user_id',$user_id)->count();
+                    $user = Invoice::where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->count();
+                    $balance_count =Invoice::where('balance_status',1)->where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->count();
                     if($balance_count==0){
                         $length = '<div class="demo-vertical-spacing">
                         <div class="progress progress-bar-success">
@@ -335,33 +290,34 @@ class UserController extends Controller
             })
             ->addColumn('services', function ($row) {
                 if (isset($row->customer)) {
-                     $serices = '<span class="badge fix_badges bg-info  rounded">' . $row->customer->service . '</span>';
+                    $serices = '<span class="badge fix_badges bg-info  rounded">' . $row->customer->service . '</span>';
                 } else {
-                     $serices = '';
+                    $serices = '';
                 }
-
                 return $serices;
             })
             ->addColumn('email', function ($row) {
-                    $mail = '<a onclick="send_message('.$row->id.',1)">'.$row->email.'</a>';
-                    return $mail;
+                $mail = '<a onclick="send_message('.$row->id.',1)">'.$row->email.'</a>';
+                return $mail;
             })
             ->addColumn('phone_number', function ($row) {
                 $phone_number = '<a onclick="send_message(' . $row->id . ',2)">' . $row->phone_number . '</a>';
-                    return $phone_number;
-                })
-                    ->addColumn('agreement', function ($row) {
-
-                    if (in_array($row->email, $this->data_s)) {
-                        return  '<span class="badge fix_badges bg-success  rounded">Done</span>';
-                    } else {
-                        return  '<span class="badge fix_badges bg-danger  rounded">Pending</span>';
-
-                    }
-              
+                return $phone_number;
             })
-                ->rawColumns(['agreement','action', 'status', 'services', 'traning_length', 'billing_status', 'time_duration', 'trainer', 'state', 'country', 'city','email', 'phone_number'])
-                ->make(true);
+            ->addColumn('agreement', function ($row) {
+                if (in_array($row->email, $this->data_s)) {
+                    return  '<span class="badge fix_badges bg-success rounded">Done</span>';
+                } else {
+                    $query_waiver = UserSmartWaiver::where('user_id', $row->id)->first();
+                    if($query_waiver) {
+                        return  '<span class="badge fix_badges bg-success rounded">Done</span>';
+                    }else{ 
+                        return  '<span class="badge fix_badges bg-danger rounded">Pending</span>';
+                    }
+                }
+            })
+            ->rawColumns(['agreement','action', 'status', 'services', 'traning_length', 'billing_status', 'time_duration', 'trainer', 'state', 'country', 'city','email', 'phone_number'])
+            ->make(true);
                 
         }else{
             return DataTables::of($records)->addIndexColumn()
@@ -788,7 +744,7 @@ class UserController extends Controller
         $tdc = CreditCardCustomer::where('customer_id', $customer->id)->get();
         $activities = ModelsActivityLog::where('user_id',$id)->take(5)->get();
         $notes = UserNote::where('customer_id', $users->customer->id)->get();
-        $last_invoice = Invoice::where('user_id', $users->id)->where('customer_id', $customer->id)->get()->last();
+        $last_invoice = Invoice::where('user_id', $users->id)->where('type', 'NORMAL PAYMENT')->where('customer_id', $customer->id)->get()->last();
 
         return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id', 'notes', 'tdc', 'last_invoice', 'url_contract'));
     }
@@ -820,6 +776,9 @@ class UserController extends Controller
                     $status  = '<span class="badge rounded-pill  badge-light-success">Send</span>';
                 }
                 return $status;
+            })
+            ->addColumn('type', function ($row) {
+                return $row->type;
             })
             ->addColumn('balance_status', function ($row) {
                 if ($row->balance_status == '0') {
@@ -1026,8 +985,8 @@ class UserController extends Controller
     public function increase_duration(Request $request){
 
         try {
-            $data = Invoice::where('user_id',$request->id)->get('due_date')->max('due_date');
-            $data = Invoice::where('user_id',$request->id)->where('due_date',$data)->with('users')->first();
+            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->get('due_date')->max('due_date');
+            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->where('due_date',$data)->with('users')->first();
             if($data){
                 $issue_date = date('Y-m-d', strtotime($data->issue_date . ' + 1 months'));
                 $due_date = date('Y-m-d', strtotime($data->due_date . ' + 1 months'));
@@ -1087,7 +1046,7 @@ class UserController extends Controller
                 ];
                 return response()->json($response);
             }
-            $invoice = Invoice::where('user_id',$request->user_id)->orderBy('id', 'desc')->first();
+            $invoice = Invoice::where('user_id',$request->user_id)->where('type', 'NORMAL PAYMENT')->orderBy('id', 'desc')->first();
             if($invoice){
                 $duration = '';
                 $data = explode(',', $request->duration);
@@ -1188,7 +1147,7 @@ class UserController extends Controller
                         $plan_payments=$result[$key]['plan_payments']+$duration;
                     }
                 }
-                $gw->editPlan($plan_id, $plan_payments, $balance, $month_frequency, $day_of_month, null);
+                $gw->editPlan($plan_id, $plan_payments, $balance, $month_frequency, $day_of_month);
     
                 $response = [
                     'status' => 'success',
@@ -1699,5 +1658,217 @@ class UserController extends Controller
         $waiver->save();
 
         return redirect()->back();
+    }
+
+    public function change_subscription(Request $request){
+
+        try {
+            $user = User::findOrFail($request->id);
+            $invoice = Invoice::where('user_id', $request->id)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->first();
+
+            $gw = new gwapi;
+            $constraints_vault = "&report_type=customer_vault&customer_vault_id=".$user->customer->vault_id;
+            $result_vault = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints_vault);
+
+            $plan=null;
+            $amount=null;
+
+            if($invoice){
+                if($invoice->plan_id){
+                    $constraints_plan = "&report_type=recurring_plans";
+                    $result_plan = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints_plan);
+                    foreach ($result_plan as $key => $value) {
+                        if($invoice->plan_id==$value["plan_id"]){
+                            $amount=$value["plan_amount"];
+                        }
+                    }
+                }
+            }
+
+            $response = [
+                'status' => 'success',
+                'user_id' => $user->id,
+                'user_name' => $user->first_name.' '.$user->last_name,
+                'vault_id' => $user->customer->vault_id,
+                'subs_id' => $user->customer->subscription_id,
+                'vault_name' => $result_vault['customer']['first_name'].' '.$result_vault['customer']['last_name'],
+                'amount' => $amount,
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        } 
+
+    }
+
+    public function change_subscription_save(Request $request)
+    {
+        try {
+            if($request->pay_date==null){
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Subscription date is required',
+
+                ];
+                return response()->json($response);
+            }elseif($request->pay_date<=date("Y-m-d")){
+                $response = [
+                    'status' => 'error',
+                    'message' => 'The subscription date must be in the future',
+
+                ];
+                return response()->json($response);
+            }else{
+
+                $invoice = Invoice::where('user_id', $request->user_id_cs)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->first();
+                $day_i=date("d", strtotime($request->pay_date));
+                if($invoice){
+                    $gw = new gwapi;
+                    $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+                    $gw->editPlan($invoice->plan_id, null, $request->price_cs, 1, $day_i, null);
+
+                    $invoices = Invoice::where('user_id', $request->user_id_cs)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->get();
+                    $pay_date_n=$request->pay_date;
+                    foreach ($invoices as $key => $value) {
+                        Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n, 'balance' => $request->price_cs, 'total_amount' => $request->price_cs*$invoices->count()]);
+                        $pay_date_n = date('Y-m-d', strtotime($pay_date_n . ' + 1 months'));
+                    }
+
+                    $user = User::findOrFail($request->user_id_cs);
+                    $actor = "";
+                    if (auth()->user()->is_admin == true) {
+                        $actor = 1;
+                    } else {
+                        $actor = 2;
+                    }
+                    $data = [
+                        'user_id' => auth()->id(),
+                        'name' => auth()->user()->first_name . " Subscription Update",
+                        'event_name' => "Subscription Update",
+                        'email' => auth()->user()->email,
+                        'description' => "Subscription Update Successfully",
+                        'actor' => $actor,
+                        'url' => url()->current(),
+                    ];
+                    event(new ActivityLog($data));
+                    $notification = [
+                        'user_id' => auth()->id(),
+                        'title' =>  'Subscription Update',
+                        'description' => 'Updated subscription for ' . $user->first_name . ' customer'
+                    ];
+                    if (auth()->user()->is_admin == false) {
+                        event(new Notificaion($notification));
+                    }
+
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Subscription modified successfully',
+                        
+                    ];
+                    return response()->json($response);
+                }
+            }
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function create_payment(Request $request){
+
+        try {
+            $user = User::findOrFail($request->id);
+            $gw = new gwapi;
+            $constraints_vault = "&report_type=customer_vault&customer_vault_id=".$user->customer->vault_id;
+            $result_vault = $gw->testXmlQuery('BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR',$constraints_vault);
+
+            $response = [
+                'status' => 'success',
+                'user_id' => $user->id,
+                'user_name' => $user->first_name.' '.$user->last_name,
+                'vault_id' => $user->customer->vault_id,
+                'vault_name' => $result_vault['customer']['first_name'].' '.$result_vault['customer']['last_name'],
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        } 
+
+    }
+
+    public function create_payment_save(Request $request)
+    {
+        try {
+            
+            $user = User::findOrFail($request->user_id_cs);
+            $ino_number = Invoice::orderBy('id', 'desc')->first();
+            if($ino_number){
+                $number = $ino_number->invoice_number;
+            }else{
+                $number = 999;
+            }
+            $order_nmi=$number+1;
+
+            $invoice = new Invoice();
+            $number = $number+1;
+            $invoice->user_id = $request->user_id_cs;
+            $invoice->invoice_number = $order_nmi;
+            $invoice->invoice_code = "#N";
+            $invoice->order_nmi = $order_nmi;
+            $issue_date = date('Y-m-d');
+            $due_date = date('Y-m-d');
+            $invoice->level = 1;
+            $pay_date = date('Y-m-d');
+            $invoice->created_by = auth()->id();
+            $invoice->customer_id = $user->customer->id;
+            $invoice->issue_date = $issue_date;//$request->issue_date;
+            $invoice->due_date = $due_date;//$request->due_date;
+            $invoice->pay_date = $pay_date;
+            $invoice->description = '';
+            $invoice->total_amount =  $request->price_cs;
+            $subtotal_amount = $request->price_cs;
+            $invoice->balance = round($subtotal_amount, 2);
+            $invoice->time_period = '1 Payment';
+            $invoice->duration = 1;
+            $invoice->status = 1;
+            $invoice->type = 'SINGLE PAYMENT';
+            $invoice->save();
+
+            $gw = new gwapi;
+            $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+            $gw->doSaleCustomerVault($user->customer->vault_id, number_format($request->price_cs, 2), $order_nmi);
+
+            $response_g = $gw->responses['response'];
+            if($response_g == 1){
+                $response = [
+                    'status' => 'success',
+                    'message' => 'The payment was made successfully',
+                ];
+                return response()->json($response);
+            }else{
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Error processing payment',
+                ];
+                return response()->json($response);
+            }
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
     }
 }

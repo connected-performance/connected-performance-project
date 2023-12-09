@@ -584,13 +584,21 @@ class Gwapi {
     $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
     $query .= "recurring=edit_plan&";
     $query .= "current_plan_id=" . urlencode($current_plan_id) . "&";
-    $query .= "plan_payments=" . urlencode($plan_payments) . "&";
-    $query .= "plan_amount=" . urlencode($plan_amount) . "&";
+    if($plan_payments!=null){
+      $query .= "plan_payments=" . urlencode($plan_payments) . "&";
+    }
+    if($plan_amount!=null){
+      $query .= "plan_amount=" . urlencode($plan_amount) . "&";
+    }
     if($plan_name!=null){
       $query .= "plan_name=" . urlencode($plan_name) . "&";
     }
-    $query .= "month_frequency=" . urlencode($month_frequency) . "&";
-    $query .= "day_of_month=" . urlencode($day_of_month);
+    if($month_frequency!=null){
+      $query .= "month_frequency=" . urlencode($month_frequency) . "&";
+    }
+    if($day_of_month!=null){
+      $query .= "day_of_month=" . urlencode($day_of_month);
+    }
     return $this->_doPost($query);
   }
 
@@ -629,6 +637,18 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
+  // Functions Update a Custom Subscription's Plan Details
+  function editSubscription($subscription_id, $month_frequency, $day_of_month, $start_date) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "recurring=update_subscription&";
+    $query .= "subscription_id=" . urlencode($subscription_id) . "&";
+    $query .= "month_frequency=" . urlencode($month_frequency) . "&";
+    $query .= "day_of_month=" . urlencode($day_of_month) . "&";
+    $query .= "start_date=" . urlencode($start_date);
+    return $this->_doPost($query);
+  }
+
   // Functions Delete a Subscription
   function deleteSubscription($subscription_id) {
     $query  = "";
@@ -653,6 +673,16 @@ class Gwapi {
     $query  = "";
     $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
     $query .= "customer_vault=delete_customer&";
+    $query .= "customer_vault_id=" . urlencode($customer_id);
+    return $this->_doPost($query);
+  }
+
+  // Functions Delete Customer
+  function doSaleCustomerVault($customer_id, $amount, $orderid) {
+    $query  = "";
+    $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
+    $query .= "amount=" . urlencode($amount) . "&";
+    $query .= "orderid=" . urlencode($orderid) . "&";
     $query .= "customer_vault_id=" . urlencode($customer_id);
     return $this->_doPost($query);
   }

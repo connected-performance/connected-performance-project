@@ -15,10 +15,9 @@
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
@@ -48,31 +47,122 @@
             <img src="{{ asset('custom/img/512x512.gif') }}" class="spinner-image" height="200">
         </div>
     </div>
-    <!-- Complex Headers -->
+    <!-- Complex Headers -->  
     <div class="row element-blur">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-header border-bottom">
-                        <button type="button" class="btn btn-success" onclick="modal_show()">Create</button>
+                <div class="row">
+                    <div class="col-12">
+                        <h4>Search Filter</h4>
                     </div>
-                    <div class="card-datatable" class="dt-complex-header table table-bordered table-responsive">
-                        <table id="invoice_table" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>@lang('Invoice')</th>
-                                    <th>@lang('Name')</th>
-                                    <th>@lang('Lastname')</th>
-                                    <th>@lang('Issue Date')</th>
-                                    <th>@lang('Pay Date')</th>
-                                    <th>@lang('Due')</th>
-                                    <th>@lang('Balance')</th>
-                                    <th>@lang('Status')</th>
-                                    <th class="col-2">@lang('Action')</th>
-                                </tr>
-                            </thead>
-                        </table>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <label for="costumer_fl" class="col-form-label">@lang('Costumer')</label>
+                        <select class="form-control type slector select-2" id="costumer_fl" name="costumer_fl">
+                            <option value="">Select Costumer</option>
+                            @foreach($customers_list as $key => $value)
+                                <option value="{{ $value->id }}">{{ $value->first_name.' '.$value->last_name }}</option>
+                            @endforeach
+                        </select>
                     </div>
+                    <div class="col-3">
+                        <label for="pay_month" class="col-form-label">@lang('Payment Month')</label>
+                        <select class="form-control type slector" id="pay_month" name="pay_month">
+                            <option value="">Select Payment Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="pay_year" class="col-form-label">@lang('Payment Year')</label>
+                        <select class="form-control type slector" id="pay_year" name="pay_year">
+                            <option value="">Select Payment Year</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="pay_status" class="col-form-label">@lang('Payment Status')</label>
+                        <select class="form-control type slector select-2" id="pay_status" name="pay_status">
+                            <option value="">Select Payment Status</option>
+                            <option value="1">Paid</option>
+                            <option value="0">UnPaid</option>
+                            <option value="2">Failed</option>
+                        </select>
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-3">
+                        <label for="pay_type" class="col-form-label">@lang('Payment Type')</label>
+                        <select class="form-control type slector" id="pay_type" name="pay_type">
+                            <option value="">Select Payment Type</option>
+                            <option value="NORMAL PAYMENT">Normal Payment</option>
+                            <option value="SINGLE PAYMENT">Single Payment</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="invoice_no" class="col-form-label">@lang('Invoice')</label>
+                        <input type="text" name="invoice_no" id="invoice_no" value="" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <label for="order_nmi" class="col-form-label">@lang('Order NMI')</label>
+                        <input type="text" name="order_nmi" id="order_nmi" value="" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <label for="transaction_nmi" class="col-form-label">@lang('Transaction NMI')</label>
+                        <input type="text" name="transaction_nmi" id="transaction_nmi" value="" class="form-control">
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-3">
+                        <label for="vault_id" class="col-form-label">@lang('Costumer Vault ID')</label>
+                        <input type="text" name="vault_id" id="vault_id" value="" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <label for="subs_id" class="col-form-label">@lang('Subscription ID')</label>
+                        <input type="text" name="subs_id" id="subs_id" value="" class="form-control">
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-12" style="text-align: right;"><br>
+                        <button type="button" class="btn btn-primary" id="search">Search</button>
+                    </div>
+                </div>
+                <div class="card-header border-bottom">
+                    <button type="button" class="btn btn-success" onclick="modal_show()">Create</button>
+                </div>
+                <div class="card-datatable" class="dt-complex-header table table-bordered table-responsive">
+                    <table id="invoice_table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@lang('Invoice')</th>
+                                <th>@lang('Name')</th>
+                                <th>@lang('Lastname')</th>
+                                <th>@lang('Issue Date')</th>
+                                <th>@lang('Pay Date')</th>
+                                <th>@lang('Due')</th>
+                                <th>@lang('Transaction NMI')</th>
+                                <th>@lang('Balance')</th>
+                                <th>@lang('Type')</th>
+                                <th>@lang('Status')</th>
+                                <th class="col-2">@lang('Action')</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -151,6 +241,7 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.rowGroup.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
 
 @endsection
 @section('page-script')
@@ -159,6 +250,7 @@
     <script>
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
+            $('.select-2').select2();
         });
 
         function modal_show() {
@@ -181,7 +273,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#invoice_table').DataTable({
+            var table = $('#invoice_table').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -190,16 +282,27 @@
                 ajax: {
                     url: "{{ url('panel/invoice/ajax') }}",
                     type: "POST",
-
+                    data: function (data) {
+                        data.costumer_fl = $('#costumer_fl').val(),
+                        data.pay_month = $('#pay_month').val(),
+                        data.pay_year = $('#pay_year').val(),
+                        data.pay_type = $('#pay_type').val(),
+                        data.pay_status = $('#pay_status').val(),
+                        data.invoice_no = $('#invoice_no').val(),
+                        data.order_nmi = $('#order_nmi').val(),
+                        data.transaction_nmi = $('#transaction_nmi').val(),
+                        data.vault_id = $('#vault_id').val(),
+                        data.subs_id = $('#subs_id').val()
+                    }
                 },
                 columns: [{
                         data: 'invoice_number'
                     },
                     {
-                        data: 'users.first_name'
+                        data: 'first_name'
                     },
                     {
-                        data: 'users.last_name'
+                        data: 'last_name'
                     },
                     {
                         data: 'issue_date'
@@ -211,7 +314,13 @@
                         data: 'balance'
                     },
                     {
+                        data: 'transaction'
+                    },
+                    {
                         data: 'balance_status'
+                    },
+                    {
+                        data: 'type'
                     },
                     {
                         data: 'status'
@@ -221,9 +330,11 @@
                     },
                 ]
             });
+
+            $('#search').on('click', function(e) {
+                table.draw();
+            });
         }
-
-
 
         $('#submit_form').on('submit', function(event) {
             $.ajaxSetup({

@@ -55,6 +55,9 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
 
     Route::prefix('/panel')->group(function () {
     Route::get('',[DashboardContraoller::class,'index'])->name('panel.index');
+        Route::get('/analytics',[DashboardContraoller::class,'analytics'])->name('panel.analytics.index');
+        Route::post('/analytics/update',[DashboardContraoller::class,'analyticsUpdate'])->name('panel.analytics.update');
+        Route::post('/analytics/week-by-year',[DashboardContraoller::class,'weekByYear'])->name('panel.analytics.weekbyyear');
         Route::get('/test',[TestController::class,'test'])->name('panel.test');
         Route::post('/note/customer/save',[UserController::class,'noteSave'])->name('panel.user.note.save');
         Route::post('/note/customer/delete',[UserController::class,'noteDelete'])->name('panel.user.note.delete');
@@ -146,6 +149,10 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
 
             Route::get('increase/duration', [UserController::class, 'increase_duration'])->name('customer.increase.duration');
             Route::post('increase/duration/save', [UserController::class, 'increase_duration_save'])->name('customer.increase.duration.save');
+            Route::get('change/subscription', [UserController::class, 'change_subscription'])->name('customer.change.subscription');
+            Route::post('change/subscription/save', [UserController::class, 'change_subscription_save'])->name('customer.change.subscription.save');
+            Route::get('create/payment', [UserController::class, 'create_payment'])->name('customer.create.payment');
+            Route::post('create/payment/save', [UserController::class, 'create_payment_save'])->name('customer.create.payment.save');
             Route::post('invoice/refund', [UserController::class, 'invoiceRefund'])->name('customer.invoice.refund');
             Route::post('invoice/cancel', [UserController::class, 'invoiceCancel'])->name('customer.invoice.cancel');
             Route::post('/notes/ajax', [UserController::class, 'user_detail_note_ajax'])->name('user.notes.ajax');

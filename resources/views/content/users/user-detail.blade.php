@@ -239,6 +239,9 @@
             <div class="card">
                 <div class="card-header border-bottom">
                     <button type="button" class="btn btn-success" onclick="modal_show_invoice()">Create</button>
+                    @if($users->customer->subscription_id!=null)
+                        <button type="button" class="btn btn-warning" onclick="create_payment()">Create Payment</button>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="card-datatable">
@@ -250,7 +253,9 @@
                                     <th>@lang('Due Date')</th>
                                     <th>@lang('Pay Date')</th>
                                     <th>@lang('Amount')</th>
+                                    <th>@lang('Transaction NMI')</th>
                                     <th>@lang('Balance')</th>
+                                    <th>@lang('Type')</th>
                                     <th>@lang('Status')</th>
                                     <th>@lang('Action')</th>
                                 </tr>
@@ -391,7 +396,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">@lang('Add Contract ID')</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="submit_form_invoice" action="{{ route('user.waiver') }}" class="form_field" method="post">
+                <form id="submit_form_invoiceid" action="{{ route('user.waiver') }}" class="form_field" method="post">
                     {{ csrf_field() }}
                     <input type="hidden" class="form-control" name="user_waiver" id="user_waiver" value="{{ $users->id }}">
                     <div class="modal-body">
@@ -399,6 +404,49 @@
                             <div class="col-12">
                                 <label for="recipient-name" class="col-form-label">@lang('Contract')</label>
                                 <input type="text" class="form-control" name="waiver" id="waiver" placeholder="Contract ID" autocomplete="off" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-start" id="create_payment" tabindex="-1" aria-labelledby="myModalLabel160"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel160">Create Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="invoic_submit_forma" class="form_field" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="user_id_cs" id="user_id_cs" value="{{ $users->id }}">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="recipient-name" class="col-form-label">@lang('Customer')</label>
+                                <input type="text" class="form-control" name="" id="du_user_id_cs" placeholder="" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="recipient-name-vault" class="col-form-label">@lang('Customer Vault')</label>
+                                <input type="text" class="form-control" name="" id="cv_name" placeholder="" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="cv-id" class="col-form-label">@lang('Customer Vault ID')</label>
+                                <input type="text" class="form-control" name="" id="cv_id" placeholder="" disabled>
+                            </div>
+                            <div class="col-6">
+                                <label for="recipient-name" class="col-form-label">@lang('Amount')</label>
+                                <input type="number" class="form-control" name="price_cs" id="du_price_cs" placeholder="Amount"
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -522,7 +570,13 @@
                         data: 'balance'
                     },
                     {
+                        data: 'transaction'
+                    },
+                    {
                         data: 'balance_status'
+                    },
+                    {
+                        data: 'type'
                     },
                     {
                         data: 'status'
@@ -826,5 +880,88 @@
         function show_modal_contract() {
             $("#modal_contract").modal('show');
         }
+
+        function create_payment(id) {
+            var id = id;
+            $.ajax({
+                url: "{{ route('customer.create.payment') }}",
+                type: "GET",
+                data: {
+                    id: $("#user_id_cs").val(),
+                },
+                dataType: "json",
+                success: function(response) {
+                    $("#du_user_id_cs").val(response.user_name);
+                    $("#cv_id").val(response.vault_id);
+                    $("#cv_name").val(response.vault_name);
+                    $("#create_payment").modal('show');
+                },
+                error: function(response) {
+                    $("#create_payment").modal('hide');
+                }
+            });
+        }
+
+        $('#invoic_submit_forma').on('submit', function(event) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            event.preventDefault();
+            var form_data = $(this).serialize();
+            $.ajax({
+                url: "{{ route('customer.create.payment.save') }}",
+                method: "POST",
+                data: form_data,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == "success") {
+                        var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                        $("#create_payment").modal('hide');
+                        $('#user_table').DataTable().ajax.reload();
+                        toastr[response.status](
+                            response.message, 'Success', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                        $(".element-blur").addClass("blur-body");
+                        $(".menu-fixed menu-light").addClass("blur-body");
+                        $(".main-menu").addClass("blur-body");
+                        $("footer").addClass("blur-body");
+                        $("nav").addClass("blur-body");
+                        $(".breadcrumbs-top").addClass("blur-body");
+                        $(".main-menu").addClass("blur-body");
+                        $("#preloader-img").removeClass("d-none");
+                        setTimeout(function() {
+                            {{-- window.location.href = "/panel/invoice/detail/" + response.id; --}}
+                            $(".element-blur").removeClass("blur-body");
+                            $(".menu-fixed menu-light").removeClass("blur-body");
+                            $(".main-menu").removeClass("blur-body");
+                            $("footer").removeClass("blur-body");
+                            $("nav").removeClass("blur-body");
+                            $(".breadcrumbs-top").removeClass("blur-body");
+                            $(".main-menu").removeClass("blur-body");
+                            $("#preloader-img").addClass("d-none");
+                            $('#invoice_table').DataTable().ajax.reload();
+                        }, 5000)
+                    } else {
+                        toastr[response.status](
+                            response.message, '!Oops', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    }
+
+                },
+                error: function(response) {
+                    $("#exampleModal").modal('hide');
+                }
+            })
+        });
     </script>
 @endsection

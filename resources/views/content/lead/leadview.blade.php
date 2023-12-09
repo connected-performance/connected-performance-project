@@ -31,11 +31,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    @if (auth()->user()->is_admin == true)
-                        <div class="card-header border-bottom">
-                            <button type="button" class="btn btn-success" onclick="show_lead_modal()">Create Lead</button>
-                        </div>
-                    @endif
+                    <div class="card-header border-bottom">
+                        <button type="button" class="btn btn-success" onclick="show_lead_modal()">Create Lead</button>
+                    </div>
                     <div class="card-datatable">
                         <table id="lead_table" class="table table-bordered">
                             <thead>

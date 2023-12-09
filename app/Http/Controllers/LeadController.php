@@ -33,6 +33,7 @@ class LeadController extends Controller
         $modal = 'Create New Lead';
         return view('content.lead.leadview',compact('breadcrumbs','modal'));
     }
+    
     public function lead_ajax(Request $request){
         $records =  Lead::with('form')->where('status', '!=', '2')->get();
         return DataTables::of($records)->addIndexColumn()
@@ -306,6 +307,7 @@ class LeadController extends Controller
             return response()->json($response);
         }
     }
+    
     public  function lead_data(Request $request){
         try{ 
             $data= Lead::find($request->id);

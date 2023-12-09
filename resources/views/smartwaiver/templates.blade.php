@@ -1,10 +1,6 @@
 @extends('layouts/contentLayoutMaster')
-
 @section('title', 'Smart-Waiver')
-
 @section('vendor-style')
-
-
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
@@ -39,10 +35,7 @@
         }
     </style>
 @endsection
-
 @section('content')
-
-
     <div class="spinner-preloader d-none" id="preloader-img">
         <div class="preloader-img">
             <img src="{{ asset('custom/img/512x512.gif') }}" class="spinner-image" height="200">
@@ -70,19 +63,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                @foreach ($data as $value)
-                                    <tr>
-                                        {{-- <td>{{ @$value->templateId }}</td> --}}
-                                        <td>{{ @$value->title }}</td>
-                                        {{-- <td><a href="{{route('agreements',['id'=> $value->templateId])}}">{{ @$value->publishedVersion }}</a></td> --}}
-                                        <td>{{ @$value->publishedVersion }}</td>
-                                        <td>{{ @$value->publishedOn }}</td>
-                                        <td>{{ @$value->webUrl }}</td>
-                                        <td>{{ @$value->kioskUrl }}</td>
-                                    </tr>
-                                @endforeach
-
+                                @if($data)
+                                    @foreach ($data as $value)
+                                        <tr>
+                                            {{-- <td>{{ @$value->templateId }}</td> --}}
+                                            <td>{{ @$value->title }}</td>
+                                            {{-- <td><a href="{{route('agreements',['id'=> $value->templateId])}}">{{ @$value->publishedVersion }}</a></td> --}}
+                                            <td>{{ @$value->publishedVersion }}</td>
+                                            <td>{{ @$value->publishedOn }}</td>
+                                            <td>{{ @$value->webUrl }}</td>
+                                            <td>{{ @$value->kioskUrl }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -90,10 +83,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 @endsection
 
 @section('vendor-script')
@@ -111,22 +100,16 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.rowGroup.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
-
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/scripts/components/components-tooltips.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/extensions/ext-component-toastr.js')) }}"></script>
-
-
     <script>
-
           var table =   $('#invoice_table').DataTable({
                 responsive: true,
                 processing: true,
                 searching: true,
                 
             });
-       
     </script>
-
 @endsection
