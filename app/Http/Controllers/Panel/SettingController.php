@@ -49,20 +49,31 @@ class SettingController extends Controller
             ['link' => url("/panel/setting/account"), 'name' => 'account'],
             ['name' => __('account')],
         ];
+    
         $activities = ModelsActivityLog::where('user_id', auth()->id())->get();
         $users = User::where('id', auth()->id())->first();
+        $avatar_dir = $_SERVER['DOCUMENT_ROOT'].'/users/'.$users->avatar;
+        $avatar = 'http://'.$_SERVER['HTTP_HOST'].'/users/'.$users->avatar;
+
         $id = auth()->id();
-        return view('account-setting.user-view-account', compact('users', 'activities', 'breadcrumbs','id'));
+        return view('account-setting.user-view-account', compact('users', 'activities', 'breadcrumbs','id','avatar_dir','avatar'));
     }
 
     public function edit_profile(Request $request){
         try {
-        $data =  User::where('id',$request->id)->first();
-
+            $data =  User::where('id',$request->id)->first();
+            $avatar_dir = $_SERVER['DOCUMENT_ROOT'].'/users/'.$data->avatar;
+            $avatar = 'http://'.$_SERVER['HTTP_HOST'].'/users/'.$data->avatar;
+            if($data->avatar && $data->avatar!=null && file_exists($avatar_dir)){
+                $logo_avatar=$avatar;
+            }else{
+                $logo_avatar="https://crm.connected-performance.com/images/avatars/male.png";
+            }
             $response = [
                 'status' => 'success',
                 'message' => '',
                 'data' => $data,
+                'avatar' => $logo_avatar,
             ];
             return response()->json($response);
         } catch (\Throwable $th) {
@@ -77,7 +88,6 @@ class SettingController extends Controller
 
     public function update_profile(Request $request)
     {
-
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -85,11 +95,10 @@ class SettingController extends Controller
             'phone_number' => 'required',
             'dob' => 'required',
             'address' => 'required',
-
         ]);
-        if ($request->password) {
-            $request->validate(['password' => 'required|confirmed|min:6',]);
-        }
+        // if ($request->password) {
+        //     $request->validate(['password' => 'required|confirmed|min:6',]);
+        // }
         $users = User::find($request->u_id);
         if ($users->email != $request->email) {
             $request->validate([
@@ -103,8 +112,53 @@ class SettingController extends Controller
         $users->phone_number = $request->phone_number;
         $users->address = $request->address;
         $users->dob  = $request->dob;
-        if ($request->hasFile('avatar'))
-        {
+        if($request->hasFile('avatar')){
+            $oldimage = $users->avatar;
+            $image = $request->avatar;
+            $filename = $image->getclientoriginalextension();
+            $filename = time().'.'.$filename;
+            $request->avatar->move(public_path('/users'), $filename);
+            $users->avatar = $filename;
+        }
+        $users->save();
+        $actor = "";
+        if (auth()->user()->is_admin == true) {
+            $actor = 1;
+        } else {
+            $actor = 2;
+        }
+        $data = [
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->first_name . " Edit Profile",
+            'event_name' => "Edit Profile",
+            'email' => auth()->user()->email,
+            'description' => "Edit Profile Successfully",
+            'actor' => $actor,
+            'url' => url()->current(),
+        ];
+        event(new ActivityLog($data));
+        return  redirect()->back()->with('success','Update Profile Successfully');
+
+    }
+
+    public function update_password(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|confirmed|min:6',
+        ]);
+        $users = User::find($request->u_id);
+
+
+        dd();
+        $users->first_name = $request->first_name;
+        $users->last_name = $request->last_name;
+        $users->email = $request->email;
+        $users->username = $request->user_name;
+        $users->phone_number = $request->phone_number;
+        $users->address = $request->address;
+        $users->dob  = $request->dob;
+        if($request->hasFile('avatar')){
             $oldimage = $users->avatar;
             $image = $request->avatar;
             $filename = $image->getclientoriginalextension();

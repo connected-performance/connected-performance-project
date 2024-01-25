@@ -52,117 +52,121 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>Search Filter</h4>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h4>Search Filter</h4>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-3">
-                        <label for="costumer_fl" class="col-form-label">@lang('Costumer')</label>
-                        <select class="form-control type slector select-2" id="costumer_fl" name="costumer_fl">
-                            <option value="">Select Costumer</option>
-                            @foreach($customers_list as $key => $value)
-                                <option value="{{ $value->id }}">{{ $value->first_name.' '.$value->last_name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label for="costumer_fl" class="col-form-label">@lang('Costumer')</label>
+                            <select class="form-control type slector select-2" id="costumer_fl" name="costumer_fl">
+                                <option value="">Select Costumer</option>
+                                @foreach($customers_list as $key => $value)
+                                    <option value="{{ $value->id }}">{{ $value->first_name.' '.$value->last_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="pay_month" class="col-form-label">@lang('Payment Month')</label>
+                            <select class="form-control type slector" id="pay_month" name="pay_month">
+                                <option value="">Select Payment Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="pay_year" class="col-form-label">@lang('Payment Year')</label>
+                            <select class="form-control type slector" id="pay_year" name="pay_year">
+                                <option value="">Select Payment Year</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="pay_status" class="col-form-label">@lang('Status')</label>
+                            <select class="form-control type slector select-2" id="pay_status" name="pay_status">
+                                <option value="">Select Payment Status</option>
+                                <option value="1">Paid</option>
+                                <option value="0">UnPaid</option>
+                                <option value="2">Failed</option>
+                                <option value="3">Canceled</option>
+                                <option value="4">Refund</option>
+                                <option value="A">Abandoned</option>
+                            </select>
+                        </div>
+                    </div><br>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label for="pay_type" class="col-form-label">@lang('Payment Type')</label>
+                            <select class="form-control type slector" id="pay_type" name="pay_type">
+                                <option value="">Select Payment Type</option>
+                                <option value="NORMAL PAYMENT">Normal Payment</option>
+                                <option value="SINGLE PAYMENT">Single Payment</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="invoice_no" class="col-form-label">@lang('Invoice')</label>
+                            <input type="text" name="invoice_no" id="invoice_no" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="order_nmi" class="col-form-label">@lang('Order NMI')</label>
+                            <input type="text" name="order_nmi" id="order_nmi" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="transaction_nmi" class="col-form-label">@lang('Transaction NMI')</label>
+                            <input type="text" name="transaction_nmi" id="transaction_nmi" value="" class="form-control">
+                        </div>
+                    </div><br>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label for="vault_id" class="col-form-label">@lang('Costumer Vault ID')</label>
+                            <input type="text" name="vault_id" id="vault_id" value="" class="form-control">
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="subs_id" class="col-form-label">@lang('Subscription ID')</label>
+                            <input type="text" name="subs_id" id="subs_id" value="" class="form-control">
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-12" style="text-align: right;"><br>
+                            <button type="button" class="btn btn-primary" id="search">Search</button>
+                        </div>
                     </div>
-                    <div class="col-3">
-                        <label for="pay_month" class="col-form-label">@lang('Payment Month')</label>
-                        <select class="form-control type slector" id="pay_month" name="pay_month">
-                            <option value="">Select Payment Month</option>
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
+                    <div class="card-header border-bottom">
+                        <button type="button" class="btn btn-success" onclick="modal_show()">Create Invoice</button>
                     </div>
-                    <div class="col-3">
-                        <label for="pay_year" class="col-form-label">@lang('Payment Year')</label>
-                        <select class="form-control type slector" id="pay_year" name="pay_year">
-                            <option value="">Select Payment Year</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                        </select>
+                    <div class="card-datatable dt-complex-header table table-bordered table-responsive mtdt">
+                        <table id="invoice_table" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@lang('Invoice')</th>
+                                    <th>@lang('Name')</th>
+                                    <th>@lang('Lastname')</th>
+                                    <th>@lang('Issue Date')</th>
+                                    <th>@lang('Pay Date')</th>
+                                    <th>@lang('Due')</th>
+                                    <th>@lang('Transaction NMI')</th>
+                                    <th>@lang('Balance')</th>
+                                    <th>@lang('Type')</th>
+                                    <th>@lang('Status')</th>
+                                    <th class="notexport">@lang('Action')</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
-                    <div class="col-3">
-                        <label for="pay_status" class="col-form-label">@lang('Payment Status')</label>
-                        <select class="form-control type slector select-2" id="pay_status" name="pay_status">
-                            <option value="">Select Payment Status</option>
-                            <option value="1">Paid</option>
-                            <option value="0">UnPaid</option>
-                            <option value="2">Failed</option>
-                        </select>
-                    </div>
-                </div><br>
-                <div class="row">
-                    <div class="col-3">
-                        <label for="pay_type" class="col-form-label">@lang('Payment Type')</label>
-                        <select class="form-control type slector" id="pay_type" name="pay_type">
-                            <option value="">Select Payment Type</option>
-                            <option value="NORMAL PAYMENT">Normal Payment</option>
-                            <option value="SINGLE PAYMENT">Single Payment</option>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <label for="invoice_no" class="col-form-label">@lang('Invoice')</label>
-                        <input type="text" name="invoice_no" id="invoice_no" value="" class="form-control">
-                    </div>
-                    <div class="col-3">
-                        <label for="order_nmi" class="col-form-label">@lang('Order NMI')</label>
-                        <input type="text" name="order_nmi" id="order_nmi" value="" class="form-control">
-                    </div>
-                    <div class="col-3">
-                        <label for="transaction_nmi" class="col-form-label">@lang('Transaction NMI')</label>
-                        <input type="text" name="transaction_nmi" id="transaction_nmi" value="" class="form-control">
-                    </div>
-                </div><br>
-                <div class="row">
-                    <div class="col-3">
-                        <label for="vault_id" class="col-form-label">@lang('Costumer Vault ID')</label>
-                        <input type="text" name="vault_id" id="vault_id" value="" class="form-control">
-                    </div>
-                    <div class="col-3">
-                        <label for="subs_id" class="col-form-label">@lang('Subscription ID')</label>
-                        <input type="text" name="subs_id" id="subs_id" value="" class="form-control">
-                    </div>
-                </div> 
-                <div class="row">
-                    <div class="col-12" style="text-align: right;"><br>
-                        <button type="button" class="btn btn-primary" id="search">Search</button>
-                    </div>
-                </div>
-                <div class="card-header border-bottom">
-                    <button type="button" class="btn btn-success" onclick="modal_show()">Create</button>
-                </div>
-                <div class="card-datatable" class="dt-complex-header table table-bordered table-responsive">
-                    <table id="invoice_table" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>@lang('Invoice')</th>
-                                <th>@lang('Name')</th>
-                                <th>@lang('Lastname')</th>
-                                <th>@lang('Issue Date')</th>
-                                <th>@lang('Pay Date')</th>
-                                <th>@lang('Due')</th>
-                                <th>@lang('Transaction NMI')</th>
-                                <th>@lang('Balance')</th>
-                                <th>@lang('Type')</th>
-                                <th>@lang('Status')</th>
-                                <th class="col-2">@lang('Action')</th>
-                            </tr>
-                        </thead>
-                    </table>
                 </div>
             </div>
         </div>
@@ -201,12 +205,12 @@
 
                         <div class="row">
                             <div class="col-6">
-                                <label for="recipient-name" class="col-form-label">@lang('Issue Date')</label>
+                                <label for="issue_date" class="col-form-label">@lang('Issue Date')</label>
                                 <input type="date" class="form-control" name="issue_date" id="id_issue_date"
                                     placeholder="Issue Date" required>
                             </div>
                             <div class="col-6">
-                                <label for="recipient-name" class="col-form-label">@lang('Due Date')</label>
+                                <label for="due_date" class="col-form-label">@lang('Due Date')</label>
                                 <input type="date" class="form-control" name="due_date" id="id_due_date"
                                     placeholder="Issue Date" required>
                             </div>
@@ -263,77 +267,181 @@
             $("#description").val(null);
             $("#exampleModal").modal('show');
         }
-    </script>
-    <script>
+
+        <?php if (auth()->user()->is_admin == true){ ?>
+            var user_admin = true;
+        <?php }else{ ?>
+            var user_admin = false;
+        <?php } ?>
+
         load_data();
 
         function load_data() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var table = $('#invoice_table').DataTable({
-                responsive: true,
-                processing: true,
-                serverSide: true,
-                searching: true,
-                order: [[0, 'desc']],
-                ajax: {
-                    url: "{{ url('panel/invoice/ajax') }}",
-                    type: "POST",
-                    data: function (data) {
-                        data.costumer_fl = $('#costumer_fl').val(),
-                        data.pay_month = $('#pay_month').val(),
-                        data.pay_year = $('#pay_year').val(),
-                        data.pay_type = $('#pay_type').val(),
-                        data.pay_status = $('#pay_status').val(),
-                        data.invoice_no = $('#invoice_no').val(),
-                        data.order_nmi = $('#order_nmi').val(),
-                        data.transaction_nmi = $('#transaction_nmi').val(),
-                        data.vault_id = $('#vault_id').val(),
-                        data.subs_id = $('#subs_id').val()
+            if(user_admin==true){
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                },
-                columns: [{
-                        data: 'invoice_number'
+                });
+                var table = $('#invoice_table').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    order: [[0, 'desc']],
+                    ajax: {
+                        url: "{{ url('panel/invoice/ajax') }}",
+                        type: "POST",
+                        data: function (data) {
+                            data.costumer_fl = $('#costumer_fl').val(),
+                            data.pay_month = $('#pay_month').val(),
+                            data.pay_year = $('#pay_year').val(),
+                            data.pay_type = $('#pay_type').val(),
+                            data.pay_status = $('#pay_status').val(),
+                            data.invoice_no = $('#invoice_no').val(),
+                            data.order_nmi = $('#order_nmi').val(),
+                            data.transaction_nmi = $('#transaction_nmi').val(),
+                            data.vault_id = $('#vault_id').val(),
+                            data.subs_id = $('#subs_id').val()
+                        }
                     },
-                    {
-                        data: 'first_name'
-                    },
-                    {
-                        data: 'last_name'
-                    },
-                    {
-                        data: 'issue_date'
-                    },
-                    {
-                        data: 'pay_date'
-                    },
-                    {
-                        data: 'balance'
-                    },
-                    {
-                        data: 'transaction'
-                    },
-                    {
-                        data: 'balance_status'
-                    },
-                    {
-                        data: 'type'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'action'
-                    },
-                ]
-            });
+                    columns: [{
+                            data: 'invoice_number'
+                        },
+                        {
+                            data: 'first_name'
+                        },
+                        {
+                            data: 'last_name'
+                        },
+                        {
+                            data: 'issue_date'
+                        },
+                        {
+                            data: 'pay_date'
+                        },
+                        {
+                            data: 'balance'
+                        },
+                        {
+                            data: 'transaction'
+                        },
+                        {
+                            data: 'balance_status'
+                        },
+                        {
+                            data: 'type'
+                        },
+                        {
+                            data: 'status'
+                        },
+                        {
+                            data: 'action'
+                        },
+                    ],
+                    dom: 'Blftipr',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: 'CSV',
+                            className: 'btn-xs btn-success',
+                            exportOptions: {
+                                columns: ':not(.notexport)',
+                                orthogonal: 'csv'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: 'PDF',
+                            className: 'btn-xs btn-danger',
+                            orientation: 'landscape',
+                            exportOptions: {
+                                columns: ':not(.notexport)',
+                                orthogonal: 'pdf'                   
+                            }
+                        },
+                    ],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ]
+                });
 
-            $('#search').on('click', function(e) {
-                table.draw();
-            });
+                $('#search').on('click', function(e) {
+                    table.draw();
+                });
+            }else{
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var table = $('#invoice_table').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    order: [[0, 'desc']],
+                    ajax: {
+                        url: "{{ url('panel/invoice/ajax') }}",
+                        type: "POST",
+                        data: function (data) {
+                            data.costumer_fl = $('#costumer_fl').val(),
+                            data.pay_month = $('#pay_month').val(),
+                            data.pay_year = $('#pay_year').val(),
+                            data.pay_type = $('#pay_type').val(),
+                            data.pay_status = $('#pay_status').val(),
+                            data.invoice_no = $('#invoice_no').val(),
+                            data.order_nmi = $('#order_nmi').val(),
+                            data.transaction_nmi = $('#transaction_nmi').val(),
+                            data.vault_id = $('#vault_id').val(),
+                            data.subs_id = $('#subs_id').val()
+                        }
+                    },
+                    columns: [{
+                            data: 'invoice_number'
+                        },
+                        {
+                            data: 'first_name'
+                        },
+                        {
+                            data: 'last_name'
+                        },
+                        {
+                            data: 'issue_date'
+                        },
+                        {
+                            data: 'pay_date'
+                        },
+                        {
+                            data: 'balance'
+                        },
+                        {
+                            data: 'transaction'
+                        },
+                        {
+                            data: 'balance_status'
+                        },
+                        {
+                            data: 'type'
+                        },
+                        {
+                            data: 'status'
+                        },
+                        {
+                            data: 'action'
+                        },
+                    ],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ]
+                });
+
+                $('#search').on('click', function(e) {
+                    table.draw();
+                });
+            }
         }
 
         $('#submit_form').on('submit', function(event) {

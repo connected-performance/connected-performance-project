@@ -35,10 +35,11 @@ class LeadController extends Controller
     }
     
     public function lead_ajax(Request $request){
-        $records =  Lead::with('form')->where('status', '!=', '2')->get();
+        $records =  Lead::with('form')->latest('created_at');
         return DataTables::of($records)->addIndexColumn()
             ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
+                    $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
+                data-bs-placement="top" title="Edit" onclick="edit_lead(' . $row->id . ')"><i class="fas fa-edit"></i></a>'.'<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
                 data-bs-placement="top" title="Delet" onclick="delete_data(' . $row->id . ')"><i class="fa-solid fa-trash"></i></a>';
                     return $btn;
             })
@@ -88,6 +89,15 @@ class LeadController extends Controller
             ->addColumn('date', function ($row) {
 
                 return $date = date('l M, d, Y',strtotime($row->lead_date));
+            })
+            ->filter(function ($query) use ($request) {
+                if ($request->get('lead_fl')) {
+                    if($request->get('lead_fl')=='al'){
+                        $query->whereIn('status', [0,1]);
+                    }else{
+                        $query->whereIn('status', [3]);
+                    }
+                }
             })
             ->rawColumns(['action', 'lead_status','date' ,'name', 'last_name', 'form_name'])
             ->make(true);
@@ -166,8 +176,6 @@ class LeadController extends Controller
                 $last_name = $lead->last_name;
                 $lead->save();
                 if($lead->email){
-
-         
                     $user = new User();
                     $user->first_name = $request->name;
                     $user->last_name = $request->last_name;
@@ -180,6 +188,8 @@ class LeadController extends Controller
                     $user->active_portal = 'customer';
                     $user->save();
                     if($user){
+                        $lead->user_id = $user->id;
+                        $lead->save();
                         $user_referral = User::where('is_admin',true)->first();
                         $customer = new Customer();
                         $customer->user_id = $user->id;
@@ -260,6 +270,8 @@ class LeadController extends Controller
             $user->active_portal = 'customer';
             $user->save();
             if ($user) {
+                $lead->user_id = $user->id;
+                $lead->save();
                 $customer = new Customer();
                 $customer->user_id = $user->id;
                 $customer->status = '0';
@@ -298,6 +310,109 @@ class LeadController extends Controller
                 'status' => 'success',
                 'message' => $message,
             ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function Lead_edit(Request $request){
+        try {
+            $request->validate([
+                'id' => 'required'
+            ]);
+
+            $lead = Lead::find($request->id);      
+           
+            $response = [
+                'lead' => $lead,
+            ];
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($response);
+        }
+    }
+
+    public function Lead_edit_store(Request $request){
+        try {
+            $request->validate([
+                'name_edit' => 'required',
+                'last_name_edit' => 'required',
+                'email_edit' => 'required',
+                'phone_number_edit' => 'required',
+                'description_edit' => 'required',
+                'drop_down_edit' => 'required',
+            ]);
+
+            $lead = Lead::find($request->lead_id_edit); 
+            $user_email_verif=User::where('email', $request->email_edit)->where('id', '<>' ,$lead->user_id)->count();
+
+            if($user_email_verif>0){
+                $message='Error edited lead';
+                $response = [
+                    'status' => 'error',
+                    'message' => $message,
+                ];
+            }else{
+                $lead->name = trim($request->name_edit," ");
+                $lead->last_name = trim($request->last_name_edit," ");
+                $lead->email = $request->email_edit;
+                $lead->phone = $request->phone_number_edit;
+                $lead->description = $request->description_edit;
+                $lead->services = $request->drop_down_edit;
+                $lead->closed_date = $request->estimated_closed_date;
+                $lead->save();
+    
+                $user = User::find($lead->user_id); 
+                $user->first_name = $request->name_edit;
+                $user->last_name = $request->last_name_edit;
+                $user->username = $request->email_edit;
+                $user->email = $request->email_edit;
+                $user->password = Hash::make('123456');
+                $user->phone_number = $request->phone_number_edit;
+                $user->save();
+    
+                $actor = "";
+                if (auth()->user()->is_admin == true) {
+                    $actor = 1;
+                } else {
+                    $actor = 2;
+                }
+                $data = [
+                    'user_id' => auth()->id(),
+                    'name' => auth()->user()->first_name . " Edit Referral",
+                    'event_name' => "Edit Referral",
+                    'email' => auth()->user()->email,
+                    'description' => "Edit Referral Successfully",
+                    'actor' => $actor,
+                    'url' => url()->current(),
+                ];
+                event(new ActivityLog($data));
+    
+                $notification = [
+                    'user_id' => auth()->id(),
+                    'title' =>  'Edit Referral',
+                    'description' => 'New lead edited by his referral'
+                ];
+                event(new Notificaion($notification));
+                /*if (auth()->user()->is_admin == true) {
+                    event(new Notificaion($notification));
+                }*/
+                $message='Successfully edited lead';
+                $response = [
+                    'status' => 'success',
+                    'message' => $message,
+                ];
+            }
+            
             return response()->json($response);
         } catch (\Throwable $th) {
             $response = [

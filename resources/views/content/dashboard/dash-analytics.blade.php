@@ -136,15 +136,58 @@
                         <div class="row pb-50">
                             <div id="container8"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END GRAPH 8 -->
+            <!-- BEGIN GRAPH 9 -->
+            <div class="col-lg-6 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row pb-50">
+                            <div id="container9"></div>
+                        </div>
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-success" onclick="show_modal_8()">Filters</button>
+                                <button class="btn btn-success" onclick="show_modal_9()">Filters</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- END GRAPH 8 -->
+            <!-- END GRAPH 9 -->
+            <!-- BEGIN GRAPH 10 -->
+             <div class="col-lg-6 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row pb-50">
+                            <div id="container10"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-success" onclick="show_modal_10()">Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END GRAPH 10 -->
+            <!-- BEGIN GRAPH 11 -->
+            <div class="col-lg-6 col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row pb-50">
+                            <div id="container11"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-success" onclick="show_modal_11()">Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END GRAPH 11 -->
         </div>
     </section>
     <div class="modal" id="fil_1" tabindex="-1" role="dialog">
@@ -446,21 +489,21 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="fil_8" tabindex="-1" role="dialog">
+    <div class="modal" id="fil_9" tabindex="-1" role="dialog">
         <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Graph Filters</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="submit_form8" enctype='multipart/form-data' method="POST">
+                <form id="submit_form9" enctype='multipart/form-data' method="POST">
                     <div class="modal-body">
                         @csrf
-                        <input type="hidden" name="graph" id="graph" value="8">
+                        <input type="hidden" name="graph" id="graph" value="9">
                         <div class="row mb-2">
                             <div class="col">
-                                <label for="year_8">Year</label>
-                                <select class="form-control type" id="year_8" name="year_8" required>
+                                <label for="year_9">Year</label>
+                                <select class="form-control type" id="year_9" name="year_9" required>
                                     <option value="">Select Year</option>
                                     <option value="T" selected>Total</option>
                                     @foreach($yearlast5 as $key => $value)
@@ -469,8 +512,8 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="month_8">Month</label>
-                                <select class="form-control type" id="month_8" name="month_8" required readonly>
+                                <label for="month_9">Month</label>
+                                <select class="form-control type" id="month_9" name="month_9" required readonly>
                                     <option value="">Select Month</option>
                                     <option value="T" selected>All</option>
                                     <option value="01">January</option>
@@ -485,6 +528,86 @@
                                     <option value="10">Octuber</option>
                                     <option value="11">November</option>
                                     <option value="12">December</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light " data-bs-dismiss="modal">Close</button>
+                        <button type="submit" type="button" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="fil_10" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Graph Filters</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="submit_form10" enctype='multipart/form-data' method="POST">
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="graph" id="graph" value="10">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="show_10">Show by</label>
+                                <select class="form-control type" id="show_10" name="show_10" required>
+                                    <option value="">Select Type</option>
+                                    <option value="P" selected>Total Porcentage</option>
+                                    <option value="T">Total Amount</option>
+                                    <option value="N">Abandoned Units</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="year_10">Year</label>
+                                <select class="form-control type" id="year_10" name="year_10" required>
+                                    <option value="">Select Year</option>
+                                    @foreach($yearlast5 as $key => $value)
+                                        <option value="{{ $value }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light " data-bs-dismiss="modal">Close</button>
+                        <button type="submit" type="button" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="fil_11" tabindex="-1" role="dialog">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Graph Filters</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="submit_form11" enctype='multipart/form-data' method="POST">
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="graph" id="graph" value="11">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="show_11">Show by</label>
+                                <select class="form-control type" id="show_11" name="show_11" required>
+                                    <option value="">Select Type</option>
+                                    <option value="P" selected>Total Porcentage</option>
+                                    <option value="T">Total Amount</option>
+                                    <option value="N">Amount of Payments</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="year_11">Year</label>
+                                <select class="form-control type" id="year_11" name="year_11" required>
+                                    <option value="">Select Year</option>
+                                    @foreach($yearlast5 as $key => $value)
+                                        <option value="{{ $value }}">{{ $value }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -516,7 +639,15 @@
     <script src="{{ asset(mix('js/scripts/pages/app-invoice-list.js')) }}"></script> -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script type="text/javascript">
+        <?php if (auth()->user()->is_admin == true){ ?>
+            var user_admin = true;
+        <?php }else{ ?>
+            var user_admin = false;
+        <?php } ?>
         var month = <?php echo date("m") ?>;
         var year = <?php echo date("Y") ?>;
         $("#year_1").val(year);
@@ -526,326 +657,835 @@
         $("#year_5").val(year);
         $("#month_7").val(month);
         $("#year_7").val(year);
+        $("#year_10").val(year);
+        $("#year_11").val(year);
+
+        Highcharts.setOptions({
+            global:{
+                canvasToolsURL: undefined,
+                Date: undefined,
+                getTimezoneOffset: undefined,
+                timezone: undefined,
+                timezoneOffset: undefined,
+                useUTC: undefined,
+            },
+            lang:{
+                contextButtonTitle: "Chart context menu",
+                decimalPoint: ".",
+                downloadPDF: "Download PDF",
+                downloadPNG: "Download PNG",
+                downloadCSV: "Download CSV",
+                hideData: "Hide data table",
+                invalidDate: undefined,
+                loading: "Loading...",
+                mainBreadcrumb: "Main",
+                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                noData: "No data to display",
+                numericSymbolMagnitude: 1000,
+                numericSymbols: ["k", "M", "G", "T", "P", "E"],
+                playAsSound: "Play as sound",
+                printChart: "Print Chart",
+                resetZoom: "Reset zoom",
+                resetZoomTitle: "Reset zoom level 1:1",
+                shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                shortWeekdays: undefined,
+                thousandsSep: "\u0020",
+                viewData: "View data table",
+                viewFullscreen: "View in Full Screen",
+                weekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            }
+        });
         // GRAPH 1
         var dataPay = <?php echo json_encode($dataPay)?>;
         var cate_mon = <?php echo json_encode($cate_mon)?>;
         var tit_g_1 = <?php echo json_encode($tit_g_1) ?>;
-        Highcharts.chart('container1', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_1
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: cate_mon,
-                labels: {
-                    rotation: 315
-                }
-            },
-            yAxis: {
+        if(user_admin==true){
+            Highcharts.chart('container1', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Amount'
-                }
-            },
-            legend: {
-                layout: 'vertical'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'Total Amount',
-                data: dataPay
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_1
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
                     }
-                }]
-            }
-        });
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPay
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container1', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_1
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPay
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 2
         var year_act = <?php echo json_encode($year_act)?>;
         var dataPayY = <?php echo json_encode($dataPayY)?>;
         var tit_g_2 = <?php echo json_encode($tit_g_2)?>;
-        Highcharts.chart('container2', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_2
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: year_act
-            },
-            yAxis: {
+        if(user_admin==true){
+            Highcharts.chart('container2', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Amount'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                // align: 'right',
-                // verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-
-            },
-            series: [{
-                name: 'Total Amount',
-                data: dataPayY
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_2
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
                     }
-                }]
-            }
-        });
+                },
+                legend: {
+                    layout: 'vertical',
+                    // align: 'right',
+                    // verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPayY
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container2', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_2
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    // align: 'right',
+                    // verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPayY
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 3
         var dataPay1 = <?php echo json_encode($dataPay1)?>;
         var dataPro1 = <?php echo json_encode($dataPro1)?>;
         var tit_g_3 = <?php echo json_encode($tit_g_3) ?>;
-        Highcharts.chart('container3', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_3,
-            },
-            subtitle: {
-                text:
-                    '',
-            },
-            xAxis: {
-                categories: cate_mon,
-                labels: {
-                    rotation: 315
-                }
-            },
-            yAxis: {
-                min: 0,
+        if(user_admin==true){
+            Highcharts.chart('container3', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Amount'
-                }
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
+                    text: tit_g_3,
                 },
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [
-                {
-                    name: 'Total Amount',
-                    data: dataPay1
+                subtitle: {
+                    text:
+                        '',
                 },
-                {
-                    name: 'Projected',
-                    data: dataPro1
-                }
-            ],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
                     }
-                }]
-            }
-        });
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    },
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'Total Amount',
+                        data: dataPay1
+                    },
+                    {
+                        name: 'Projected',
+                        data: dataPro1
+                    }
+                ],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container3', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_3,
+                },
+                subtitle: {
+                    text:
+                        '',
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    },
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'Total Amount',
+                        data: dataPay1
+                    },
+                    {
+                        name: 'Projected',
+                        data: dataPro1
+                    }
+                ],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 4
         var dataPayRec = <?php echo json_encode($dataPayRec)?>;
         var tit_g_4 = <?php echo json_encode($tit_g_4) ?>;
-        Highcharts.chart('container4', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_4
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: cate_mon,
-                labels: {
-                    rotation: 315
-                }
-            },
-            yAxis: {
+        if(user_admin==true){
+            Highcharts.chart('container4', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Amount'
-                }
-            },
-            legend: {
-                layout: 'vertical'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'Total Amount',
-                data: dataPayRec
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_4
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
                     }
-                }]
-            }
-        });
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPayRec
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container4', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_4
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: dataPayRec
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 5
         var dataleadtot = <?php echo json_encode($dataleadtot)?>;
         var tit_g_5 = <?php echo json_encode($tit_g_5)?>;
-        Highcharts.chart('container5', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_5
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: year_act
-            },
-            yAxis: {
+        if(user_admin==true){
+            Highcharts.chart('container5', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Numbers of Leads'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                //align: 'right',
-                //verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'Numbers of Leads',
-                data: dataleadtot
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_5
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Numbers of Leads'
                     }
-                }]
-            }
-        });
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Numbers of Leads',
+                    data: dataleadtot
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container5', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_5
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Numbers of Leads'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Numbers of Leads',
+                    data: dataleadtot
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 6
         var dataleadbyuserpor = <?php echo json_encode($dataleadbyuserpor)?>;
         var tit_g_6 = <?php echo json_encode($tit_g_6) ?>;
-        var chart1 = Highcharts.chart('container6', {
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: tit_g_6
-            },
-            tooltip: {
-                valueSuffix: '%'
-            },
-            subtitle: {
-                text:
-                ''
-            },
-            plotOptions: {
-                series: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: [{
-                        enabled: true,
-                        distance: 20
-                    }, {
-                        enabled: true,
-                        distance: -40,
-                        format: '{point.percentage:.1f}%',
-                        style: {
-                            fontSize: '1.2em',
-                            textOutline: 'none',
-                            opacity: 0.7
+        if(user_admin==true){
+            var chart1 = Highcharts.chart('container6', {
+                chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: tit_g_6
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                subtitle: {
+                    text:
+                    ''
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: [{
+                            enabled: true,
+                            distance: 20
+                        }, {
+                            enabled: true,
+                            distance: -40,
+                            format: '{point.percentage:.1f}%',
+                            style: {
+                                fontSize: '1.2em',
+                                textOutline: 'none',
+                                opacity: 0.7
+                            },
+                            filter: {
+                                operator: '>',
+                                property: 'percentage',
+                                value: 10
+                            }
+                        }]
+                    }
+                },
+                series: [
+                    {
+                        name: 'Percentage',
+                        colorByPoint: true,
+                        data: []
+                    }
+                ],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
                         },
-                        filter: {
-                            operator: '>',
-                            property: 'percentage',
-                            value: 10
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
                         }
                     }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
                 }
-            },
-            series: [
-                {
-                    name: 'Percentage',
-                    colorByPoint: true,
-                    data: []
+            });
+        }else{
+            var chart1 = Highcharts.chart('container6', {
+                chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: tit_g_6
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                subtitle: {
+                    text:
+                    ''
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: [{
+                            enabled: true,
+                            distance: 20
+                        }, {
+                            enabled: true,
+                            distance: -40,
+                            format: '{point.percentage:.1f}%',
+                            style: {
+                                fontSize: '1.2em',
+                                textOutline: 'none',
+                                opacity: 0.7
+                            },
+                            filter: {
+                                operator: '>',
+                                property: 'percentage',
+                                value: 10
+                            }
+                        }]
+                    }
+                },
+                series: [
+                    {
+                        name: 'Percentage',
+                        colorByPoint: true,
+                        data: []
+                    }
+                ],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
                 }
-            ]
-        });
+            });
+        }
         for (var i = 0; i < dataleadbyuserpor.length; i++) {
             chart1.series[0].addPoint({
                 name: dataleadbyuserpor[i]['name'],
@@ -856,107 +1496,624 @@
         var cate_emp = <?php echo json_encode($cate_emp) ?>;
         var data_empren = <?php echo json_encode($data_empren) ?>;
         var tit_g_7 = <?php echo json_encode($tit_g_7) ?>;
-        Highcharts.chart('container7', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_7
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: cate_emp
-            },
-            yAxis: {
+        if(user_admin==true){
+            Highcharts.chart('container7', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Amount'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                //align: 'right',
-                //verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'Total Amount',
-                data: data_empren
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_7
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_emp
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
                     }
-                }]
-            }
-        });
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: data_empren
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container7', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_7
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_emp
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Amount',
+                    data: data_empren
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
         // GRAPH 8
+        var cate_emplo = <?php echo json_encode($cate_emplo) ?>;
+        var data_emplo = <?php echo json_encode($data_emplo) ?>;
+        var tit_g_8 = <?php echo json_encode($tit_g_8) ?>;
+        if(user_admin==true){
+            Highcharts.chart('container8', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_8
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_emplo
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Athletes'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Athletes',
+                    data: data_emplo
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container8', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_8
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_emplo
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Athletes'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Total Athletes',
+                    data: data_emplo
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
+        // GRAPH 9
         var cate_user = <?php echo json_encode($cate_user)?>;
         var data_user = <?php echo json_encode($data_user)?>;
-        var tit_g_8 = <?php echo json_encode($tit_g_8) ?>;
-        Highcharts.chart('container8', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: tit_g_8
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: cate_user
-            },
-            yAxis: {
+        var tit_g_9 = <?php echo json_encode($tit_g_9) ?>;
+        if(user_admin==true){
+            Highcharts.chart('container9', {
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Total Leads'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                //align: 'right',
-                //verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    cursor: 'pointer',
-                    allowPointSelect: true
-                }
-            },
-            series: [{
-                name: 'Leads',
-                data: data_user
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
+                    text: tit_g_9
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_user
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Leads'
                     }
-                }]
-            }
-        });
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Leads',
+                    data: data_user
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container9', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_9
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_user
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Leads'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    //align: 'right',
+                    //verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Leads',
+                    data: data_user
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });
+        }
+        // GRAPH 10
+        var dataCR = <?php echo json_encode($dataCR)?>;
+        var tit_g_10 = <?php echo json_encode($tit_g_10) ?>;
+        if(user_admin==true){
+            Highcharts.chart('container10', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_10
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentage'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Porcentage',
+                    data: dataCR
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container10', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_10
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: cate_mon,
+                    labels: {
+                        rotation: 315
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentage'
+                    }
+                },
+                legend: {
+                    layout: 'vertical'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+                },
+                series: [{
+                    name: 'Porcentage',
+                    data: dataCR
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            });   
+        }
+        // GRAPH 11
+        var dataCRa = <?php echo json_encode($dataCRa)?>;
+        var tit_g_11 = <?php echo json_encode($tit_g_11)?>;
+        if(user_admin==true){
+            Highcharts.chart('container11', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_11
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentage'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    // align: 'right',
+                    // verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
 
+                },
+                series: [{
+                    name: 'Porcentage',
+                    data: dataCRa
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                }
+            });
+        }else{
+            Highcharts.chart('container11', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: tit_g_11
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: year_act
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentage'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    // align: 'right',
+                    // verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        allowPointSelect: true
+                    }
+
+                },
+                series: [{
+                    name: 'Porcentage',
+                    data: dataCRa
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                        }
+                    },
+                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                },
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                }
+            }); 
+        }
         function show_modal_1() {
             $("#fil_1").modal("show");
         }
@@ -978,8 +2135,14 @@
         function show_modal_7() {
             $("#fil_7").modal("show");
         }
-        function show_modal_8() {
-            $("#fil_8").modal("show");
+        function show_modal_9() {
+            $("#fil_9").modal("show");
+        }
+        function show_modal_10() {
+            $("#fil_10").modal("show");
+        }
+        function show_modal_11() {
+            $("#fil_11").modal("show");
         }
 
         $('#year_5').change(function(){
@@ -1066,6 +2229,15 @@
             }
         });
 
+        $('#year_9').change(function(){
+            if($('#year_9').val()=='T'){
+                $('#month_9').val('T');
+                $("#month_9").attr('readonly', true);
+            }else{
+                $("#month_9").attr('readonly', false);
+            }
+        });
+
         $("#submit_form1").submit(function(event) {
             event.preventDefault();
             $.ajaxSetup({
@@ -1092,55 +2264,128 @@
                             var title = 'Amount of Payments';
                         }
                         $("#container1").html("");
-                        Highcharts.chart('container1', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_1
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: cate_mon,
-                                labels: {
-                                    rotation: 315
-                                }
-                            },
-                            yAxis: {
+                        if(response.user_admin==true){
+                            Highcharts.chart('container1', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: title
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-                            },
-                            series: [{
-                                name: title,
-                                data: dataPay
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_1
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataPay
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container1', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_1
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataPay
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_1").modal('hide');
                     }
                 },
@@ -1176,55 +2421,128 @@
                             var tit_det = 'Amount of Payments';
                         }
                         $("#container2").html("");
-                        Highcharts.chart('container2', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_2
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: year_act
-                            },
-                            yAxis: {
+                        if(response.user_admin==true){
+                            Highcharts.chart('container2', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: tit_det
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical',
-                                // align: 'right',
-                                // verticalAlign: 'middle'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-
-                            },
-                            series: [{
-                                name: tit_det,
-                                data: dataPayY
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_2
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: year_act
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: tit_det
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    // align: 'right',
+                                    // verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+
+                                },
+                                series: [{
+                                    name: tit_det,
+                                    data: dataPayY
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container2', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_2
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: year_act
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: tit_det
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    // align: 'right',
+                                    // verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+
+                                },
+                                series: [{
+                                    name: tit_det,
+                                    data: dataPayY
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_2").modal('hide');
                     }
                 },
@@ -1261,64 +2579,146 @@
                             var title = 'Amount of Payments';
                         }
                         $("#container3").html("");
-                        Highcharts.chart('container3', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_3,
-                            },
-                            subtitle: {
-                                text:
-                                    '',
-                            },
-                            xAxis: {
-                                categories: cate_mon,
-                                labels: {
-                                    rotation: 315
-                                }
-                            },
-                            yAxis: {
-                                min: 0,
+                        if(response.user_admin==true){
+                            Highcharts.chart('container3', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: title
-                                }
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
+                                    text: tit_g_3,
                                 },
-                                column: {
-                                    pointPadding: 0.2,
-                                    borderWidth: 0
-                                }
-                            },
-                            series: [
-                                {
-                                    name: title,
-                                    data: dataPay1
+                                subtitle: {
+                                    text:
+                                        '',
                                 },
-                                {
-                                    name: 'Projected',
-                                    data: dataPro1
-                                }
-                            ],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    },
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    }
+                                },
+                                series: [
+                                    {
+                                        name: title,
+                                        data: dataPay1
+                                    },
+                                    {
+                                        name: 'Projected',
+                                        data: dataPro1
+                                    }
+                                ],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container3', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_3,
+                                },
+                                subtitle: {
+                                    text:
+                                        '',
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
+                                    }
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    },
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    }
+                                },
+                                series: [
+                                    {
+                                        name: title,
+                                        data: dataPay1
+                                    },
+                                    {
+                                        name: 'Projected',
+                                        data: dataPro1
+                                    }
+                                ],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_3").modal('hide');
                     }
                 },
@@ -1349,55 +2749,128 @@
                         var dataPayRec = response.dataPayRec;
                         var tit_g_4 = response.tit_g_4;
                         $("#container4").html("");
-                        Highcharts.chart('container4', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_4
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: cate_mon,
-                                labels: {
-                                    rotation: 315
-                                }
-                            },
-                            yAxis: {
+                        if(response.user_admin==true){
+                            Highcharts.chart('container4', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: 'Total Amount'
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-                            },
-                            series: [{
-                                name: 'Total Amount',
-                                data: dataPayRec
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_4
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Amount'
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Total Amount',
+                                    data: dataPayRec
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container4', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_4
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Amount'
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Total Amount',
+                                    data: dataPayRec
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_4").modal('hide');
                     }
                 },
@@ -1428,54 +2901,126 @@
                         var dataleadtot = response.dataleadtot;
                         var tit_g_5 = response.tit_g_5;
                         $("#container5").html("");
-                        Highcharts.chart('container5', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_5
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: cate
-                            },
-                            yAxis: {
+                        if(response.user_admin==true){
+                            Highcharts.chart('container5', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: 'Numbers of Leads'
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical',
-                                //align: 'right',
-                                //verticalAlign: 'middle'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-                            },
-                            series: [{
-                                name: 'Numbers of Leads',
-                                data: dataleadtot
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_5
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Numbers of Leads'
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Numbers of Leads',
+                                    data: dataleadtot
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container5', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_5
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Numbers of Leads'
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Numbers of Leads',
+                                    data: dataleadtot
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_5").modal('hide');
                     }
                 },
@@ -1505,52 +3050,150 @@
                         var dataleadbyuserpor = response.dataleadbyuserpor;
                         var tit_g_6 = response.tit_g_6;
                         $("#container6").html("");
-                        var chart1 = Highcharts.chart('container6', {
-                            chart: {
-                                type: 'pie'
-                            },
-                            title: {
-                                text: tit_g_6
-                            },
-                            tooltip: {
-                                valueSuffix: '%'
-                            },
-                            subtitle: {
-                                text:
-                                ''
-                            },
-                            plotOptions: {
-                                series: {
-                                    allowPointSelect: true,
-                                    cursor: 'pointer',
-                                    dataLabels: [{
-                                        enabled: true,
-                                        distance: 20
-                                    }, {
-                                        enabled: true,
-                                        distance: -40,
-                                        format: '{point.percentage:.1f}%',
-                                        style: {
-                                            fontSize: '1.2em',
-                                            textOutline: 'none',
-                                            opacity: 0.7
+                        if(response.user_admin==true){
+                            var chart1 = Highcharts.chart('container6', {
+                                chart: {
+                                    type: 'pie'
+                                },
+                                title: {
+                                    text: tit_g_6
+                                },
+                                tooltip: {
+                                    valueSuffix: '%'
+                                },
+                                subtitle: {
+                                    text:
+                                    ''
+                                },
+                                plotOptions: {
+                                    series: {
+                                        allowPointSelect: true,
+                                        cursor: 'pointer',
+                                        dataLabels: [{
+                                            enabled: true,
+                                            distance: 20
+                                        }, {
+                                            enabled: true,
+                                            distance: -40,
+                                            format: '{point.percentage:.1f}%',
+                                            style: {
+                                                fontSize: '1.2em',
+                                                textOutline: 'none',
+                                                opacity: 0.7
+                                            },
+                                            filter: {
+                                                operator: '>',
+                                                property: 'percentage',
+                                                value: 10
+                                            }
+                                        }]
+                                    }
+                                },
+                                series: [
+                                    {
+                                        name: 'Percentage',
+                                        colorByPoint: true,
+                                        data: []
+                                    }
+                                ],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
                                         },
-                                        filter: {
-                                            operator: '>',
-                                            property: 'percentage',
-                                            value: 10
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
                                         }
                                     }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
                                 }
-                            },
-                            series: [
-                                {
-                                    name: 'Percentage',
-                                    colorByPoint: true,
-                                    data: []
+                            });
+                        }else{
+                            var chart1 = Highcharts.chart('container6', {
+                                chart: {
+                                    type: 'pie'
+                                },
+                                title: {
+                                    text: tit_g_6
+                                },
+                                tooltip: {
+                                    valueSuffix: '%'
+                                },
+                                subtitle: {
+                                    text:
+                                    ''
+                                },
+                                plotOptions: {
+                                    series: {
+                                        allowPointSelect: true,
+                                        cursor: 'pointer',
+                                        dataLabels: [{
+                                            enabled: true,
+                                            distance: 20
+                                        }, {
+                                            enabled: true,
+                                            distance: -40,
+                                            format: '{point.percentage:.1f}%',
+                                            style: {
+                                                fontSize: '1.2em',
+                                                textOutline: 'none',
+                                                opacity: 0.7
+                                            },
+                                            filter: {
+                                                operator: '>',
+                                                property: 'percentage',
+                                                value: 10
+                                            }
+                                        }]
+                                    }
+                                },
+                                series: [
+                                    {
+                                        name: 'Percentage',
+                                        colorByPoint: true,
+                                        data: []
+                                    }
+                                ],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
                                 }
-                            ]
-                        });
+                            });
+                        }   
                         for (var i = 0; i < dataleadbyuserpor.length; i++) {
                             chart1.series[0].addPoint({
                                 name: dataleadbyuserpor[i]['name'],
@@ -1587,54 +3230,126 @@
                         var data_empren = response.data_empren;
                         var tit_g_7 = response.tit_g_7;
                         $("#container7").html("");
-                        Highcharts.chart('container7', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_7
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: cate_emp
-                            },
-                            yAxis: {
+                        if(response.user_admin==true){
+                            Highcharts.chart('container7', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: 'Total Amount'
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical',
-                                //align: 'right',
-                                //verticalAlign: 'middle'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-                            },
-                            series: [{
-                                name: 'Total Amount',
-                                data: data_empren
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_7
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_emp
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Amount'
                                     }
-                                }]
-                            }
-                        });
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Total Amount',
+                                    data: data_empren
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container7', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_7
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_emp
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Amount'
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Total Amount',
+                                    data: data_empren
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
                         $("#fil_7").modal('hide');
                     }
                 },
@@ -1643,8 +3358,8 @@
                 }
             });
         });
-
-        $("#submit_form8").submit(function(event) {
+        
+        $("#submit_form9").submit(function(event) {
             event.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -1663,57 +3378,435 @@
                     if (response.status == "success") {
                         var cate_user = response.cate_user;
                         var data_user = response.data_user;
-                        var tit_g_8 = response.tit_g_8;
-                        $("#container8").html("");
-                        Highcharts.chart('container8', {
-                            chart: {
-                                type: 'column'
-                            },
-                            title: {
-                                text: tit_g_8
-                            },
-                            subtitle: {
-                                text: ''
-                            },
-                            xAxis: {
-                                categories: cate_user
-                            },
-                            yAxis: {
+                        var tit_g_9 = response.tit_g_8;
+                        $("#container9").html("");
+                        if(response.user_admin==true){
+                            Highcharts.chart('container9', {
+                                chart: {
+                                    type: 'column'
+                                },
                                 title: {
-                                    text: 'Total Leads'
-                                }
-                            },
-                            legend: {
-                                layout: 'vertical',
-                                //align: 'right',
-                                //verticalAlign: 'middle'
-                            },
-                            plotOptions: {
-                                series: {
-                                    cursor: 'pointer',
-                                    allowPointSelect: true
-                                }
-                            },
-                            series: [{
-                                name: 'Leads',
-                                data: data_user
-                            }],
-                            responsive: {
-                                rules: [{
-                                    condition: {
-                                        maxWidth: 500
-                                    },
-                                    chartOptions: {
-                                        legend: {
-                                            layout: 'horizontal',
-                                            align: 'center',
-                                            verticalAlign: 'bottom'
-                                        }
+                                    text: tit_g_9
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_user
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Leads'
                                     }
-                                }]
-                            }
-                        });
-                        $("#fil_8").modal('hide');
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Leads',
+                                    data: data_user
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container9', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_9
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_user
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Total Leads'
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    //align: 'right',
+                                    //verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: 'Leads',
+                                    data: data_user
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
+                        $("#fil_9").modal('hide');
+                    }
+                },
+                error: function(response) {
+                    alert("Failed")
+                }
+            });
+        });
+
+        $("#submit_form10").submit(function(event) {
+            event.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            let formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('panel.analytics.update') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                    if (response.status == "success") {
+                        var dataCR = response.dataCR;
+                        var cate_mon = response.cate_mon;
+                        var tit_g_10 = response.tit_g_10;
+                        var title = response.title;
+                        $("#container10").html("");
+                        if(response.user_admin==true){
+                            Highcharts.chart('container10', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_10
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataCR
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container10', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_10
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: cate_mon,
+                                    labels: {
+                                        rotation: 315
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataCR
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
+                        $("#fil_10").modal('hide');
+                    }
+                },
+                error: function(response) {
+                    alert("Failed")
+                }
+            });
+        });
+
+        $("#submit_form11").submit(function(event) {
+            event.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            let formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('panel.analytics.update') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                    if (response.status == "success") {
+                        var dataCRa = response.dataCRa;
+                        var tit_g_11 = response.tit_g_11;
+                        var year_act = response.year_act;
+                        var title = response.title;
+                        $("#container11").html("");
+                        if(response.user_admin==true){
+                            Highcharts.chart('container11', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_11
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: year_act
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    // align: 'right',
+                                    // verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataCRa
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                }
+                            });
+                        }else{
+                            Highcharts.chart('container11', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: tit_g_11
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: year_act
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: title
+                                    }
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    // align: 'right',
+                                    // verticalAlign: 'middle'
+                                },
+                                plotOptions: {
+                                    series: {
+                                        cursor: 'pointer',
+                                        allowPointSelect: true
+                                    }
+
+                                },
+                                series: [{
+                                    name: title,
+                                    data: dataCRa
+                                }],
+                                responsive: {
+                                    rules: [{
+                                        condition: {
+                                            maxWidth: 500
+                                        },
+                                        chartOptions: {
+                                            legend: {
+                                                layout: 'horizontal',
+                                                align: 'center',
+                                                verticalAlign: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                },
+                                exporting: {
+                                    buttons: {
+                                        contextButton: {
+                                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadCSV", "downloadPDF", "downloadPNG"]
+                                        }
+                                    },
+                                    menuItemDefinitions: {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadCSV": {}, "downloadPDF": {}, "downloadPNG": {}}
+                                },
+                                navigation: {
+                                    buttonOptions: {
+                                        enabled: false
+                                    }
+                                }
+                            });
+                        }
+                        $("#fil_11").modal('hide');
                     }
                 },
                 error: function(response) {

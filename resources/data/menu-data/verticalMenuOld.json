@@ -93,6 +93,20 @@
       "slug": "invoice",
       "access": "view_invoice"
     },
+    // {
+    //   "url": "panel/payment/employee",
+    //   "name": "Payments",
+    //   "icon": "credit-card",
+    //   "slug": "payments.employee",
+    //   "access": "view_contract"
+    // },
+    // {
+    //   "url": "panel/performance/employee",
+    //   "name": "Employee Performance",
+    //   "icon": "droplet",
+    //   "slug": "employe.performance'",
+    //   "access": "performance"
+    // },
     {
       "url": "panel/reports/index",
       "name": "Reports",
@@ -100,6 +114,20 @@
       "slug": "reports.index",
       "access": "reports"
     },
+    // {
+    //   "url": "panel/expense",
+    //   "name": "Expense",
+    //   "icon": "credit-card",
+    //   "slug": "expense.index",
+    //   "access": "plugin"
+    // },
+    // {
+    //   "url": "panel/extra/amount",
+    //   "name": "Extra Amount",
+    //   "icon": "credit-card",
+    //   "slug": "extra.amount",
+    //   "access": "plugin"
+    // },
     {
       "url": "panel/statement",
       "name": "Statement",

@@ -47,7 +47,7 @@ class ReportsController extends Controller
 
             $data = array_reverse($mounth_number);
             foreach ($data as $value) {
-                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->whereMonth('issue_date', $value)->sum('balance');
+                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->whereMonth('issue_date', $value)->sum('balance');
                 // $lead[] = Lead::where('status', '0')->whereMonth('lead_date', $value)->count();
                 $customer[] = Lead::where('status', '2')->whereMonth('lead_date', $value)->count();
                 $deals[] = Lead::where('employee_id','!=',null)->where('status', '0')->whereMonth('lead_date', $value)->count();
@@ -69,7 +69,7 @@ class ReportsController extends Controller
             $period = CarbonPeriod::create($start_date, $end_date);
             foreach ($period as $date) {
                 $pro_dates[] = $date->format('Y-m-d');
-                $pro_revenue[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('issue_date', $date->format('Y-m-d'))->sum('balance');
+                $pro_revenue[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->where('issue_date', $date->format('Y-m-d'))->sum('balance');
             }
             $t_pro_revenue = array_sum($pro_revenue);
 
@@ -168,7 +168,7 @@ class ReportsController extends Controller
 
             $data = array_reverse($mounth_number);
             foreach ($data as $value) {
-                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->whereMonth('issue_date', $value)->sum('balance');
+                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->whereMonth('issue_date', $value)->sum('balance');
             }
 
             $t_evenue_value = array_sum($revenue_value);
@@ -205,7 +205,7 @@ class ReportsController extends Controller
             }
             $data = array_reverse($mounth_number);
             foreach ($data as $value) {
-                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->whereMonth('issue_date', $value)->sum('balance');
+                $revenue_value[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->whereMonth('issue_date', $value)->sum('balance');
             }
             $now = Carbon::create($yr, $mth, 1);
             $start_date = $now->startOfMonth()->format('Y-m-d');
@@ -213,7 +213,7 @@ class ReportsController extends Controller
             $period = CarbonPeriod::create($start_date, $end_date);
             foreach ($period as $date) {
                 $pro_dates[] = $date->format('Y-m-d');
-                $pro_revenue[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('issue_date', $date->format('Y-m-d'))->sum('balance');
+                $pro_revenue[] = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->where('issue_date', $date->format('Y-m-d'))->sum('balance');
             }
             $t_pro_revenue = array_sum($pro_revenue);
 

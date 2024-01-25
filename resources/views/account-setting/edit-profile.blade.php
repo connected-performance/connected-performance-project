@@ -73,18 +73,7 @@
                                 <label class="form-label" for="modalEditUserPhone">Date Of Birth</label>
                                 <input type="date" name="dob" class="form-control" id="dob" required />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="modalEditUserPhone">Password</label>
-                                <input type="password" name="password" class="form-control"
-                                    placeholder="Password" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label" for="modalEditUserPhone">Password Confirmation</label>
-                                <input type="text" name="password_confirmation" class="form-control"
-                                    placeholder="Confirm Password" />
-                            </div>
+
                         </div>
 
                         <div class="row">
@@ -95,6 +84,8 @@
                                     Discard
                                 </button>
                             </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

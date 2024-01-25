@@ -28,6 +28,7 @@ use Illuminate\Mail\DemoMail;
 use SoapClient;
 use App\Gateway\Gwapi;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SaleController extends Controller
 {
@@ -63,11 +64,16 @@ class SaleController extends Controller
                 return $number;
             })
             ->addColumn('status', function ($row) {
-                if($row->status == '0'){
-                    $status =  '<span class="badge rounded-pill  badge-light-info">Draft</span>';
-                }else{;
-                    $status  = '<span class="badge rounded-pill  badge-light-success">Send</span>';
+                if($row->abandoned == 'NO'){
+                    if($row->status == '0'){
+                        $status =  '<span class="badge rounded-pill badge-light-info">Draft</span>';
+                    }else{;
+                        $status  = '<span class="badge rounded-pill badge-light-success">Send</span>';
+                    }
+                }else{
+                    $status =  '<span class="badge rounded-pill badge-light-danger">Abandoned</span>';
                 }
+                
                 return $status;
             })
             ->addColumn('balance', function ($row) {
@@ -83,6 +89,10 @@ class SaleController extends Controller
                     $balance_status =  '<span class="badge rounded-pill  badge-light-warning">UnPaid</span>';
                 } elseif ($row->balance_status == '2') {
                     $balance_status =  '<span class="badge rounded-pill  badge-light-danger">Failed</span>';
+                }elseif ($row->balance_status == '3') {
+                    $balance_status  = '<span class="badge rounded-pill  badge-light-danger">Canceled</span>';
+                }elseif ($row->balance_status == '4') {
+                    $balance_status  = '<span class="badge rounded-pill  badge-light-danger">Refund</span>';
                 }else{
                     $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
                 }
@@ -90,28 +100,33 @@ class SaleController extends Controller
             })
             ->filter(function ($query) use ($request) {
                 if ($request->get('costumer_fl')) {
-                    $query->where('user_id',  request('costumer_fl'));
+                    $query->where('invoices.user_id',  request('costumer_fl'));
                 }
                 if ($request->get('pay_month')) {
-                    $query->whereMonth('issue_date',  request('pay_month'));
+                    $query->whereMonth('invoices.issue_date',  request('pay_month'));
                 }
                 if ($request->get('pay_year')) {
-                    $query->whereYear('issue_date',  request('pay_year'));
+                    $query->whereYear('invoices.issue_date',  request('pay_year'));
                 }
                 if ($request->get('pay_type')) {
-                    $query->where('type',  request('pay_type'));
+                    $query->where('invoices.type',  request('pay_type'));
                 }
                 if (!is_null($request->get('pay_status'))) {
-                    $query->where('balance_status',  request('pay_status'));
+                    if($request->get('pay_status')=='A'){
+                        $query->where('invoices.abandoned', 'YES');
+                    }else{
+                        $query->where('invoices.balance_status',  request('pay_status'));
+                        $query->where('invoices.abandoned', 'NO');
+                    }
                 }
                 if (!is_null($request->get('invoice_no'))) {
-                    $query->where('invoice_number', request('invoice_no'));
+                    $query->where('invoices.invoice_number', request('invoice_no'));
                 }
                 if (!is_null($request->get('order_nmi'))) {
-                    $query->where('order_nmi', request('order_nmi'));
+                    $query->where('invoices.order_nmi', request('order_nmi'));
                 }
                 if (!is_null($request->get('transaction_nmi'))) {
-                    $query->where('transaction', request('transaction_nmi'));
+                    $query->where('invoices.transaction', request('transaction_nmi'));
                 }
                 if (!is_null($request->get('vault_id')) || !is_null($request->get('subs_id'))) {
                     $query->join('customers as customers', 'invoices.customer_id', '=', 'customers.id');
@@ -284,7 +299,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Create Invoice",
+                'name' => auth()->user()->first_name . " Create Invoice ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Create Invoice",
                 'email' => auth()->user()->email,
                 'description' => "Create Invoice Successfully",
@@ -327,7 +342,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Delete Invoice",
+                'name' => auth()->user()->first_name . " Delete Invoice ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Delete Invoice",
                 'email' => auth()->user()->email,
                 'description' => "Create Delete Successfully",
@@ -390,7 +405,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Update Invoice",
+                'name' => auth()->user()->first_name . " Update Invoice ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Update Invoice",
                 'email' => auth()->user()->email,
                 'description' => "Update Invoice Successfully",
@@ -624,7 +639,7 @@ class SaleController extends Controller
             $invoice->balance_status = '1';
             $invoice->save();
             $total_amount =  $invoice->total_amount - $request->balance;
-            Invoice::where('user_id', $request->user_id)->where('status', '0')->update(['total_amount' => $total_amount]);
+            Invoice::where('user_id', $request->user_id)->where('status', '0')->where('abandoned', 'NO')->update(['total_amount' => $total_amount]);
             $transaction = new Transction();
             $transaction->user_id = $invoice->user_id;
             $transaction->customer_id = $invoice->customer_id;
@@ -662,7 +677,7 @@ class SaleController extends Controller
         } 
         $data = [
                 'user_id' => $data->id,
-                'name' => $data->first_name . " Pay ". $request->balance. " Amount",
+                'name' => $data->first_name . " Pay ". $request->balance. " Amount ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Transaction",
                 'email' => $data->email,
                 'description' => "Transaction Successfully Done",
@@ -817,7 +832,7 @@ class SaleController extends Controller
             $invoice->balance_status = '1';
             $invoice->save();
             $total_amount =  $invoice->total_amount - $request->balance;
-            Invoice::where('user_id', $request->user_id)->where('status', '0')->update(['total_amount' => $total_amount]);
+            Invoice::where('user_id', $request->user_id)->where('status', '0')->where('abandoned', 'NO')->update(['total_amount' => $total_amount]);
             $transaction = new Transction();
             $transaction->user_id = $invoice->user_id;
             $transaction->customer_id = $invoice->customer_id;
@@ -855,7 +870,7 @@ class SaleController extends Controller
         } 
         $data = [
                 'user_id' => $data->id,
-                'name' => $data->first_name . " Pay ". $request->balance. " Amount",
+                'name' => $data->first_name . " Pay ". $request->balance. " Amount ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Transaction",
                 'email' => $data->email,
                 'description' => "Transaction Successfully Done",
@@ -1517,7 +1532,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Create Payment",
+                'name' => auth()->user()->first_name . " Create Payment ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Create Payment",
                 'email' => auth()->user()->email,
                 'description' => "Create Payment Successfully",
@@ -1553,7 +1568,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Update Payment",
+                'name' => auth()->user()->first_name . " Update Payment ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Update Payment",
                 'email' => auth()->user()->email,
                 'description' => "Update Payment Successfully",
@@ -1589,7 +1604,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Delete Payment",
+                'name' => auth()->user()->first_name . " Delete Payment ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Delete Payment",
                 'email' => auth()->user()->email,
                 'description' => "Delete Payment Successfully",
@@ -1663,7 +1678,7 @@ class SaleController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Send Payment",
+                'name' => auth()->user()->first_name . " Send Payment ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Send Payment",
                 'email' => auth()->user()->email,
                 'description' => "Send Payment Successfully",

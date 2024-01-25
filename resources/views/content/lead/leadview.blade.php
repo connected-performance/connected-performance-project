@@ -31,6 +31,24 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h4 id="txt_lead">Active Lead</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label for="lead_fl" class="col-form-label">@lang('Lead')</label>
+                            <select class="form-control type slector select-2" id="lead_fl" name="lead_fl">
+                                <option value="al" selected>Active Lead</option>
+                                <option value="ll">Loss Lead</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="search_fl" class="col-form-label"></label>
+                            <button type="button" class="btn btn-primary" id="search" style="margin-top: 34px;">Update</button>
+                        </div>
+                    </div>
                     <div class="card-header border-bottom">
                         <button type="button" class="btn btn-success" onclick="show_lead_modal()">Create Lead</button>
                     </div>
@@ -73,6 +91,73 @@
                 </div>
             </div>
         </div>
+        <!--/ add new card modal  -->
+        <div class="modal" id="edit_lead_modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog  modal-lg" role="document">
+                <form id="submit_form_edit" enctype='multipart/form-data' method="POST">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Lead</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            <input type="hidden" value="" name="lead_id_edit" id="lead_id_edit">
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <label for="name_edit">Name</label>
+                                    <input type="text" class="form-control" id="name_edit" name="name_edit" placeholder="Name">
+                                </div>
+                                <div class="col">
+                                    <label for="last_name_edit">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name_edit" name="last_name_edit" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label for="email_edit">Email</label>
+                                    <input type="email" class="form-control" id="email_edit" name="email_edit"
+                                        placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <label for="estimated_closed_date_edit">Estimated Closed Date</label>
+                                    <input type="date" class="form-control" id="estimated_closed_date_edit" name="estimated_closed_date_edit">
+                                </div>
+                                <div class="col">
+                                    <label for="phone_number_edit">Phone Number</label>
+                                    <input type="text" class="form-control" id="phone_number_edit" name="phone_number_edit"
+                                        placeholder="Phone Number">
+                                </div>
+                                <div class="col">
+                                    <label for="drop_down_edit">Select Services</label>
+                                    <select class="form-control type" id="drop_down_edit" name="drop_down_edit" required="">
+                                        <option value="">Select Your Answer </option>
+                                        <option value="1_on_1_training">
+                                            1 on 1 training</option>
+                                        <option value="consulting">
+                                            Consulting</option>
+                                        <option value="connect_sofware">
+                                            Connect Sofware</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label for="description_edit">Description</label>
+                                    <textarea class="form-control" id="description_edit" name="description_edit"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" type="button" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     @include('content.lead.create-lead-model')
     @include('content.lead.schedule-modal')
@@ -103,6 +188,7 @@
     <script>
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
+            $('.select-2').select2();
         });
 
         function delete_data(id) {
@@ -159,7 +245,6 @@
             })
         }
 
-
         function show_modal(id) {
             var id = id;
             $.ajax({
@@ -185,6 +270,76 @@
             })
         }
 
+        function edit_lead(id) {
+            $.ajax({
+                url: "{{ route('lead.edit') }}",
+                method: "POST",
+                data: {
+                    id: id
+                },
+                dataType: "json",
+                success: function(response) {
+
+                    $("#lead_id_edit").val(response.lead.id);
+                    $("#name_edit").val(response.lead.name);
+                    $("#last_name_edit").val(response.lead.last_name);
+                    $("#email_edit").val(response.lead.email);
+                    $("#estimated_closed_date_edit").val(response.lead.closed_date);
+                    $("#phone_number_edit").val(response.lead.phone);
+                    $("#drop_down_edit").val(response.lead.services);
+                    $("#description_edit").val(response.lead.description);
+                    $("#edit_lead_modal").modal('show');
+                },
+                error: function(response) {
+                    $("#sahir_exampleModal").modal('hide');
+
+                }
+            })
+        }
+
+        $("#submit_form_edit").submit(function(event) {
+            event.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            let formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('lead.edit.store') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                    if (response.status == "success") {
+                        $("#edit_lead_modal").modal('hide');
+                        $('#lead_table').DataTable().ajax.reload();
+                        toastr[response.status](
+                            response.message, 'Success', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    } else {
+                        toastr[response.status](
+                            response.message, '!Oops', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    }
+
+
+                },
+                error: function(response) {
+                    alert("Failed")
+                }
+            });
+        });
 
         load_data();
 
@@ -194,7 +349,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#lead_table').DataTable({
+            var table = $('#lead_table').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -203,7 +358,9 @@
                 ajax: {
                     url: "{{ url('panel/lead/ajax') }}",
                     type: "POST",
-
+                    data: function (data) {
+                        data.lead_fl = $('#lead_fl').val()
+                    }
                 },
                 columns: [{
                         data: 'form_name'
@@ -236,6 +393,15 @@
                         data: 'action'
                     },
                 ]
+            });
+
+            $('#search').on('click', function(e) {
+                if($('#lead_fl').val()=='al'){
+                    $("#txt_lead").html("Active Lead");
+                }else{
+                    $("#txt_lead").html("Loss Lead");
+                }
+                table.draw();
             });
         }
 

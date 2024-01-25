@@ -33,9 +33,9 @@
                             <a href="#" class="brand-logo">
                                 <img src="{{ URL::asset('custom/img/like.png') }}" class="auth-logo">
                             </a>
-                            <p class="card-text mb-2">
+                            <!-- <p class="card-text mb-2">
                                 We look forward to offering you new and exciting content.
-                            </p>
+                            </p> -->
 
                             {{-- <a href="{{ asset('/') }}" class="btn btn-primary w-100">Skip for now</a> --}}
 

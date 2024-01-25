@@ -348,7 +348,7 @@ class Gwapi {
     return $this->_doPost($query);
   }
 
-  function doRefund($transactionid, $amount) {
+  function doRefund($transactionid, $amount, $payment) {
 
     $query  = "";
     // Login Information
@@ -357,6 +357,9 @@ class Gwapi {
     $query .= "transactionid=" . urlencode($transactionid) . "&";
     if ($amount>0) {
         $query .= "amount=" . urlencode(number_format($amount,2,".","")) . "&";
+    }
+    if ($payment!=null) {
+      $query .= "amount=" . urlencode(number_format($payment,2,".","")) . "&";
     }
     $query .= "type=refund";
     return $this->_doPost($query);

@@ -190,7 +190,7 @@ class EmployeeController extends Controller
                 $message = "Referral Successfullu Created";
             }
            
-                $form_nmae = 'Created By '. @auth()->user()->first_name;
+            $form_nmae = 'Created By '. @auth()->user()->first_name;
            
             $lead->employee_id = auth()->user()->employee->id;
             $lead->form_name = @$form_nmae;
@@ -214,6 +214,8 @@ class EmployeeController extends Controller
             $user->active_portal = 'customer';
             $user->save();
             if ($user) {
+                $lead->user_id = $user->id;
+                $lead->save();
                 $customer = new Customer();
                 $customer->user_id = $user->id;
                 $customer->status = '0';

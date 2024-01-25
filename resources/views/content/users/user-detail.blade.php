@@ -238,8 +238,9 @@
 
             <div class="card">
                 <div class="card-header border-bottom">
-                    <button type="button" class="btn btn-success" onclick="modal_show_invoice()">Create</button>
+                    <button type="button" class="btn btn-success" onclick="modal_show_invoice()">Create Invoice</button>
                     @if($users->customer->subscription_id!=null)
+                        <button type="button" class="btn btn-danger" onclick="cancel_subscription()">Cancel Subscription</button>
                         <button type="button" class="btn btn-warning" onclick="create_payment()">Create Payment</button>
                     @endif
                 </div>
@@ -288,6 +289,25 @@
             </div>
         </div>
     </section>
+    <div class="modal fade text-start" id="resend_form" tabindex="-1" aria-labelledby="myModalLabel160" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel160">Resend Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to resend the payment?
+                    <input type="hidden" id="res_pay">
+                    <div id="data_pay"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" onclick="resend_form()">Resend Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-start" id="delete_form" tabindex="-1" aria-labelledby="myModalLabel160" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -310,16 +330,17 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel160">Cancel Transaction</h5>
+                    <h5 class="modal-title" id="myModalLabel160">Abandon Subscription</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to cancel this transaction?.
-                    <input type="hidden" id="cancel_id">
+                    Are you sure you want to abandon this subscription?.
+                    <input type="hidden" id="cancel_subscription_id" value="{{ @$users->customer->subscription_id }}">
+                    <input type="hidden" id="user_id_cancels" value="{{ @$users->id }}">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" onclick="cancel_form()">Cancel transaction</button>
+                    <button type="button" class="btn btn-danger" onclick="cancel_form()">Abandon Subscription</button>
                 </div>
             </div>
         </div>
@@ -781,18 +802,19 @@
             })
         }
 
-        function cancel_data(id) {
-            $("#cancel_id").val(id);
+        function cancel_subscription() {
             $("#cancel_form").modal('show');
         }
 
         function cancel_form() {
-            var id = $("#cancel_id").val();
+            var id = $("#cancel_subscription_id").val();
+            var user_id = $("#user_id_cancels").val();
             $.ajax({
                 url: "{{ route('customer.invoice.cancel') }}",
                 method: "POST",
                 data: {
-                    id: id
+                    id: id,
+                    user_id: user_id
                 },
                 dataType: "json",
                 success: function(response) {
@@ -824,6 +846,51 @@
                 },
                 error: function(response) {
                     $("#sahir_exampleModal").modal('hide');
+
+                }
+            })
+        }
+
+        function resend_payment(id, data_pay) {
+            $("#res_pay").val(id);
+            $("#data_pay").html(data_pay);
+            $("#resend_form").modal('show');
+        }
+
+        function resend_form() {
+            var id = $("#res_pay").val();
+            $.ajax({
+                url: "{{ route('customer.invoice.resend-payment') }}",
+                method: "POST",
+                data: {
+                    id: id
+                },
+                dataType: "json",
+                success: function(response) {
+                    var isRtl = $('html').attr('data-textdirection') === 'rtl';
+                    if (response.status == "success") {
+                        $("#resend_form").modal('hide');
+                        $('#invoice_table').DataTable().ajax.reload();
+                        toastr[response.status](
+                            response.message, 'Success', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    } else {
+                        $("#resend_form").modal('hide');
+                        toastr[response.status](
+                            response.message, '!Oops', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                progressBar: true,
+                                rtl: isRtl
+                            });
+                    }
+                },
+                error: function(response) {
+                    $("#resend_form").modal('hide');
 
                 }
             })

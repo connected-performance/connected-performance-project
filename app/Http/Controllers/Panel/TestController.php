@@ -20,11 +20,12 @@ use App\Models\Lead;
 use App\Mail\DemoMail as MailDemoMail;
 use App\Mail\InvoiceCustomerMail;
 use Illuminate\Support\Facades\Hash;
+use App\Events\ActivityLog;
+
 
 class TestController extends Controller
 {
-    public function test(){
-        die();
+    public function tes(){
         $customer=222;
         $customer_vault='1630750117';
         $order='3082';
@@ -79,7 +80,7 @@ die();
         
         if(!is_null($order_id)){
             if($type=='transaction.sale.success' && $order_id!=null){
-                $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                $invoice = Invoice::where('order_nmi', $order_id)->whereNotIn('balance_status', [1,2,3,4])->first();
                 if($invoice->type=='NORMAL PAYMENT'){
                     $customer = $invoice->users->customer;
                     $customer_name = $invoice->users->first_name;
@@ -159,7 +160,7 @@ die();
                     $invoice->status = '1';
                     $invoice->save();
                     $total_amount =  $invoice->total_amount - $balance;
-                    Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', '<>', 1)->update(['total_amount' => $total_amount]);
+                    Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->whereNotIn('balance_status', [1,2,3,4])->update(['total_amount' => $total_amount]);
                     $transaction = new Transction();
                     $transaction->user_id = $invoice->user_id;
                     $transaction->customer_id = $invoice->customer_id;
@@ -186,7 +187,7 @@ die();
                     $invoice->save();
                 }
             }elseif($type=='transaction.sale.failed'){
-                $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                $invoice = Invoice::where('order_nmi', $order_id)->whereNotIn('balance_status', [1,2,3,4])->first();
                 if($invoice){
                     $invoice->balance_status=2;
                     $invoice->transaction = $transaction_id;

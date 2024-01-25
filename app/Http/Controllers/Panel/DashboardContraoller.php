@@ -271,7 +271,6 @@ class DashboardContraoller extends Controller
         for($i=0;$i<=11;$i++){ 
             $dataPay1[]=Invoice::where('balance_status', '1')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->sum('balance');
             $dataPro1[]=Invoice::whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->sum('balance');
-            $mon=$mon-1;
         }
 
         $tit_g_3='Monthly Customers Projected ('.$year.')';
@@ -324,14 +323,53 @@ class DashboardContraoller extends Controller
         $tit_g_7='Monthly Recurring Revenue by Employee ('.$months_l[$mon-1].' '.$year.')';
         // fin graph 7
 
+        $costumer_ac=Customer::join('employees', 'employees.id', '=', 'customers.employee_id')
+            ->join('users', 'users.id', '=', 'employees.user_id')
+            ->where('customers.status', 1)->select(DB::raw('users.first_name as name, users.last_name as last_name, count(*) as total'))
+            ->groupBy('customers.employee_id','users.first_name','users.last_name')->get();
+
+        $cate_emplo=array();
+        $data_emplo=array();
+        foreach($costumer_ac as $key => $value){
+            $cate_emplo[]=$value->name.' '.$value->last_name;
+            $data_emplo[]=$value->total;
+        }
+
+        $tit_g_8='Total Athletes by Employee';
+        // fin graph 8
+
         $cate_user=array();
         $data_user=array();
         foreach($leadbyuser as $key => $value){
             $cate_user[]=$value->name;
             $data_user[]=$value->y;
         }
-        $tit_g_8='Total Leads by User (Total)';
-        // fin graph 8
+        $tit_g_9='Total Leads by User (Total)';
+        // fin graph 9
+
+        $dataCR=array();
+        for($i=0;$i<=11;$i++){ 
+            $totCR=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->get();
+            $aban=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->whereMonth('abandoned_date', $i+1)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->get();
+            if($totCR->count()==0){
+                $dataCR[]=0;
+            }else{
+                $dataCR[]=round(($aban->count()*100)/$totCR->count(), 2);
+            }  
+        }
+        $tit_g_10='Monthly Churn Rate (Porcentage '.$year.')';
+        // fin graph 10
+
+        $dataCRa=array();
+        $totCRa=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->get();
+        $abanA=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->get();
+        if($totCRa->count()==0){
+            $dataCRa[]=0;
+        }else{
+            $dataCRa[]=round(($abanA->count()*100)/$totCRa->count(), 2);
+        }  
+        $tit_g_11='Annual Churn Rate (Porcentage '.$year.')';
+        // fin graph 11
 
         $yearlast5=array();
         $yearlast5[]=date("Y");
@@ -340,11 +378,16 @@ class DashboardContraoller extends Controller
         $yearlast5[]=date("Y")-3;
         $yearlast5[]=date("Y")-4;
 
-        return view('content.dashboard.dash-analytics', ['dataPay' => $dataPay, 'cate_mon' => $cate_mon, 'dataPayY' => $dataPayY, 'dataPay1' => $dataPay1, 'dataPro1' => $dataPro1, 'dataPayRec' => $dataPayRec, 'dataleadbyuserpor' => $dataleadbyuserpor, 'cate_user' => $cate_user, 'data_user' => $data_user, 'cate_emp' => $cate_emp, 'data_empren' => $data_empren, 'tit_g_7' => $tit_g_7, 'yearlast5' => $yearlast5, 'tit_g_1' => $tit_g_1, 'tit_g_3' => $tit_g_3, 'tit_g_4' => $tit_g_4, 'tit_g_6' => $tit_g_6, 'tit_g_8' => $tit_g_8, 'dataleadtot' => $dataleadtot, 'year_act' => $year_act, 'tit_g_5' => $tit_g_5, 'tit_g_2' => $tit_g_2]);
+        return view('content.dashboard.dash-analytics', ['dataPay' => $dataPay, 'cate_mon' => $cate_mon, 'dataPayY' => $dataPayY, 'dataPay1' => $dataPay1, 'dataPro1' => $dataPro1, 'dataPayRec' => $dataPayRec, 'dataleadbyuserpor' => $dataleadbyuserpor, 'cate_user' => $cate_user, 'data_user' => $data_user, 'cate_emp' => $cate_emp, 'data_empren' => $data_empren, 'tit_g_7' => $tit_g_7, 'yearlast5' => $yearlast5, 'tit_g_1' => $tit_g_1, 'tit_g_3' => $tit_g_3, 'tit_g_4' => $tit_g_4, 'tit_g_6' => $tit_g_6, 'tit_g_8' => $tit_g_8, 'dataleadtot' => $dataleadtot, 'year_act' => $year_act, 'tit_g_5' => $tit_g_5, 'tit_g_2' => $tit_g_2, 'tit_g_9' => $tit_g_9, 'cate_emplo' => $cate_emplo, 'data_emplo' => $data_emplo, 'tit_g_10' => $tit_g_10, 'dataCR' => $dataCR, 'tit_g_11' => $tit_g_11, 'dataCRa' => $dataCRa]);
     }
 
     public function analyticsUpdate(Request $request){ 
         try {
+            if (auth()->user()->is_admin == true){
+                $user_admin = true;
+            }else{
+                $user_admin = false;
+            }
             if($request->graph==1){
                 $request->validate([
                     'show_1' => 'required',
@@ -372,7 +415,8 @@ class DashboardContraoller extends Controller
                     'status' => 'success',
                     'cate_mon' => $cate_mon,
                     'dataPay' => $dataPay,
-                    'tit_g_1' => $tit_g_1
+                    'tit_g_1' => $tit_g_1,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -397,6 +441,7 @@ class DashboardContraoller extends Controller
                     'year_act' => $year_act,
                     'dataPayY' => $dataPayY,
                     'tit_g_2' => $tit_g_2,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -435,6 +480,7 @@ class DashboardContraoller extends Controller
                     'dataPay1' => $dataPay1,
                     'dataPro1' => $dataPro1,
                     'tit_g_3' => $tit_g_3,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -459,7 +505,8 @@ class DashboardContraoller extends Controller
                     'status' => 'success',
                     'cate_mon' => $cate_mon,
                     'dataPayRec' => $dataPayRec,
-                    'tit_g_4' => $tit_g_4
+                    'tit_g_4' => $tit_g_4,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -506,6 +553,7 @@ class DashboardContraoller extends Controller
                     'dataleadtot' => $dataleadtot,
                     'tit_g_5' => $tit_g_5,
                     'cate' => $cate,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -558,7 +606,8 @@ class DashboardContraoller extends Controller
                 $response = [
                     'status' => 'success',
                     'dataleadbyuserpor' => $dataleadbyuserpor,
-                    'tit_g_6' => $tit_g_6
+                    'tit_g_6' => $tit_g_6,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
@@ -594,20 +643,21 @@ class DashboardContraoller extends Controller
                     'cate_emp' => $cate_emp,
                     'data_empren' => $data_empren,
                     'tit_g_7' => $tit_g_7,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 
-            }elseif($request->graph==8){
+            }elseif($request->graph==9){
 
                 $request->validate([
-                    'year_8' => 'required',
-                    'month_8' => 'required'
+                    'year_9' => 'required',
+                    'month_9' => 'required'
                 ]);
 
                 $cate_user=array();
                 $data_user=array();
-                $year=$request->year_8;
-                $mon=$request->month_8;
+                $year=$request->year_9;
+                $mon=$request->month_9;
                 if($year=='T'){
                     $leadbyuser=DB::table('leads')->select(DB::raw('form_name as name, count(*) as y'))->groupBy('form_name')->get();
                     foreach($leadbyuser as $key => $value){
@@ -615,7 +665,7 @@ class DashboardContraoller extends Controller
                         $data_user[]=$value->y;
                     }
 
-                    $tit_g_8='Total Leads by User (Total)';
+                    $tit_g_9='Total Leads by User (Total)';
                 }else{
                     if($mon=='T'){
                         $leadbyuser=DB::table('leads')->whereYear('lead_date', $year)->select(DB::raw('form_name as name, count(*) as y'))->groupBy('form_name')->get();
@@ -624,7 +674,7 @@ class DashboardContraoller extends Controller
                             $data_user[]=$value->y;
                         }
 
-                        $tit_g_8='Total Leads by User ('.$year.')';
+                        $tit_g_9='Total Leads by User ('.$year.')';
                     }else{
                         $leadbyuser=DB::table('leads')->whereMonth('lead_date', $mon)->whereYear('lead_date', $year)->select(DB::raw('form_name as name, count(*) as y'))->groupBy('form_name')->get();
                         foreach($leadbyuser as $key => $value){
@@ -632,7 +682,7 @@ class DashboardContraoller extends Controller
                             $data_user[]=$value->y;
                         }
                         $months_l=['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octuber', 'November', 'December'];
-                        $tit_g_8='Total Leads by User ('.$months_l[$mon-1].' '.$year.')';
+                        $tit_g_9='Total Leads by User ('.$months_l[$mon-1].' '.$year.')';
                     }
                 } 
 
@@ -640,7 +690,127 @@ class DashboardContraoller extends Controller
                     'status' => 'success',
                     'cate_user' => $cate_user,
                     'data_user' => $data_user,
-                    'tit_g_8' => $tit_g_8,
+                    'tit_g_9' => $tit_g_9,
+                    'user_admin' => $user_admin
+                ];
+                return response()->json($response);
+
+            }elseif($request->graph==10){
+
+                $request->validate([
+                    'show_10' => 'required',
+                    'year_10' => 'required',
+                ]);
+
+                $cate_mon=array();
+                $dataCR=array();
+                $year=$request->year_10;
+                $months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+                if($request->show_10=='P'){
+                    for($i=0;$i<=11;$i++){ 
+                        $totCR=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->get();
+                        $aban=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->whereMonth('abandoned_date', $i+1)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->get();
+                        if($totCR->count()==0){
+                            $dataCR[]=0;
+                        }else{
+                            $dataCR[]=round(($aban->count()*100)/$totCR->count(), 2);
+                        } 
+                        $cate_mon[]=$months[$i].' '.$year;
+                    }
+                    $tit_g_10='Monthly Churn Rate (Porcentage '.$year.')';
+                    $title='Porcentage';
+                }elseif($request->show_10=='T'){
+                    for($i=0;$i<=11;$i++){ 
+                        $totCR=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->sum('balance');
+                        $aban=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->whereMonth('abandoned_date', $i+1)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->sum('balance');
+                        if($totCR==0){
+                            $dataCR[]=0;
+                        }else{
+                            $dataCR[]=$aban;
+                        } 
+                        $cate_mon[]=$months[$i].' '.$year;
+                    }
+                    $tit_g_10='Monthly Churn Rate (Total Amount '.$year.')';
+                    $title='Total Amount';
+                }else{
+                    for($i=0;$i<=11;$i++){ 
+                        $totCR=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->count();
+                        $aban=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereMonth('pay_date', $i+1)->whereYear('pay_date', $year)->whereMonth('abandoned_date', $i+1)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->count();
+                        if($totCR==0){
+                            $dataCR[]=0;
+                        }else{
+                            $dataCR[]=$aban;
+                        } 
+                        $cate_mon[]=$months[$i].' '.$year;
+                    }
+                    $tit_g_10='Monthly Churn Rate (Abandoned Units '.$year.')';
+                    $title='Abandoned Units';
+                }
+
+                $response = [
+                    'status' => 'success',
+                    'cate_mon' => $cate_mon,
+                    'dataCR' => $dataCR,
+                    'tit_g_10' => $tit_g_10,
+                    'title' => $title,
+                    'user_admin' => $user_admin
+                ];
+                return response()->json($response);
+
+            }elseif($request->graph==11){
+
+                $request->validate([
+                    'show_11' => 'required',
+                    'year_11' => 'required',
+                ]);
+
+                $dataCRa=array();
+                $year=$request->year_11;
+                $year_act=[$request->year_11];
+
+                if($request->show_11=='P'){
+                    $totCRa=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->get();
+                    $abanA=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->get();
+                    if($totCRa->count()==0){
+                        $dataCRa[]=0;
+                    }else{
+                        $dataCRa[]=round(($abanA->count()*100)/$totCRa->count(), 2);
+                    } 
+                    
+                    $tit_g_11='Annual Churn Rate (Porcentage '.$year.')';
+                    $title='Porcentage';
+                }elseif($request->show_11=='T'){
+                    $totCRa=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->sum('balance');
+                    $abanA=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->sum('balance');
+                    if($totCRa==0){
+                        $dataCRa[]=0;
+                    }else{
+                        $dataCRa[]=$abanA;
+                    } 
+                    
+                    $tit_g_11='Annual Churn Rate (Total Amount '.$year.')';
+                    $title='Total Amount';
+                }else{
+                    $totCRa=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->select('user_id')->groupBy('user_id')->count();
+                    $abanA=Invoice::whereNotNull('order_nmi')->whereNotNull('plan_id')->whereYear('pay_date', $year)->whereYear('abandoned_date', $year)->select('user_id')->groupBy('user_id')->count();
+                    if($totCRa==0){
+                        $dataCRa[]=0;
+                    }else{
+                        $dataCRa[]=$abanA;
+                    } 
+                    
+                    $tit_g_11='Annual Churn Rate (Amount of Payments '.$year.')';
+                    $title='Amount of Payments';
+                }
+                
+                $response = [
+                    'status' => 'success',
+                    'dataCRa' => $dataCRa,
+                    'tit_g_11' => $tit_g_11,
+                    'year_act' => $year_act,
+                    'title' => $title,
+                    'user_admin' => $user_admin
                 ];
                 return response()->json($response);
 

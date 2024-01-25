@@ -89,6 +89,8 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
         Route::post('/lead/ajax', [LeadController::class, 'lead_ajax'])->name('lead.ajax');
         Route::post('/lead/create', [LeadController::class, 'Lead_cretae'])->name('lead.create');
 
+        Route::post('/lead/edit', [LeadController::class, 'Lead_edit'])->name('lead.edit');
+        Route::post('/lead/edit/store', [LeadController::class, 'Lead_edit_store'])->name('lead.edit.store');
         Route::post('lead/data/', [LeadController::class, 'lead_data'])->name('lead.data');
         Route::post('lead/delete/', [LeadController::class, 'lead_delete'])->name('lead.delete');
         Route::post('/lead/schedule',[LeadController::class, 'lead_schedual_metting'])->name('lead.schedual.metting');
@@ -154,7 +156,8 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
             Route::get('create/payment', [UserController::class, 'create_payment'])->name('customer.create.payment');
             Route::post('create/payment/save', [UserController::class, 'create_payment_save'])->name('customer.create.payment.save');
             Route::post('invoice/refund', [UserController::class, 'invoiceRefund'])->name('customer.invoice.refund');
-            Route::post('invoice/cancel', [UserController::class, 'invoiceCancel'])->name('customer.invoice.cancel');
+            Route::post('invoice/cancel', [UserController::class, 'invoiceCancelSubscription'])->name('customer.invoice.cancel');
+            Route::post('invoice/resend-payment', [UserController::class, 'invoiceResendPayment'])->name('customer.invoice.resend-payment');
             Route::post('/notes/ajax', [UserController::class, 'user_detail_note_ajax'])->name('user.notes.ajax');
             Route::post('/notes/detail', [UserController::class, 'user_detail_note_detail'])->name('panel.user.notes.detail');
             Route::post('/invoice/user/create', [UserController::class, 'invoiceUserCreate'])->name('invoice.user.create');
@@ -219,6 +222,7 @@ Route::prefix('')->middleware('isAuthUser')->group(function () {
             Route::get('account', [SettingController::class, "user_profile"])->name('user.profile');
             Route::post('account/edit', [SettingController::class, "edit_profile"])->name('edit.user.profile');
             Route::post('account/upfate', [SettingController::class, "update_profile"])->name('update.user.profile');
+            Route::post('account/edit-pass', [SettingController::class, "update_password"])->name('edit.user.pass');
             Route::get('account/secuirty', [SettingController::class, "account_secuirty"])->name('account.secuirty');
             Route::get('account/billing-plans', [SettingController::class, "account_billing_plans"])->name('account.billing.plan');
             Route::get('account/notificaton', [SettingController::class, "account_notification"])->name('account.notification');

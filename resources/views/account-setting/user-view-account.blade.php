@@ -66,8 +66,13 @@
                         <div class="user-avatar-section">
                             <div class="d-flex align-items-center flex-column">
                                 <input type="hidden" value="{{ $users->id }}" id="user_id">
-                                <img class="img-fluid rounded mt-3 mb-2" src="{{ asset(@$users->avatar) }}" height="110"
+                                @if($users->avatar && $users->avatar!=null && file_exists($avatar_dir)) 
+                                    <img class="img-fluid rounded mt-3 mb-2" src="{{ $avatar }}" height="110"
                                     width="110" alt="User avatar" />
+                                @else
+                                    <img class="img-fluid rounded mt-3 mb-2" src="https://crm.connected-performance.com/images/avatars/male.png" height="110"
+                                    width="110" alt="User avatar" />
+                                @endif
                                 <div class="user-info text-center">
                                     <h4>{{ @$users->username }}</h4>
                                     <span class="badge bg-light-secondary">Author</span>
@@ -137,6 +142,9 @@
                             <div class="d-flex justify-content-center pt-2">
                                 <a href="#" class="btn btn-success me-1" onclick="edit_profile()">
                                     Edit
+                                </a>
+                                <a href="#" class="btn btn-success me-1" onclick="edit_password()">
+                                    Change Password
                                 </a>
                                 <a href="javascript:;" class="btn btn-outline-danger suspend-user">Suspended</a>
                             </div>
@@ -248,6 +256,7 @@
     </section>
 
     @include('account-setting/edit-profile')
+    @include('account-setting/edit-password')
     @include('content/_partials/_modals/modal-upgrade-plan')
 @endsection
 
@@ -299,7 +308,7 @@
                 success: function(response) {
                     var html = `<div class="text-start">
                     <img id="favicon" alt="your image"
-                                            src="` + response.data.avatar + `" class="rounded-circle z-depth-2" height="120"
+                                            src="` + response.avatar + `" class="rounded-circle z-depth-2" height="120"
                                             width="120"  data-holder-rendered="true">
                         <div>`;
                     $("#u_id").val(response.data.id);
@@ -312,6 +321,30 @@
                     $("#address").val(response.data.address);
                     $("#dob").val(response.data.dob);
                     $("#editUser").modal("show");
+                },
+                error: function(response) {
+                    alert("Failed")
+                }
+            });
+        }
+
+        function edit_password() {
+            var id = $("#user_id").val();
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                url: "{{ route('edit.user.profile') }}",
+                type: "POST",
+                data: {
+                    id: id
+                },
+                success: function(response) {
+                    $("#editPass").modal("show");
                 },
                 error: function(response) {
                     alert("Failed")

@@ -20,7 +20,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <label for="recipient-name" class="col-form-label">@lang('Customer')</label>
+                            <label for="user_id" class="col-form-label">@lang('Customer')</label>
                             <select class="form-control type slector" id="user_id" name="user_id" required>
                                 <option value="">Select Customer</option>
                                 @foreach (@$customers as $value)
@@ -32,12 +32,12 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <label for="recipient-name" class="col-form-label">@lang('Issue Date')</label>
+                            <label for="issue_date" class="col-form-label">@lang('Issue Date')</label>
                             <input type="date" class="form-control" name="issue_date" id="issue_date"
                                 placeholder="Issue Date" required>
                         </div>
                         <div class="col-6">
-                            <label for="recipient-name" class="col-form-label">@lang('Due Date')</label>
+                            <label for="due_date" class="col-form-label">@lang('Due Date')</label>
                             <input type="date" class="form-control" name="due_date" id="due_date"
                                 placeholder="Issue Date" required>
                         </div>
@@ -45,7 +45,7 @@
 
                     <div class="row">
                         <div class="col-6">
-                            <label for="recipient-name" class="col-form-label">@lang('Select Time Duration')</label>
+                            <label for="duration" class="col-form-label">@lang('Select Time Duration')</label>
                             <select class="form-control type slector  " id="duration" name="duration" required>
                                 <option value="">Select Time Duration</option>
                                 <option value="1,month">One Month</option>
@@ -65,7 +65,7 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label for="recipient-name" class="col-form-label">@lang('Cost')</label>
+                            <label for="price" class="col-form-label">@lang('Cost')</label>
                             <input type="number" class="form-control" name="price" id="price" placeholder="Cost"
                                 required>
                         </div>
@@ -73,7 +73,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <label for="recipient-name" class="col-form-label">@lang('Description')</label>
+                            <label for="description" class="col-form-label">@lang('Description')</label>
                             <textarea class="form-control" name="description" id="description" placeholder="Description" required></textarea>
                         </div>
                     </div>

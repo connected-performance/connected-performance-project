@@ -38,7 +38,7 @@
                     <div class="card-header border-bottom">
                         <button type="button" class="btn btn-success" onclick="show_modal()">Add Customer</button>
                     </div>
-                    <div class="card-datatable">
+                    <div class="card-datatable mtdt">
                         <table id="user_table" class="table table-bordered">
                             <thead>
                                 <tr>
@@ -57,7 +57,7 @@
                                     <th>Services</th>
                                     <th>Status</th>
                                     <th>Agreement</th>
-                                    <th>Action</th>
+                                    <th class="notexport">Action</th>
                                 </tr>
                             </thead>
                         </table>
@@ -293,81 +293,193 @@
             $("#addUser").modal("show")
         }
 
+        <?php if (auth()->user()->is_admin == true){ ?>
+            var user_admin = true;
+        <?php }else{ ?>
+            var user_admin = false;
+        <?php } ?>
+
         load_data();
 
         function load_data() {
-            var role_id = $("#user_role").val();
+            if(user_admin==true){
+                var role_id = $("#user_role").val();
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('#user_table').DataTable({
-                responsive: false,
-                processing: true,
-                serverSide: true,
-                searching: true,
-                ordering: true,
-                ajax: {
-                    url: "{{ url('panel/admin/ajax') }}",
-                    type: "POST",
-                    data: {
-                        role_id: role_id
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
+                });
 
-                },
-                columns: [{
-                        data: 'first_name'
+                $('#user_table').DataTable({
+                    responsive: false,
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    ordering: true,
+                    ajax: {
+                        url: "{{ url('panel/admin/ajax') }}",
+                        type: "POST",
+                        data: {
+                            role_id: role_id
+                        }
+
                     },
-                    {
-                        data: 'last_name'
+                    columns: [{
+                            data: 'first_name'
+                        },
+                        {
+                            data: 'last_name'
+                        },
+                        {
+                            data: 'customer.subscription_id'
+                        },
+                        {
+                            data: 'trainer'
+                        },
+                        {
+                            data: 'email'
+                        },
+                        {
+                            data: 'phone_number'
+                        },
+                        {
+                            data: 'country'
+                        },
+                        {
+                            data: 'state'
+                        },
+                        {
+                            data: 'city'
+                        },
+                        {
+                            data: 'traning_length'
+                        },
+                        {
+                            data: 'time_duration'
+                        },
+                        {
+                            data: 'billing_status'
+                        },
+                        {
+                            data: 'services'
+                        },
+                        {
+                            data: 'status'
+                        },
+                        {
+                            data: 'agreement'
+                        },
+                        {
+                            data: 'action'
+                        },
+                    ],
+                    dom: 'Blftipr',
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: 'CSV',
+                            className: 'btn-xs btn-success',
+                            exportOptions: {
+                                columns: ':not(.notexport)',
+                                orthogonal: 'csv'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: 'PDF',
+                            className: 'btn-xs btn-danger',
+                            orientation: 'landscape',
+                            exportOptions: {
+                                columns: ':not(.notexport)',
+                                orthogonal: 'pdf'                   
+                            }
+                        },
+                    ],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ]
+                });
+            }else{
+                var role_id = $("#user_role").val();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $('#user_table').DataTable({
+                    responsive: false,
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    ordering: true,
+                    ajax: {
+                        url: "{{ url('panel/admin/ajax') }}",
+                        type: "POST",
+                        data: {
+                            role_id: role_id
+                        }
+
                     },
-                    {
-                        data: 'customer.subscription_id'
-                    },
-                    {
-                        data: 'trainer'
-                    },
-                    {
-                        data: 'email'
-                    },
-                    {
-                        data: 'phone_number'
-                    },
-                    {
-                        data: 'country'
-                    },
-                    {
-                        data: 'state'
-                    },
-                    {
-                        data: 'city'
-                    },
-                    {
-                        data: 'traning_length'
-                    },
-                    {
-                        data: 'time_duration'
-                    },
-                    {
-                        data: 'billing_status'
-                    },
-                    {
-                        data: 'services'
-                    },
-                    {
-                        data: 'status'
-                    },
-                    {
-                        data: 'agreement'
-                    },
-                    {
-                        data: 'action'
-                    },
-                ]
-            });
+                    columns: [{
+                            data: 'first_name'
+                        },
+                        {
+                            data: 'last_name'
+                        },
+                        {
+                            data: 'customer.subscription_id'
+                        },
+                        {
+                            data: 'trainer'
+                        },
+                        {
+                            data: 'email'
+                        },
+                        {
+                            data: 'phone_number'
+                        },
+                        {
+                            data: 'country'
+                        },
+                        {
+                            data: 'state'
+                        },
+                        {
+                            data: 'city'
+                        },
+                        {
+                            data: 'traning_length'
+                        },
+                        {
+                            data: 'time_duration'
+                        },
+                        {
+                            data: 'billing_status'
+                        },
+                        {
+                            data: 'services'
+                        },
+                        {
+                            data: 'status'
+                        },
+                        {
+                            data: 'agreement'
+                        },
+                        {
+                            data: 'action'
+                        },
+                    ],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ]
+                });
+            }
+
         }
 
         $("#submit_form").submit(function(event) {

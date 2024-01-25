@@ -141,10 +141,26 @@
                     </span>
                 </div>
                 <span class="avatar">
+                    @if (Auth::check())
+                        <?php 
+                        $avatar_dir = $_SERVER['DOCUMENT_ROOT'].'/users//'.Auth::user()->avatar;
+                        $avatar = 'http://'.$_SERVER['HTTP_HOST'].'/users/'.Auth::user()->avatar;
+                        if(Auth::user()->avatar && Auth::user()->avatar!=null && file_exists($avatar_dir)){
+                            $logo_avatar=$avatar;
+                        }else{
+                            $logo_avatar="https://crm.connected-performance.com/images/avatars/male.png";
+                        }
+                        ?>
+                        <img class="round"
+                            src="{{ $logo_avatar }}"
+                            alt="avatar" height="40" width="40">
+                        <span class="avatar-status-online"></span>
+                    @else
                     <img class="round"
-                        src="{{ isset(Auth::user()->avatar) ? asset(Auth::user()->avatar) : asset('images/portrait/small/avatar-s-11.jpg') }}"
+                        src="https://crm.connected-performance.com/images/avatars/male.png"
                         alt="avatar" height="40" width="40">
                     <span class="avatar-status-online"></span>
+                    @endif                  
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">

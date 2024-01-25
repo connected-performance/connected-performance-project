@@ -61,7 +61,7 @@ class NmiWebhookController extends Controller
             
             if(!is_null($order_id)){
                 if($type=='transaction.sale.success' && $order_id!=null){
-                    $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                    $invoice = Invoice::where('order_nmi', $order_id)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->first();
                     if($invoice->type=='NORMAL PAYMENT'){
                         $customer = $invoice->users->customer;
                         $customer_name = $invoice->users->first_name;
@@ -125,7 +125,7 @@ class NmiWebhookController extends Controller
                                 Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n]);
                             }
                         }
-                        $coun_pay=Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', 1)->count();
+                        $coun_pay=Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', 1)->where('abandoned', 'NO')->count();
 
                         $find_cc = CreditCardCustomer::where('customer_id', $customer->id)->where('ccnumber', $customer_do_sale_card_number)->first();
                         if(!$find_cc){
@@ -141,7 +141,7 @@ class NmiWebhookController extends Controller
                         $invoice->status = '1';
                         $invoice->save();
                         $total_amount =  $invoice->total_amount - $balance;
-                        Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->where('balance_status', '<>', 1)->update(['total_amount' => $total_amount]);
+                        Invoice::where('order_nmi', $order_id)->where('user_id', $invoice->user_id)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->update(['total_amount' => $total_amount]);
                         $transaction = new Transction();
                         $transaction->user_id = $invoice->user_id;
                         $transaction->customer_id = $invoice->customer_id;
@@ -168,7 +168,7 @@ class NmiWebhookController extends Controller
                         $invoice->save();
                     }
                 }elseif($type=='transaction.sale.failed'){
-                    $invoice = Invoice::where('order_nmi', $order_id)->where('balance_status', '<>', 1)->first();
+                    $invoice = Invoice::where('order_nmi', $order_id)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->first();
                     if($invoice){
                         $invoice->balance_status=2;
                         $invoice->transaction = $transaction_id;
@@ -192,7 +192,7 @@ class NmiWebhookController extends Controller
             $customer->save();
             $customer_name = $customer->user->first_name;
             $customer_last_name = $customer->user->last_name;
-            $invoice =  Invoice::where('user_id', $customer->user->id)->where('type', 'NORMAL PAYMENT')->first();
+            $invoice =  Invoice::where('user_id', $customer->user->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->first();
             $pay = date("Y-m-d");
             $day_i=date("d", strtotime($pay));
             $month_i=date("m", strtotime($invoice->issue_date));
@@ -243,7 +243,7 @@ class NmiWebhookController extends Controller
                 $new_plan->number = $plan_id;
                 $new_plan->save();
             }
-            $invoices=Invoice::where('order_nmi', $invoice->order_nmi)->orderBy('id', 'asc')->where('type', 'NORMAL PAYMENT')->get();
+            $invoices=Invoice::where('order_nmi', $invoice->order_nmi)->orderBy('id', 'asc')->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->get();
             foreach ($invoices as $key => $value) {
                 Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n, 'plan_id' => $plan_id]);
                 $pay_date_n = date('Y-m-d', strtotime($pay_date_n . ' + 1 months'));

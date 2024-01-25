@@ -25,7 +25,7 @@ class StatementController extends Controller
             ['name' => __('statement')],
         ];
         
-        $revenue_value = Invoice::where('status', '1')->where('balance_status', '1')->where('type', 'NORMAL PAYMENT')->whereMonth('issue_date', date('m'))->sum('balance');
+        $revenue_value = Invoice::where('status', '1')->where('balance_status', '1')->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->whereMonth('issue_date', date('m'))->sum('balance');
         $t_expense = Expense::where('marchent_name', '!=', null)->sum('amount') ;
         return view('content.expense.statement-index',compact('breadcrumbs', 't_expense', 'revenue_value'));
     }
@@ -34,8 +34,8 @@ class StatementController extends Controller
     {
 
         // retreive all records from db
-          $data = Expense::where('marchent_name', '!=', null)->get();
-          $revenue_value = Invoice::where('status','1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->whereMonth('issue_date', date('m'))->sum('balance');
+        $data = Expense::where('marchent_name', '!=', null)->get();
+        $revenue_value = Invoice::where('status','1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->where('abandoned', 'NO')->whereMonth('issue_date', date('m'))->sum('balance');
         $t_expense = Expense::where('marchent_name', '!=', null)->sum('amount');
        //return view('content.expense.statement-pdf', compact('data', 'revenue_value', 't_expense'));
         // share data to view
@@ -190,7 +190,7 @@ class StatementController extends Controller
     }
     public function ravenue_ajax(Request $request){
         try {
-            $revenue_value = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('balance_status', '1')->whereMonth('issue_date', date('m'))->sum('balance');
+            $revenue_value = Invoice::where('status', '1')->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->where('balance_status', '1')->whereMonth('issue_date', date('m'))->sum('balance');
              $t_expense = Expense::where('marchent_name', '!=', null)->sum('amount');
             $income = @$revenue_value - @$t_expense;
             if ($income < 0) {

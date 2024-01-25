@@ -123,7 +123,7 @@
         </div>
 
         <div class="row match-height">
-            <div class="col-lg-4 col-12">
+            <div class="col-lg-12 col-12">
                 <div class="row match-height">
                     <!-- Bar Chart - Orders -->
                     {{-- <div class="col-lg-6 col-md-3 col-6">
@@ -151,7 +151,7 @@
 
                     <!-- Earnings Card -->
                     @if (auth()->user()->is_admin == true)
-                        <div class="col-lg-12 col-md-6 col-12">
+                        <!-- <div class="col-lg-12 col-md-6 col-12">
                             <div class="card earnings-card">
                                 <div class="card-body">
                                     <div class="row">
@@ -169,14 +169,13 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     @endif
                     <!--/ Earnings Card -->
                 </div>
             </div>
-
             <!-- Revenue Report Card -->
-            @if (auth()->user()->is_admin == true)
+            <!-- @if (auth()->user()->is_admin == true)
                 <div class="col-lg-8 col-12">
                     <div class="card card-revenue-budget">
                         <div class="row mx-0">
@@ -221,7 +220,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif -->
             <!--/ Revenue Report Card -->
         </div>
         <div class="row match-height">

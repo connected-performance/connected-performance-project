@@ -86,10 +86,12 @@ class User extends Authenticatable
     const WIDTH = 250;
     public function getAvatarAttribute($value)
     {
-        if (!empty($value)) {
-            return $this->imageUrl(self::$PATH . DIRECTORY_SEPARATOR . $value, $this->storage_disk);
-        }
-        return asset('images/avatars/male.png');
+        // if (!empty($value)) {
+        //     return $this->imageUrl(self::$PATH . DIRECTORY_SEPARATOR . $value, $this->storage_disk);
+        // }
+        // return asset('images/avatars/male.png');
+
+        return $value;
     }
     public function deleteImage()
     {

@@ -37,7 +37,7 @@ class InvoiceCron extends Command
         // return 0;
         $c_date = date('Y-m-d');
         
-        $invoices = Invoice::where('issue_date', '<=', $c_date)->where('type', 'NORMAL PAYMENT')->where('status', '0')->where('lavel', '1')->with('customer')->get();
+        $invoices = Invoice::where('issue_date', '<=', $c_date)->where('type', 'NORMAL PAYMENT')->where('status', '0')->where('lavel', '1')->where('abandoned', 'NO')->with('customer')->get();
         Log::info($invoices);
         // $invoices = Invoice::where('issue_date', '<=', $c_date)->get();
         if(@$invoices){

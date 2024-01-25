@@ -188,36 +188,38 @@ class UserController extends Controller
             })
             ->addColumn('status', function ($row) {
                 if ($row->status == '0') {
-                    $status = '<span class="badge fix_badges bg-danger  rounded">Closed</span>';
-                } else {
-                    $status = '<span class="badge fix_badges bg-success  rounded">Active</span>';
+                    $status = '<span class="badge fix_badges bg-danger rounded">Closed</span>';
+                }elseif ($row->status == '2') {
+                    $status = '<span class="badge fix_badges bg-danger rounded">Abandoned</span>';
+                }else{
+                    $status = '<span class="badge fix_badges bg-success rounded">Active</span>';
                 }
                 return $status;
             })
-                ->addColumn('country', function ($row) {
-                    if ($row->country != null) {
-                    $country = $row->country->name;
-                    } else {
-                         $country = '';
-                    }
-                    return $country;
-                })
-                ->addColumn('state', function ($row) {
-                    if ($row->state != null) {
-                    $state = $row->state->name;
-                    } else {
-                         $state = '';
-                    }
-                    return $state;
-                })
-                ->addColumn('city', function ($row) {
-                    if ($row->city != null) {
-                    $city = $row->city->name;
-                    } else {
-                    $city = '';
-                    }
-                    return $city;
-                })
+            ->addColumn('country', function ($row) {
+                if ($row->country != null) {
+                $country = $row->country->name;
+                } else {
+                        $country = '';
+                }
+                return $country;
+            })
+            ->addColumn('state', function ($row) {
+                if ($row->state != null) {
+                $state = $row->state->name;
+                } else {
+                        $state = '';
+                }
+                return $state;
+            })
+            ->addColumn('city', function ($row) {
+                if ($row->city != null) {
+                $city = $row->city->name;
+                } else {
+                $city = '';
+                }
+                return $city;
+            })
             ->addColumn('trainer', function ($row) {
                 if (isset($row->customer->employee)) {
                      $trainer = '<img class="round" src="'.$row->avatar.'" alt="avatar" height="40" width="40">';
@@ -229,7 +231,7 @@ class UserController extends Controller
             ->addColumn('time_duration', function ($row) {
                 $user = $row;
                 $date = date('Y-m-d');
-                $invoice = Invoice::where('user_id', $user->id)->where('type', 'NORMAL PAYMENT')->get();
+                $invoice = Invoice::where('user_id', $user->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->get();
                 $time = count($invoice).' Month';
                 /*if (isset($row->customer->invoices[0])) {
                      $time = $row->customer->invoices[0]->time_period;
@@ -241,8 +243,10 @@ class UserController extends Controller
                 return $time;
             })
             ->addColumn('billing_status', function ($row) {
-                if (isset($row->customer->invoices[0])) {
-                    $billing = $row->customer->invoices->where('balance_status', 0)->first();
+                $user = $row;
+                $invoice = Invoice::where('user_id', $user->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->get();
+                if($invoice->count()>0) {
+                    $billing = $row->customer->invoices->where('balance_status', 0)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->first();
                     if ($billing) {
                         return $billing = '<span class="badge rounded-pill  badge-light-warning">Recurring Pay</span>';
                     } else {
@@ -257,8 +261,8 @@ class UserController extends Controller
                 if (isset($row->customer)) {
                     $length = '';
                     $user_id = $row->customer->user_id;
-                    $user = Invoice::where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->count();
-                    $balance_count =Invoice::where('balance_status',1)->where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->count();
+                    $user = Invoice::where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->count();
+                    $balance_count =Invoice::where('balance_status',1)->where('user_id',$user_id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->count();
                     if($balance_count==0){
                         $length = '<div class="demo-vertical-spacing">
                         <div class="progress progress-bar-success">
@@ -305,14 +309,18 @@ class UserController extends Controller
                 return $phone_number;
             })
             ->addColumn('agreement', function ($row) {
-                if (in_array($row->email, $this->data_s)) {
-                    return  '<span class="badge fix_badges bg-success rounded">Done</span>';
-                } else {
-                    $query_waiver = UserSmartWaiver::where('user_id', $row->id)->first();
-                    if($query_waiver) {
+                if ($row->status == '2') {
+                    return  '<span class="badge fix_badges bg-danger rounded">Pending</span>';
+                }else{
+                    if (in_array($row->email, $this->data_s)) {
                         return  '<span class="badge fix_badges bg-success rounded">Done</span>';
-                    }else{ 
-                        return  '<span class="badge fix_badges bg-danger rounded">Pending</span>';
+                    } else {
+                        $query_waiver = UserSmartWaiver::where('user_id', $row->id)->first();
+                        if($query_waiver) {
+                            return  '<span class="badge fix_badges bg-success rounded">Done</span>';
+                        }else{ 
+                            return  '<span class="badge fix_badges bg-danger rounded">Pending</span>';
+                        }
                     }
                 }
             })
@@ -380,7 +388,7 @@ class UserController extends Controller
 
                 $data = [
                     'user_id' => auth()->id(),
-                    'name' => auth()->user()->first_name . " Update User",
+                    'name' => auth()->user()->first_name . " Update User ".$_SERVER["REMOTE_ADDR"],
                     'event_name' => "Update User",
                     'email' => auth()->user()->email,
                     'description' => "Update User Successfully",
@@ -418,7 +426,7 @@ class UserController extends Controller
 
                 $data = [
                     'user_id' => auth()->id(),
-                    'name' => auth()->user()->first_name . " Create User",
+                    'name' => auth()->user()->first_name . " Create User ".$_SERVER["REMOTE_ADDR"],
                     'event_name' => "Create User",
                     'email' => auth()->user()->email,
                     'description' => "Create User Successfully",
@@ -443,7 +451,7 @@ class UserController extends Controller
 
                 $data = [
                     'user_id' => auth()->id(),
-                    'name' => auth()->user()->first_name . " Update Customer Profile",
+                    'name' => auth()->user()->first_name . " Update Customer Profile ".$_SERVER["REMOTE_ADDR"],
                     'event_name' => "Update Customer Profile",
                     'email' => auth()->user()->email,
                     'description' => "Update Customer Profile Successfully",
@@ -560,7 +568,7 @@ class UserController extends Controller
             }
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Delete User",
+                'name' => auth()->user()->first_name . " Delete User ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Delete User",
                 'email' => auth()->user()->email,
                 'description' => "Delete User",
@@ -744,7 +752,7 @@ class UserController extends Controller
         $tdc = CreditCardCustomer::where('customer_id', $customer->id)->get();
         $activities = ModelsActivityLog::where('user_id',$id)->take(5)->get();
         $notes = UserNote::where('customer_id', $users->customer->id)->get();
-        $last_invoice = Invoice::where('user_id', $users->id)->where('type', 'NORMAL PAYMENT')->where('customer_id', $customer->id)->get()->last();
+        $last_invoice = Invoice::where('user_id', $users->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->where('customer_id', $customer->id)->get()->last();
 
         return view('content.users.user-detail',compact('users', 'activities', 'breadcrumbs','id', 'notes', 'tdc', 'last_invoice', 'url_contract'));
     }
@@ -760,21 +768,29 @@ class UserController extends Controller
 
         return DataTables::of($records)->addIndexColumn()
             ->addColumn('action', function ($row) {
-                if ($row->balance_status == '1') {
+                if ($row->balance_status == '1' && $row->abandoned=='NO') {
                     $btn = '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
-                       data-bs-placement="top" title="Refund" onclick="delete_data(' . $row->id . ')"><i class="fa-solid fa-refresh"></i></a>' . '<a href="#" style="padding-left:10px;" class="link-danger"  data-bs-toggle="tooltip"
-                       data-bs-placement="top" title="Cancel" onclick="cancel_data(' . $row->id . ')"><i class="fas fa-ban"></i></a>';
-                } else {
+                       data-bs-placement="top" title="Refund" onclick="delete_data(' . $row->id . ')"><i class="fa-solid fa-refresh"></i> Refund</a>';
+                }elseif($row->balance_status == '2' && $row->abandoned=='NO') {
+                    $data_pay="'<br>Amount: $".$row->balance."'";
+                    $btn = '<a href="#" style="padding-left:10px;" class="link-success"  data-bs-toggle="tooltip"
+                       data-bs-placement="top" title="Resend Payment" onclick="resend_payment('.$row->id.','.$data_pay.')"><i class="fa-solid fa-refresh"></i> Resend Payment</a>';
+                }else{
                     $btn = '---';
                 }
                 return $btn;
             })
             ->addColumn('status', function ($row) {
-                if ($row->status == '0') {
-                    $status =  '<span class="badge rounded-pill  badge-light-info">Draft</span>';
-                } else {
-                    $status  = '<span class="badge rounded-pill  badge-light-success">Send</span>';
+                if($row->abandoned == 'NO'){
+                    if($row->status == '0'){
+                        $status =  '<span class="badge rounded-pill badge-light-info">Draft</span>';
+                    }else{;
+                        $status  = '<span class="badge rounded-pill badge-light-success">Send</span>';
+                    }
+                }else{
+                    $status =  '<span class="badge rounded-pill badge-light-danger">Abandoned</span>';
                 }
+                
                 return $status;
             })
             ->addColumn('type', function ($row) {
@@ -782,16 +798,19 @@ class UserController extends Controller
             })
             ->addColumn('balance_status', function ($row) {
                 if ($row->balance_status == '0') {
-                    $balance_status =  '<span class="badge rounded-pill  badge-light-warning">Pending</span>';
-                } elseif ($row->balance_status == '1') {
-                    $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
+                    $balance_status =  '<span class="badge rounded-pill  badge-light-warning">UnPaid</span>';
                 } elseif ($row->balance_status == '2') {
+                    $balance_status =  '<span class="badge rounded-pill  badge-light-danger">Failed</span>';
+                }elseif ($row->balance_status == '3') {
+                    $balance_status  = '<span class="badge rounded-pill  badge-light-danger">Canceled</span>';
+                }elseif ($row->balance_status == '4') {
                     $balance_status  = '<span class="badge rounded-pill  badge-light-danger">Refund</span>';
-                } elseif ($row->balance_status == '3') {
-                    $balance_status  = '<span class="badge rounded-pill  badge-light-danger">Calceled</span>';
+                }else{
+                    $balance_status  = '<span class="badge rounded-pill  badge-light-success">Paid</span>';
                 }
                 return $balance_status;
-            })->addColumn('invoice_number', function ($row) {
+            })
+            ->addColumn('invoice_number', function ($row) {
                 $number = $row->invoice_code . $row->invoice_number;
                 return $number;
             })
@@ -985,8 +1004,8 @@ class UserController extends Controller
     public function increase_duration(Request $request){
 
         try {
-            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->get('due_date')->max('due_date');
-            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->where('due_date',$data)->with('users')->first();
+            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->get('due_date')->max('due_date');
+            $data = Invoice::where('user_id',$request->id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->where('due_date',$data)->with('users')->first();
             if($data){
                 $issue_date = date('Y-m-d', strtotime($data->issue_date . ' + 1 months'));
                 $due_date = date('Y-m-d', strtotime($data->due_date . ' + 1 months'));
@@ -1046,7 +1065,7 @@ class UserController extends Controller
                 ];
                 return response()->json($response);
             }
-            $invoice = Invoice::where('user_id',$request->user_id)->where('type', 'NORMAL PAYMENT')->orderBy('id', 'desc')->first();
+            $invoice = Invoice::where('user_id',$request->user_id)->where('type', 'NORMAL PAYMENT')->where('abandoned', 'NO')->orderBy('id', 'desc')->first();
             if($invoice){
                 $duration = '';
                 $data = explode(',', $request->duration);
@@ -1116,7 +1135,7 @@ class UserController extends Controller
                 }
                 $data = [
                     'user_id' => auth()->id(),
-                    'name' => auth()->user()->first_name . " Create Invoice",
+                    'name' => auth()->user()->first_name . " Create Invoice ".$_SERVER["REMOTE_ADDR"],
                     'event_name' => "Create Invoice",
                     'email' => auth()->user()->email,
                     'description' => "Create Invoice Successfully",
@@ -1224,7 +1243,7 @@ class UserController extends Controller
                 }
                 $data = [
                     'user_id' => auth()->id(),
-                    'name' => auth()->user()->first_name . " Create Invoice",
+                    'name' => auth()->user()->first_name . " Create Invoice ".$_SERVER["REMOTE_ADDR"],
                     'event_name' => "Create Invoice",
                     'email' => auth()->user()->email,
                     'description' => "Create Invoice Successfully",
@@ -1309,10 +1328,10 @@ class UserController extends Controller
             $invoice = Invoice::findOrFail($request->id);
             $gw = new gwapi;
             $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
-            $gw->doRefund($invoice->transaction, $invoice->balance);
+            $gw->doRefund($invoice->transaction, 0, null);
+            $response_g = 1;
             $response_g = $gw->responses['response'];
             if($response_g == 1){
-
                 $ino_number = Invoice::orderBy('id', 'desc')->first();
                 if($ino_number){
                     $number = $ino_number->invoice_number;
@@ -1325,21 +1344,45 @@ class UserController extends Controller
                 $new_invoice->invoice_code = "#N";
                 $new_invoice->transaction = $gw->responses['transactionid'];
                 $new_invoice->user_id = $invoice->user_id;
+                $new_invoice->order_nmi = $invoice->order_nmi;
+                $new_invoice->plan_id = $invoice->plan_id;
                 $new_invoice->level = $invoice->level;
                 $new_invoice->created_by = $invoice->created_by;
                 $new_invoice->customer_id = $invoice->customer_id;
                 $new_invoice->issue_date = $invoice->issue_date;
                 $new_invoice->due_date = $invoice->due_date;
+                $new_invoice->pay_date = date('Y-m-d');
                 $new_invoice->description = $invoice->description;
                 $new_invoice->total_amount =  $invoice->total_amount;
                 $new_invoice->balance = $invoice->balance;
-                $new_invoice->balance_status = 2;
+                $new_invoice->balance_status = 4;
                 $new_invoice->time_period = $invoice->time_period;
                 $new_invoice->duration = $invoice->duration;
+                $new_invoice->status = 1;
+                $new_invoice->abandoned = $invoice->abandoned;
+                $new_invoice->abandoned_date = $invoice->abandoned_date;
+                $new_invoice->type = $invoice->type;
                 $new_invoice->save();
 
                 $invoice->balance_status = 3;
                 $invoice->save();
+
+                $actor = "";
+                if (auth()->user()->is_admin == true) {
+                    $actor = 1;
+                } else {
+                    $actor = 2;
+                }
+                $data = [
+                    'user_id' => auth()->id(),
+                    'name' => auth()->user()->first_name . " Invoice Refund ".$_SERVER["REMOTE_ADDR"],
+                    'event_name' => "Invoice Refund",
+                    'email' => auth()->user()->email,
+                    'description' => "Invoice Refund Successfully",
+                    'actor' => $actor,
+                    'url' => url()->current(),
+                ];
+                event(new ActivityLog($data));
 
                 $response = [
                     'status' => 'success',
@@ -1352,6 +1395,128 @@ class UserController extends Controller
                 ];
             }
             
+            return response()->json($response);
+        } catch(\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
+            return response()->json($response);
+        }
+    }
+
+    public function invoiceCancelSubscription(Request $request)
+    {
+        try {
+            $user = User::findOrFail($request->user_id);
+            $gw = new gwapi;
+            $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+            $gw->deleteSubscription($request->id);
+            $response_g = $gw->responses['response'];
+            $response_g = 1;
+            if($response_g == 1){
+                $invoice_d = Invoice::where('user_id', $user->id)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->first();
+                if($invoice_d){
+                    $invoices = Invoice::where('order_nmi', $invoice_d->order_nmi)->get();
+
+                    foreach ($invoices as $key => $value) {
+                        Invoice::where('id', $value->id)->update(['abandoned' => 'YES', 'abandoned_date' => date('Y-m-d')]);
+                    }
+    
+                    Customer::where('id', $user->customer->id)->update(['subscription_id' => null]);
+
+                    $actor = "";
+                    if (auth()->user()->is_admin == true) {
+                        $actor = 1;
+                    } else {
+                        $actor = 2;
+                    }
+                    $data = [
+                        'user_id' => auth()->id(),
+                        'name' => auth()->user()->first_name . " Invoice Cancel Subscription ".$_SERVER["REMOTE_ADDR"],
+                        'event_name' => "Invoice Cancel Subscription",
+                        'email' => auth()->user()->email,
+                        'description' => "Invoice Cancel Subscription Successfully",
+                        'actor' => $actor,
+                        'url' => url()->current(),
+                    ];
+                    event(new ActivityLog($data));
+    
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Invoice canceled successfully!',
+                    ];
+                }else{
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Error processing information',
+                    ];
+                }
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => $gw->responses['responsetext'],
+                ];
+            }
+            
+            return response()->json($response);
+        } catch(\Throwable $th) {
+            $response = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+
+            return response()->json($response);
+        }
+    }
+
+    public function invoiceResendPayment(Request $request)
+    {
+        try {
+            $invoice = Invoice::findOrFail($request->id);
+            if($invoice){
+                $customer=$invoice->customer;
+                $gw = new gwapi;
+                $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
+                $gw->doSaleCustomerVault($customer->vault_id, number_format($invoice->balance, 2), $invoice->order_nmi);
+    
+                $response_g = $gw->responses['response'];
+                if($response_g == 1){
+                    $actor = "";
+                    if (auth()->user()->is_admin == true) {
+                        $actor = 1;
+                    } else {
+                        $actor = 2;
+                    }
+                    $data = [
+                        'user_id' => auth()->id(),
+                        'name' => auth()->user()->first_name . " Resend Payment ".$_SERVER["REMOTE_ADDR"],
+                        'event_name' => "Resend Payment",
+                        'email' => auth()->user()->email,
+                        'description' => "Created Resend Successfully",
+                        'actor' => $actor,
+                        'url' => url()->current(),
+                    ];
+                    event(new ActivityLog($data));
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'The payment was made successfully',
+                    ];
+                    return response()->json($response);
+                }else{
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Error processing payment',
+                    ];
+                    return response()->json($response);
+                }
+            }else{
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Error processing information',
+                ];
+            }  
             return response()->json($response);
         } catch(\Throwable $th) {
             $response = [
@@ -1617,7 +1782,7 @@ class UserController extends Controller
 
             $data = [
                 'user_id' => auth()->id(),
-                'name' => auth()->user()->first_name . " Create Invoice",
+                'name' => auth()->user()->first_name . " Create Invoice ".$_SERVER["REMOTE_ADDR"],
                 'event_name' => "Create Invoice",
                 'email' => auth()->user()->email,
                 'description' => "Create Invoice Successfully",
@@ -1664,7 +1829,7 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($request->id);
-            $invoice = Invoice::where('user_id', $request->id)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->first();
+            $invoice = Invoice::where('user_id', $request->id)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->where('type', 'NORMAL PAYMENT')->first();
 
             $gw = new gwapi;
             $constraints_vault = "&report_type=customer_vault&customer_vault_id=".$user->customer->vault_id;
@@ -1724,14 +1889,14 @@ class UserController extends Controller
                 return response()->json($response);
             }else{
 
-                $invoice = Invoice::where('user_id', $request->user_id_cs)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->first();
+                $invoice = Invoice::where('user_id', $request->user_id_cs)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->where('type', 'NORMAL PAYMENT')->first();
                 $day_i=date("d", strtotime($request->pay_date));
                 if($invoice){
                     $gw = new gwapi;
                     $gw->setLogin("BU5b8jk85Ghxun5mXab4rQ7v8f88cJBR");
                     $gw->editPlan($invoice->plan_id, null, $request->price_cs, 1, $day_i, null);
 
-                    $invoices = Invoice::where('user_id', $request->user_id_cs)->where('balance_status', '<>', 1)->where('type', 'NORMAL PAYMENT')->get();
+                    $invoices = Invoice::where('user_id', $request->user_id_cs)->whereNotIn('balance_status', [1,3,4])->where('abandoned', 'NO')->where('type', 'NORMAL PAYMENT')->get();
                     $pay_date_n=$request->pay_date;
                     foreach ($invoices as $key => $value) {
                         Invoice::where('id', $value->id)->update(['pay_date' => $pay_date_n, 'balance' => $request->price_cs, 'total_amount' => $request->price_cs*$invoices->count()]);
@@ -1747,7 +1912,7 @@ class UserController extends Controller
                     }
                     $data = [
                         'user_id' => auth()->id(),
-                        'name' => auth()->user()->first_name . " Subscription Update",
+                        'name' => auth()->user()->first_name . " Subscription Update ".$_SERVER["REMOTE_ADDR"],
                         'event_name' => "Subscription Update",
                         'email' => auth()->user()->email,
                         'description' => "Subscription Update Successfully",
@@ -1851,6 +2016,22 @@ class UserController extends Controller
 
             $response_g = $gw->responses['response'];
             if($response_g == 1){
+                $actor = "";
+                if (auth()->user()->is_admin == true) {
+                    $actor = 1;
+                } else {
+                    $actor = 2;
+                }
+                $data = [
+                    'user_id' => auth()->id(),
+                    'name' => auth()->user()->first_name . " Created Payment ".$_SERVER["REMOTE_ADDR"],
+                    'event_name' => "Created Payment",
+                    'email' => auth()->user()->email,
+                    'description' => "Created Payment Successfully",
+                    'actor' => $actor,
+                    'url' => url()->current(),
+                ];
+                event(new ActivityLog($data));
                 $response = [
                     'status' => 'success',
                     'message' => 'The payment was made successfully',
